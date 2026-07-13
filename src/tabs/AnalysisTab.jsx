@@ -1,0 +1,415 @@
+import { useState } from "react";
+import { DEEP_ANALYSIS } from "../data/deep-analysis.js";
+import { Term, SectionGroup, DipExplainerCard } from "../components/shared.jsx";
+import { pBadge } from "./DashboardTab.jsx";
+
+// Collapse-by-default card for the Analysis tab: an easy-to-read summary stays in the
+// header; the technical depth lives in the expanded body. Mirrors DipExplainerCard's
+// toggle so it collapses on every viewport (SectionGroup is desktop-always-open).
+export const AnalysisCard = ({ eyebrow, eyebrowColor, summary, badge, accent, defaultOpen = false, children }) => {
+  const [open, setOpen] = useState(defaultOpen);
+  return (
+    <div style={{
+      background: "var(--bg-card)",
+      border: "1px solid var(--border-subtle)",
+      borderLeft: accent ? `3px solid ${accent}` : "1px solid var(--border-subtle)",
+      borderRadius: "var(--radius-lg)",
+      padding: "16px 20px",
+    }}>
+      <button
+        type="button"
+        onClick={() => setOpen(p => !p)}
+        aria-expanded={open}
+        style={{
+          display: "flex", alignItems: "center", justifyContent: "space-between",
+          width: "100%", background: "none", border: "none", padding: 0, cursor: "pointer",
+          textAlign: "left", gap: 12,
+        }}
+      >
+        <span style={{ display: "flex", flexDirection: "column", gap: 6, minWidth: 0 }}>
+          <span style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+            <span style={{
+              fontSize: "var(--fs-xs)", color: eyebrowColor || "var(--accent-bitcoin)",
+              textTransform: "uppercase", letterSpacing: 1.2, fontWeight: 700,
+              fontFamily: "var(--font-mono)",
+            }}>
+              {eyebrow}
+            </span>
+            {badge}
+          </span>
+          <span style={{
+            fontSize: "var(--fs-md)", color: "var(--text-primary)", fontWeight: 700,
+            fontFamily: "var(--font-sans)", lineHeight: 1.4,
+          }}>
+            {summary}
+          </span>
+        </span>
+        <span style={{
+          display: "inline-flex", alignItems: "center", gap: 6,
+          fontSize: "var(--fs-xs)", color: "var(--text-muted)", fontFamily: "var(--font-mono)",
+          flexShrink: 0,
+        }}>
+          {open ? "Less" : "Details"}
+          <span style={{ display: "inline-block", fontSize: 10, transform: open ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s ease" }}>▼</span>
+        </span>
+      </button>
+      {open && (
+        <div className="tab-panel-enter" style={{ marginTop: 16, display: "flex", flexDirection: "column", gap: 14 }}>
+          {children}
+        </div>
+      )}
+    </div>
+  );
+};
+
+// One "What to watch" row: collapses to window + event + probability; the dense signal
+// reasoning is one tap away in the expand.
+export const WatchRow = ({ item }) => {
+  const [open, setOpen] = useState(false);
+  return (
+    <div style={{
+      background: "var(--bg-card)",
+      border: "1px solid var(--border-subtle)",
+      borderRadius: "var(--radius-lg)",
+      padding: "14px 18px",
+    }}>
+      <button
+        type="button"
+        onClick={() => setOpen(p => !p)}
+        aria-expanded={open}
+        style={{
+          display: "flex", alignItems: "flex-start", justifyContent: "space-between",
+          width: "100%", background: "none", border: "none", padding: 0, cursor: "pointer",
+          textAlign: "left", gap: 12,
+        }}
+      >
+        <span style={{ display: "flex", flexDirection: "column", gap: 6, minWidth: 0 }}>
+          <span style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+            <span style={{
+              fontSize: "var(--fs-xs)", color: "var(--accent-bitcoin)",
+              fontFamily: "var(--font-mono)", fontWeight: 800,
+              letterSpacing: 0.6, textTransform: "uppercase",
+            }}>
+              {item.window}
+            </span>
+            {item.category && (
+              <span style={{
+                fontSize: 10, fontFamily: "var(--font-mono)", fontWeight: 700,
+                color: "var(--text-muted)", background: "var(--bg-card-elevated)",
+                padding: "3px 8px", borderRadius: "var(--radius-sm)",
+                letterSpacing: 0.5, textTransform: "uppercase",
+                border: "1px solid var(--border-subtle)",
+              }}>
+                {item.category}
+              </span>
+            )}
+          </span>
+          <span style={{
+            fontSize: "var(--fs-sm)", fontWeight: 600, color: "var(--text-primary)",
+            fontFamily: "var(--font-sans)", lineHeight: 1.45,
+          }}>
+            {item.plain || item.event}
+          </span>
+        </span>
+        <span style={{ display: "inline-flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+          {pBadge(item.probability)}
+          <span style={{ display: "inline-block", fontSize: 10, color: "var(--text-muted)", transform: open ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s ease" }}>▼</span>
+        </span>
+      </button>
+      {open && (
+        <div className="tab-panel-enter" style={{
+          marginTop: 12, paddingTop: 10, borderTop: "1px solid var(--border-subtle)",
+          display: "flex", flexDirection: "column", gap: 8,
+        }}>
+          {item.plain && (
+            <div style={{
+              fontSize: "var(--fs-sm)", fontWeight: 700, color: "var(--text-primary)",
+              fontFamily: "var(--font-sans)", lineHeight: 1.4,
+            }}>
+              Watching for: {item.event}
+            </div>
+          )}
+          <div style={{
+            fontSize: "var(--fs-sm)", color: "var(--text-secondary)",
+            fontFamily: "var(--font-sans)", lineHeight: 1.65,
+          }}>
+            {item.signal}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export const DeepAnalysisTab = () => {
+  const a = DEEP_ANALYSIS;
+  if (!a) return null;
+
+  // Defensive: contrarianTake migrated from string → object in v2.
+  const contrarian = typeof a.contrarianTake === "string"
+    ? { body: a.contrarianTake, probability: null }
+    : (a.contrarianTake || null);
+
+  const primary = a.primaryAnalysis || {};
+  const calibration = a.calibration || null;
+
+  // Plain-English layer (owner schema, written weekly by /refresh-deep-analysis). Degrade
+  // gracefully to the existing, more technical fields if a refresh ever omits a plain*.
+  const firstSentence = (s) => {
+    if (!s) return null;
+    const m = String(s).match(/^[\s\S]*?[.!?](\s|$)/);
+    return (m ? m[0] : String(s)).trim();
+  };
+  const plainSummary = a.plainSummary || a.headline;
+  const primaryPlain = primary.plain || primary.themeTitle;
+  const contrarianPlain = contrarian && (contrarian.plain || firstSentence(contrarian.body));
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+      {/* Header + plain bottom-line — always visible */}
+      <div className="analysis-header" style={{ paddingBottom: 14, borderBottom: "1px solid var(--border-subtle)" }}>
+        <div style={{
+          display: "flex", alignItems: "center", justifyContent: "space-between",
+          flexWrap: "wrap", gap: 12,
+        }}>
+          <div style={{
+            fontSize: "var(--fs-xs)", color: "var(--text-muted)", letterSpacing: 1.3,
+            textTransform: "uppercase", fontWeight: 700, fontFamily: "var(--font-mono)",
+          }}>
+            <span style={{
+              display: "inline-block", width: 6, height: 6, borderRadius: "50%",
+              background: "var(--accent-bitcoin)", marginRight: 8, verticalAlign: "middle",
+            }} aria-hidden="true" />
+            Deep AI Analysis · {a.asOf}
+          </div>
+          <span style={{
+            fontSize: "var(--fs-xs)", fontFamily: "var(--font-mono)", fontWeight: 700,
+            color: "var(--accent-bitcoin)", background: "var(--status-up-soft, rgba(247,147,26,0.12))",
+            padding: "5px 11px", borderRadius: "var(--radius-sm)",
+            textTransform: "uppercase", letterSpacing: 1.1, whiteSpace: "nowrap",
+          }}>
+            Weekly synthesis
+          </span>
+        </div>
+        {/* Plain-English lead — the bottom line for anyone, front and centre */}
+        <div style={{
+          fontSize: "var(--fs-xl, 22px)", fontWeight: 800, color: "var(--text-primary)",
+          fontFamily: "var(--font-sans)", lineHeight: 1.3, maxWidth: 920, marginTop: 10,
+        }}>
+          {plainSummary}
+        </div>
+        {/* The original, denser framing kept as secondary detail */}
+        {a.headline && a.headline !== plainSummary && (
+          <div style={{
+            fontSize: "var(--fs-sm)", color: "var(--text-secondary)",
+            fontFamily: "var(--font-sans)", lineHeight: 1.6, maxWidth: 920, marginTop: 8,
+          }}>
+            {a.headline}
+          </div>
+        )}
+      </div>
+
+      {/* The main read — collapsed by default; folds in market backdrop + cross-currents */}
+      {primary.themeTitle && (
+        <AnalysisCard
+          eyebrow="The main read · our base case"
+          accent="var(--accent-bitcoin)"
+          badge={pBadge(primary.thesisProbability, "Thesis")}
+          summary={primaryPlain}
+        >
+          <div style={{
+            fontSize: "var(--fs-lg)", fontWeight: 800, color: "var(--text-primary)",
+            fontFamily: "var(--font-sans)", lineHeight: 1.3,
+          }}>
+            {primary.themeTitle}
+          </div>
+          {(primary.body || []).map((p, i) => (
+            <p key={i} style={{
+              fontSize: "var(--fs-sm)", color: "var(--text-secondary)",
+              fontFamily: "var(--font-sans)", lineHeight: 1.7, margin: 0,
+            }}>
+              {p}
+            </p>
+          ))}
+
+          {a.marketContext && (
+            <div style={{ paddingTop: 12, borderTop: "1px solid var(--border-subtle)" }}>
+              <div style={{
+                fontSize: "var(--fs-xs)", color: "var(--text-muted)",
+                textTransform: "uppercase", letterSpacing: 1.1, fontWeight: 700,
+                fontFamily: "var(--font-mono)", marginBottom: 6,
+              }}>
+                Market backdrop
+              </div>
+              <div style={{
+                fontSize: "var(--fs-sm)", color: "var(--text-secondary)",
+                fontFamily: "var(--font-sans)", lineHeight: 1.65,
+              }}>
+                {a.marketContext}
+              </div>
+            </div>
+          )}
+
+          {a.crossCurrents && a.crossCurrents.length > 0 && (
+            <div style={{ paddingTop: 12, borderTop: "1px solid var(--border-subtle)" }}>
+              <div style={{
+                fontSize: "var(--fs-xs)", color: "var(--text-muted)",
+                textTransform: "uppercase", letterSpacing: 1.1, fontWeight: 700,
+                fontFamily: "var(--font-mono)", marginBottom: 8,
+              }}>
+                How the forces connect
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                {a.crossCurrents.map((c, i) => (
+                  <div key={i}>
+                    <div style={{
+                      fontSize: "var(--fs-sm)", fontWeight: 700, color: "var(--text-primary)",
+                      fontFamily: "var(--font-sans)", lineHeight: 1.35, marginBottom: 2,
+                    }}>
+                      {c.title}
+                    </div>
+                    <div style={{
+                      fontSize: "var(--fs-sm)", color: "var(--text-secondary)",
+                      fontFamily: "var(--font-sans)", lineHeight: 1.6,
+                    }}>
+                      {c.body}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {primary.falsificationConditions && primary.falsificationConditions.length > 0 && (
+            <div style={{ paddingTop: 12, borderTop: "1px solid var(--border-subtle)" }}>
+              <div style={{
+                fontSize: "var(--fs-xs)", color: "var(--text-muted)",
+                textTransform: "uppercase", letterSpacing: 1.1, fontWeight: 700,
+                fontFamily: "var(--font-mono)", marginBottom: 8,
+              }}>
+                How we'd be wrong · falsification conditions
+              </div>
+              <ul style={{
+                margin: 0, paddingLeft: 20, color: "var(--text-secondary)",
+                fontSize: "var(--fs-sm)", fontFamily: "var(--font-sans)", lineHeight: 1.6,
+              }}>
+                {primary.falsificationConditions.map((c, i) => (
+                  <li key={i} style={{ marginBottom: 4 }}>{c}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </AnalysisCard>
+      )}
+
+      {/* Cross-Currents are folded into the main-read card above ("How the forces connect"). */}
+
+      {/* What to watch — collapsed card; each row then expands for its signal */}
+      {a.watchList && a.watchList.length > 0 && (
+        <AnalysisCard
+          eyebrow={`What to watch · ${a.watchList.length} dated signals`}
+          summary="The checkpoints that will tell us whether the calm case is holding — tap any one for the detail."
+        >
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {a.watchList.map((w, i) => (
+              <WatchRow key={i} item={w} />
+            ))}
+          </div>
+        </AnalysisCard>
+      )}
+
+      {/* The other side (contrarian) — collapsed by default */}
+      {contrarian && contrarian.body && (
+        <AnalysisCard
+          eyebrow="The other side · counterpoint"
+          eyebrowColor="var(--status-warn, #ffb347)"
+          accent="var(--status-warn, #ffb347)"
+          badge={pBadge(contrarian.probability, "Vindication")}
+          summary={contrarianPlain}
+        >
+          <div style={{
+            fontSize: "var(--fs-sm)", color: "var(--text-primary)",
+            fontFamily: "var(--font-sans)", lineHeight: 1.65,
+          }}>
+            {contrarian.body}
+          </div>
+        </AnalysisCard>
+      )}
+
+      {/* Primary sources — collapsed card */}
+      {a.sources && a.sources.length > 0 && (
+        <AnalysisCard
+          eyebrow={`Primary sources · ${a.sources.length}`}
+          summary="Where this week's analysis comes from — all primary sources."
+        >
+          <div style={{
+            display: "flex", flexDirection: "column", gap: 8,
+            fontSize: "var(--fs-xs)", fontFamily: "var(--font-mono)",
+            color: "var(--text-muted)",
+          }}>
+            {a.sources.map((s, i) => (
+              <a key={i} href={s.url} target="_blank" rel="noopener noreferrer" style={{
+                color: "var(--text-muted)", textDecoration: "underline",
+                textDecorationColor: "var(--border-subtle)",
+                textUnderlineOffset: 2,
+              }}>
+                {s.label}
+              </a>
+            ))}
+          </div>
+        </AnalysisCard>
+      )}
+
+      {/* Forecast calibration — letter-grade confidence badge */}
+      {calibration && (() => {
+        const b = calibration.aggregateBrier;
+        const gradeInfo = b == null ? null
+          : b < 0.06 ? { grade: "A+", color: "var(--status-up)",    label: "Exceptional" }
+          : b < 0.10 ? { grade: "A",  color: "var(--status-up)",    label: "Strong" }
+          : b < 0.14 ? { grade: "B+", color: "#4ade80",             label: "Good" }
+          : b < 0.18 ? { grade: "B",  color: "var(--accent-bitcoin)", label: "Adequate" }
+          : b < 0.22 ? { grade: "C+", color: "var(--status-warn)",  label: "Fair" }
+          :             { grade: "C",  color: "var(--status-down)",  label: "Recalibrating" };
+        const prob = primary.thesisProbability;
+        const pct = prob != null ? Math.round(prob * 100) : null;
+        const probColor = pct != null
+          ? pct >= 65 ? "var(--status-up)" : pct >= 45 ? "var(--accent-bitcoin)" : "var(--status-warn)"
+          : null;
+        const brierTip = b != null
+          ? `Brier score: ${b.toFixed(3)} — measures forecast accuracy (0 = perfect, 0.25 = random). Lower is better.${calibration.nResolved ? ` Based on ${calibration.nResolved} resolved forecasts.` : ""}`
+          : "Forecast calibration score";
+        return (
+          <div className="confidence-panel">
+            {gradeInfo && (
+              <div className="confidence-grade-badge" style={{ color: gradeInfo.color, background: `color-mix(in srgb, ${gradeInfo.color} 10%, transparent)` }}>
+                {gradeInfo.grade}
+              </div>
+            )}
+            <div className="confidence-meta">
+              <div className="confidence-label-row">
+                <span className="confidence-label"><Term k="brier">Forecast Calibration</Term></span>
+                <span className="confidence-tooltip-trigger" title={brierTip} aria-label="Brier score explanation">?</span>
+                {gradeInfo && (
+                  <span style={{ fontSize: 11, fontFamily: "var(--font-mono)", fontWeight: 700, color: gradeInfo.color }}>{gradeInfo.label}</span>
+                )}
+              </div>
+              {calibration.briefSummary && (
+                <div className="confidence-summary">{calibration.briefSummary}</div>
+              )}
+              {pct != null && (
+                <div className="confidence-prob-row">
+                  <span className="confidence-prob-pill" style={{ color: probColor, background: `color-mix(in srgb, ${probColor} 12%, transparent)` }}>
+                    {pct}% confidence
+                  </span>
+                  <div className="confidence-prob-bar-wrap">
+                    <div className="confidence-prob-bar" style={{ width: `${pct}%`, background: probColor }} />
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      })()}
+    </div>
+  );
+};
