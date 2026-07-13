@@ -37,6 +37,22 @@ const inlineScript = `<script type="module">\n${safeScript}\n</script>`;
 //    content comes first in source order instead of trailing an 840 kB JS blob.
 let base = html.replace(match[0], "");
 
+// 1b) Inline the built CSS asset (src/styles.css → dist/assets/*.css) into
+//     <head>, replacing Vite's <link> tag. Injecting before </head> keeps the
+//     app CSS after the boot <style>, preserving today's cascade order, and
+//     means styles apply before React mounts (they also style the crawler/
+//     no-JS static content).
+const cssPattern =
+  /<link[^>]*\brel="stylesheet"[^>]*\bhref="(?<href>\.\/assets\/[^"]+\.css)"[^>]*>/;
+const cssMatch = base.match(cssPattern);
+if (!cssMatch?.groups?.href) {
+  throw new Error("Could not find the built CSS asset link in dist/index.html.");
+}
+const css = await readFile(join(distDir, cssMatch.groups.href.replace(/^\.\//, "")), "utf8");
+const safeCss = css.replace(/<\/style/gi, "<\\/style");
+base = base.replace(cssMatch[0], "");
+base = base.replace(/<\/head>/i, () => `    <style>\n${safeCss}\n    </style>\n  </head>`);
+
 // 2) Inject the crawler-visible static content into #root (replaces the marker).
 const marker = "<!-- SEO_STATIC_CONTENT -->";
 if (!base.includes(marker)) {

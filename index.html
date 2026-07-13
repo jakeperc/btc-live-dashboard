@@ -166,6 +166,15 @@
         font-size: 14px;
         vertical-align: top;
       }
+      /* The app stylesheet (inlined into <head> at build time) carries a
+         global margin/padding reset that now applies before React mounts.
+         Restore browser defaults inside the crawler/no-JS block so it still
+         reads as a document. */
+      .seo-static h1, .seo-static h2, .seo-static h3, .seo-static h4,
+      .seo-static p, .seo-static ul, .seo-static ol {
+        margin: revert;
+        padding: revert;
+      }
     </style>
   </head>
   <body>
