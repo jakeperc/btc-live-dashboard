@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo, useCallback } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback, memo } from "react";
 import { createPortal } from "react-dom";
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, AreaChart, Area, ComposedChart, Line, ReferenceLine, ReferenceArea } from "recharts";
 
@@ -939,12 +939,25 @@ const useActiveSection = (refs, { triggerRatio = 0.3 } = {}) => {
       }
       setActive(best);
     };
+    // rAF-throttled like useScrollSpy below: the getBoundingClientRect loop
+    // runs at most once per frame instead of on every raw scroll event.
+    let rafId = 0;
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      rafId = window.requestAnimationFrame(() => {
+        ticking = false;
+        recompute();
+      });
+    };
     recompute();
-    window.addEventListener("scroll", recompute, { passive: true });
-    window.addEventListener("resize", recompute, { passive: true });
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
     return () => {
-      window.removeEventListener("scroll", recompute);
-      window.removeEventListener("resize", recompute);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (rafId) window.cancelAnimationFrame(rafId);
     };
   }, [refs, triggerRatio]);
   return active;
@@ -2112,51 +2125,57 @@ const ChartTooltipBody = ({ active, payload, prevPrice }) => {
   );
 };
 
-const PriceChart = ({ sevenDay, mediumTerm, longTerm }) => {
+const PriceChart = memo(({ sevenDay, mediumTerm, longTerm }) => {
   const [range, setRange] = usePersistedState("btc-dashboard.chartRange", "7D");
   const cfg = PRICE_CHART_RANGES.find((r) => r.id === range) || PRICE_CHART_RANGES[0];
   const isMobile = useIsMobile();
 
   // Source selection: seven=7D sparkline, medium=CoinGecko 90d hourly, long=blockchain.info all-time daily.
   const sourceData = cfg.source === "seven" ? sevenDay : cfg.source === "medium" ? mediumTerm : longTerm;
-  const data = (() => {
-    if (!Array.isArray(sourceData) || sourceData.length === 0) return [];
-    if (cfg.source === "seven") return sourceData;
+  // The window/downsample/min-max pass walks the full history (~5,800 daily
+  // points on ALL), so it only re-runs when the source array or range changes —
+  // not on the 12 s price polls that re-render the Dashboard around this chart.
+  const { data, min, max, pct, first } = useMemo(() => {
+    const data = (() => {
+      if (!Array.isArray(sourceData) || sourceData.length === 0) return [];
+      if (cfg.source === "seven") return sourceData;
 
-    // Long-term data is daily. Filter to the requested window by timestamp (not
-    // by point count), then downsample uniformly to cfg.target points.
-    const sliced = cfg.days === Infinity
-      ? sourceData
-      : (() => {
-          const cutoffMs = Date.now() - cfg.days * 24 * 3600 * 1000;
-          return sourceData.filter(p => p.t >= cutoffMs);
-        })();
-    let visual = sliced;
-    if (sliced.length > cfg.target) {
-      const step = Math.round(sliced.length / cfg.target);
-      visual = [];
-      for (let i = 0; i < sliced.length; i += step) visual.push(sliced[i]);
-      const last = sliced[sliced.length - 1];
-      if (visual[visual.length - 1] !== last) visual.push(last);
-    }
+      // Long-term data is daily. Filter to the requested window by timestamp (not
+      // by point count), then downsample uniformly to cfg.target points.
+      const sliced = cfg.days === Infinity
+        ? sourceData
+        : (() => {
+            const cutoffMs = Date.now() - cfg.days * 24 * 3600 * 1000;
+            return sourceData.filter(p => p.t >= cutoffMs);
+          })();
+      let visual = sliced;
+      if (sliced.length > cfg.target) {
+        const step = Math.round(sliced.length / cfg.target);
+        visual = [];
+        for (let i = 0; i < sliced.length; i += step) visual.push(sliced[i]);
+        const last = sliced[sliced.length - 1];
+        if (visual[visual.length - 1] !== last) visual.push(last);
+      }
 
-    // Day-level labels for ≤ 1Y; month+year for 5Y and ALL.
-    const useDayLevel = cfg.days <= 365;
-    return visual.map((p) => ({
-      ...p,
-      date: p.t
-        ? new Date(p.t).toLocaleDateString("en-US",
-            useDayLevel ? { month: "short", day: "numeric" } : { month: "short", year: "numeric" })
-        : p.date,
-    }));
-  })();
+      // Day-level labels for ≤ 1Y; month+year for 5Y and ALL.
+      const useDayLevel = cfg.days <= 365;
+      return visual.map((p) => ({
+        ...p,
+        date: p.t
+          ? new Date(p.t).toLocaleDateString("en-US",
+              useDayLevel ? { month: "short", day: "numeric" } : { month: "short", year: "numeric" })
+          : p.date,
+      }));
+    })();
 
-  const prices = data.map((d) => d.price).filter((p) => typeof p === "number");
-  const min = prices.length ? Math.min(...prices) : null;
-  const max = prices.length ? Math.max(...prices) : null;
-  const first = data[0]?.price;
-  const last = data[data.length - 1]?.price;
-  const pct = first && last ? ((last - first) / first) * 100 : null;
+    const prices = data.map((d) => d.price).filter((p) => typeof p === "number");
+    const min = prices.length ? Math.min(...prices) : null;
+    const max = prices.length ? Math.max(...prices) : null;
+    const first = data[0]?.price;
+    const last = data[data.length - 1]?.price;
+    const pct = first && last ? ((last - first) / first) * 100 : null;
+    return { data, min, max, pct, first };
+  }, [sourceData, cfg]);
   const up = pct != null && pct >= 0;
 
   const fmtRangeDate = (t) => t != null
@@ -2288,7 +2307,7 @@ const PriceChart = ({ sevenDay, mediumTerm, longTerm }) => {
       )}
     </div>
   );
-};
+});
 
 // ─── POWER-LAW (LOG-SCALE) CHART ────────────────────────────────
 // A log-scale price chart with halving epochs marked, plus an optional power-law
@@ -3840,7 +3859,7 @@ const HoldingsTab = ({ price }) => {
             <XAxis type="number" tick={{ fill: "var(--text-dim)", fontSize: isMobile ? 10 : 11, fontFamily: "'JetBrains Mono', monospace" }} axisLine={false} tickLine={false} tickFormatter={v => (v/1000).toFixed(0) + "K"} tickCount={isMobile ? 4 : 6} />
             <YAxis type="category" dataKey="country" tick={{ fill: "var(--text-secondary)", fontSize: isMobile ? 11 : 12, fontFamily: "'Outfit', sans-serif" }} axisLine={false} tickLine={false} width={isMobile ? 84 : 110} interval={0} />
             <Tooltip contentStyle={{ background: "var(--bg-card)", border: "1px solid #f7931a44", borderRadius: 8, fontFamily: "'JetBrains Mono', monospace", fontSize: 13, padding: "8px 12px", maxWidth: "calc(100vw - 32px)" }} formatter={(v) => [fmt(v) + " BTC ($" + (v * safePrice / 1e9).toFixed(2) + "B)", "Holdings"]} />
-            <Bar dataKey="btc" radius={[0, 8, 8, 0]}>
+            <Bar dataKey="btc" radius={[0, 8, 8, 0]} isAnimationActive={false}>
               {COUNTRY_HOLDINGS.filter(c => c.btc > 0).map((_, i) => (
                 <Cell key={i} fill={i === 0 ? "#f7931a" : i === 1 ? "#e67e22" : i === 2 ? "#d4a574" : "#8b7355"} />
               ))}
@@ -5423,7 +5442,12 @@ const StrategyDcaBlock = ({ longTermChart, currentPrice }) => {
     return () => obs.disconnect();
   }, []);
 
-  const outcome = computeDcaOutcome(longTermChart, weekly, currentPrice);
+  // Full-history walk; memoized so the useCountUp animation frames below
+  // (~60 fps for ~1.5 s) don't redo the whole DCA simulation every frame.
+  const outcome = useMemo(
+    () => computeDcaOutcome(longTermChart, weekly, currentPrice),
+    [longTermChart, weekly, currentPrice],
+  );
   const animatedSats     = useCountUp(Math.round(outcome.btcAccumulated * 1e8), { trigger: inView, duration: 1500 });
   const animatedInvested = useCountUp(outcome.totalInvested, { trigger: inView, duration: 1400 });
   const animatedValue    = useCountUp(outcome.currentValue,  { trigger: inView, duration: 1700 });
@@ -5608,7 +5632,8 @@ const StrategyVolatility = ({ longTermChart }) => {
     return () => obs.disconnect();
   }, []);
 
-  const live = computeMaxDrawdown(longTermChart);
+  // Full-history scan; memoized for the same reason as the DCA block above.
+  const live = useMemo(() => computeMaxDrawdown(longTermChart), [longTermChart]);
   const liveDdPct = Math.round(live.drawdownPct);
   const fourYearCount = useCountUp(0, { trigger: inView, duration: 1400 });
   const animatedLive = useCountUp(liveDdPct, { trigger: inView, duration: 1500 });
