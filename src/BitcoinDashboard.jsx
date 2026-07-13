@@ -4600,7 +4600,7 @@ const ThesisHero = () => {
             }}
           />
           <div style={{ position: "relative" }}>
-            <div style={{ fontSize: 11, color: "#f7931a", fontWeight: 850, letterSpacing: 1.5, textTransform: "uppercase", fontFamily: "'JetBrains Mono', monospace", marginBottom: 12 }}>
+            <div style={{ fontSize: 11, color: "#f7931a", fontWeight: 900, letterSpacing: 1.5, textTransform: "uppercase", fontFamily: "'JetBrains Mono', monospace", marginBottom: 12 }}>
               The Bitcoin Thesis
             </div>
             <blockquote style={{ margin: "0 0 16px", padding: "2px 0 2px 14px", borderLeft: "2px solid #f7931a55" }}>
@@ -4662,10 +4662,10 @@ const ThesisWhatIsMoney = () => (
   <section className="thesis-money-section">
     <Reveal>
       <div style={{ marginBottom: 18 }}>
-        <div style={{ fontSize: 11, color: "#f7931a", fontWeight: 850, letterSpacing: 1.4, textTransform: "uppercase", fontFamily: "'JetBrains Mono', monospace", marginBottom: 8 }}>
+        <div style={{ fontSize: 11, color: "#f7931a", fontWeight: 900, letterSpacing: 1.4, textTransform: "uppercase", fontFamily: "'JetBrains Mono', monospace", marginBottom: 8 }}>
           {MONEY_INTRO.eyebrow}
         </div>
-        <div style={{ fontSize: 26, fontWeight: 850, color: "#ffffff", fontFamily: "'Outfit', sans-serif", lineHeight: 1.18, marginBottom: 10 }}>
+        <div style={{ fontSize: 26, fontWeight: 900, color: "#ffffff", fontFamily: "'Outfit', sans-serif", lineHeight: 1.18, marginBottom: 10 }}>
           {MONEY_INTRO.headline}
         </div>
         {MONEY_INTRO.body.map((p, i) => (
@@ -4693,10 +4693,10 @@ const ThesisProblem = () => (
   <section className="thesis-problem-section">
     <Reveal>
       <div style={{ marginBottom: 18 }}>
-        <div style={{ fontSize: 11, color: "#ef4444", fontWeight: 850, letterSpacing: 1.4, textTransform: "uppercase", fontFamily: "'JetBrains Mono', monospace", marginBottom: 8 }}>
+        <div style={{ fontSize: 11, color: "#ef4444", fontWeight: 900, letterSpacing: 1.4, textTransform: "uppercase", fontFamily: "'JetBrains Mono', monospace", marginBottom: 8 }}>
           The Problem
         </div>
-        <div style={{ fontSize: 26, fontWeight: 850, color: "#ffffff", fontFamily: "'Outfit', sans-serif", lineHeight: 1.18, marginBottom: 8 }}>
+        <div style={{ fontSize: 26, fontWeight: 900, color: "#ffffff", fontFamily: "'Outfit', sans-serif", lineHeight: 1.18, marginBottom: 8 }}>
           Soft money taxes patience — and almost everyone is paying it.
         </div>
         <div style={{ fontSize: 14, color: "var(--text-tertiary)", lineHeight: 1.7, fontFamily: "'Outfit', sans-serif", maxWidth: 760 }}>
@@ -4749,10 +4749,10 @@ const ThesisSilentTaxPersonal = () => {
     <section className="thesis-personal-section">
       <Reveal>
         <div style={{ marginBottom: 14 }}>
-          <div style={{ fontSize: 11, color: "#f7931a", fontWeight: 850, letterSpacing: 1.4, textTransform: "uppercase", fontFamily: "'JetBrains Mono', monospace", marginBottom: 8 }}>
+          <div style={{ fontSize: 11, color: "#f7931a", fontWeight: 900, letterSpacing: 1.4, textTransform: "uppercase", fontFamily: "'JetBrains Mono', monospace", marginBottom: 8 }}>
             Make it personal
           </div>
-          <div style={{ fontSize: 22, fontWeight: 850, color: "#ffffff", fontFamily: "'Outfit', sans-serif", lineHeight: 1.22 }}>
+          <div style={{ fontSize: 22, fontWeight: 900, color: "#ffffff", fontFamily: "'Outfit', sans-serif", lineHeight: 1.22 }}>
             What has your own dollar lost?
           </div>
         </div>
@@ -4782,7 +4782,7 @@ const ThesisSilentTaxPersonal = () => {
       </Reveal>
       <Reveal delay={0.1}>
         <div style={{ marginTop: 8, marginBottom: 12 }}>
-          <div style={{ fontSize: 11, color: "#f7931a", fontWeight: 850, letterSpacing: 1.4, textTransform: "uppercase", fontFamily: "'JetBrains Mono', monospace", marginBottom: 6 }}>
+          <div style={{ fontSize: 11, color: "#f7931a", fontWeight: 900, letterSpacing: 1.4, textTransform: "uppercase", fontFamily: "'JetBrains Mono', monospace", marginBottom: 6 }}>
             {SILENT_TAX_INTL.eyebrow}
           </div>
           <div style={{ fontSize: 18, fontWeight: 800, color: "#ffffff", fontFamily: "'Outfit', sans-serif", lineHeight: 1.25 }}>
@@ -4812,10 +4812,10 @@ const ThesisHistory = () => (
   <section className="thesis-history-section">
     <Reveal>
       <div style={{ marginBottom: 22 }}>
-        <div style={{ fontSize: 11, color: "#f7931a", fontWeight: 850, letterSpacing: 1.4, textTransform: "uppercase", fontFamily: "'JetBrains Mono', monospace", marginBottom: 8 }}>
+        <div style={{ fontSize: 11, color: "#f7931a", fontWeight: 900, letterSpacing: 1.4, textTransform: "uppercase", fontFamily: "'JetBrains Mono', monospace", marginBottom: 8 }}>
           5,000 years of monetary history
         </div>
-        <div style={{ fontSize: 26, fontWeight: 850, color: "#ffffff", fontFamily: "'Outfit', sans-serif", lineHeight: 1.18, marginBottom: 8 }}>
+        <div style={{ fontSize: 26, fontWeight: 900, color: "#ffffff", fontFamily: "'Outfit', sans-serif", lineHeight: 1.18, marginBottom: 8 }}>
           Every money in history was replaced by something harder. Until now.
         </div>
         <div style={{ fontSize: 14, color: "var(--text-tertiary)", lineHeight: 1.7, fontFamily: "'Outfit', sans-serif", maxWidth: 780 }}>
@@ -4843,10 +4843,10 @@ const ThesisDigitalScarcity = () => (
   <section className="thesis-digital-section">
     <Reveal>
       <div style={{ marginBottom: 18 }}>
-        <div style={{ fontSize: 11, color: "#f7931a", fontWeight: 850, letterSpacing: 1.4, textTransform: "uppercase", fontFamily: "'JetBrains Mono', monospace", marginBottom: 8 }}>
+        <div style={{ fontSize: 11, color: "#f7931a", fontWeight: 900, letterSpacing: 1.4, textTransform: "uppercase", fontFamily: "'JetBrains Mono', monospace", marginBottom: 8 }}>
           {DIGITAL_SCARCITY.eyebrow}
         </div>
-        <div style={{ fontSize: 26, fontWeight: 850, color: "#ffffff", fontFamily: "'Outfit', sans-serif", lineHeight: 1.18, marginBottom: 8 }}>
+        <div style={{ fontSize: 26, fontWeight: 900, color: "#ffffff", fontFamily: "'Outfit', sans-serif", lineHeight: 1.18, marginBottom: 8 }}>
           {DIGITAL_SCARCITY.headline}
         </div>
       </div>
@@ -4888,10 +4888,10 @@ const ThesisHardness = () => {
     <section className="thesis-hardness-section">
       <Reveal>
         <div style={{ marginBottom: 18 }}>
-          <div style={{ fontSize: 11, color: "#f7931a", fontWeight: 850, letterSpacing: 1.4, textTransform: "uppercase", fontFamily: "'JetBrains Mono', monospace", marginBottom: 8 }}>
+          <div style={{ fontSize: 11, color: "#f7931a", fontWeight: 900, letterSpacing: 1.4, textTransform: "uppercase", fontFamily: "'JetBrains Mono', monospace", marginBottom: 8 }}>
             Hardness
           </div>
-          <div style={{ fontSize: 26, fontWeight: 850, color: "#ffffff", fontFamily: "'Outfit', sans-serif", lineHeight: 1.18, marginBottom: 8 }}>
+          <div style={{ fontSize: 26, fontWeight: 900, color: "#ffffff", fontFamily: "'Outfit', sans-serif", lineHeight: 1.18, marginBottom: 8 }}>
             Hardness is measured in supply growth. Bitcoin's approaches zero.
           </div>
           <div style={{ fontSize: 14, color: "var(--text-tertiary)", lineHeight: 1.7, fontFamily: "'Outfit', sans-serif", maxWidth: 780 }}>
@@ -4958,7 +4958,7 @@ const ThesisScene = ({ move, sceneRef, idAnchor }) => (
     <Reveal>
       <div>
         <div style={{ display: "flex", justifyContent: "space-between", gap: 16, alignItems: "flex-start", marginBottom: 12 }}>
-          <div style={{ fontSize: 11, color: "#f7931a", fontWeight: 850, letterSpacing: 1.4, textTransform: "uppercase", fontFamily: "'JetBrains Mono', monospace" }}>
+          <div style={{ fontSize: 11, color: "#f7931a", fontWeight: 900, letterSpacing: 1.4, textTransform: "uppercase", fontFamily: "'JetBrains Mono', monospace" }}>
             {move.eyebrow}
           </div>
           <div style={{ fontSize: 13, color: "#f7931a88", fontWeight: 900, fontFamily: "'JetBrains Mono', monospace" }}>
@@ -4970,7 +4970,7 @@ const ThesisScene = ({ move, sceneRef, idAnchor }) => (
         </div>
         <div className="thesis-active-grid" style={{ display: "grid", gridTemplateColumns: "var(--thesis-active-columns, repeat(2, minmax(0, 1fr)))", gap: 22 }}>
           <div>
-            <div style={{ fontSize: 10, color: "var(--text-dim)", fontWeight: 850, letterSpacing: 1, textTransform: "uppercase", fontFamily: "'JetBrains Mono', monospace", marginBottom: 8 }}>
+            <div style={{ fontSize: 10, color: "var(--text-dim)", fontWeight: 900, letterSpacing: 1, textTransform: "uppercase", fontFamily: "'JetBrains Mono', monospace", marginBottom: 8 }}>
               What it is
             </div>
             <div style={{ fontSize: 15, color: "#aeb8cf", lineHeight: 1.75, fontFamily: "'Outfit', sans-serif" }}>
@@ -4978,7 +4978,7 @@ const ThesisScene = ({ move, sceneRef, idAnchor }) => (
             </div>
           </div>
           <div>
-            <div style={{ fontSize: 10, color: "var(--text-dim)", fontWeight: 850, letterSpacing: 1, textTransform: "uppercase", fontFamily: "'JetBrains Mono', monospace", marginBottom: 8 }}>
+            <div style={{ fontSize: 10, color: "var(--text-dim)", fontWeight: 900, letterSpacing: 1, textTransform: "uppercase", fontFamily: "'JetBrains Mono', monospace", marginBottom: 8 }}>
               Why it matters
             </div>
             <div style={{ fontSize: 15, color: "#d3d8e8", lineHeight: 1.75, fontFamily: "'Outfit', sans-serif" }}>
@@ -4998,7 +4998,7 @@ const ThesisScene = ({ move, sceneRef, idAnchor }) => (
       marginTop: 24,
       flexWrap: "wrap",
     }}>
-      <div style={{ fontSize: 12, color: "#f7931a", fontWeight: 850, fontFamily: "'JetBrains Mono', monospace" }}>
+      <div style={{ fontSize: 12, color: "#f7931a", fontWeight: 900, fontFamily: "'JetBrains Mono', monospace" }}>
         {move.stat}
       </div>
       <div style={{ fontSize: 11, color: "var(--text-dim)", fontFamily: "'JetBrains Mono', monospace" }}>
@@ -5095,10 +5095,10 @@ const ThesisProperties = () => {
     <section className="thesis-matrix-section">
       <Reveal>
         <div style={{ marginBottom: 18 }}>
-          <div style={{ fontSize: 11, color: "#f7931a", fontWeight: 850, letterSpacing: 1.4, textTransform: "uppercase", fontFamily: "'JetBrains Mono', monospace", marginBottom: 8 }}>
+          <div style={{ fontSize: 11, color: "#f7931a", fontWeight: 900, letterSpacing: 1.4, textTransform: "uppercase", fontFamily: "'JetBrains Mono', monospace", marginBottom: 8 }}>
             Why this design wins
           </div>
-          <div style={{ fontSize: 26, fontWeight: 850, color: "#ffffff", fontFamily: "'Outfit', sans-serif", lineHeight: 1.18, marginBottom: 8 }}>
+          <div style={{ fontSize: 26, fontWeight: 900, color: "#ffffff", fontFamily: "'Outfit', sans-serif", lineHeight: 1.18, marginBottom: 8 }}>
             Gold solved scarcity. Bitcoin solves everything else.
           </div>
           <div style={{ fontSize: 14, color: "var(--text-tertiary)", lineHeight: 1.7, fontFamily: "'Outfit', sans-serif", maxWidth: 780 }}>
@@ -5150,10 +5150,10 @@ const ThesisMyths = () => (
   <section className="thesis-myths-section">
     <Reveal>
       <div style={{ marginBottom: 18 }}>
-        <div style={{ fontSize: 11, color: "#f7931a", fontWeight: 850, letterSpacing: 1.4, textTransform: "uppercase", fontFamily: "'JetBrains Mono', monospace", marginBottom: 8 }}>
+        <div style={{ fontSize: 11, color: "#f7931a", fontWeight: 900, letterSpacing: 1.4, textTransform: "uppercase", fontFamily: "'JetBrains Mono', monospace", marginBottom: 8 }}>
           Common objections
         </div>
-        <div style={{ fontSize: 26, fontWeight: 850, color: "#ffffff", fontFamily: "'Outfit', sans-serif", lineHeight: 1.18, marginBottom: 8 }}>
+        <div style={{ fontSize: 26, fontWeight: 900, color: "#ffffff", fontFamily: "'Outfit', sans-serif", lineHeight: 1.18, marginBottom: 8 }}>
           What skeptics get right, and what's out of date.
         </div>
         <div style={{ fontSize: 14, color: "var(--text-tertiary)", lineHeight: 1.7, fontFamily: "'Outfit', sans-serif", maxWidth: 780 }}>
@@ -5182,10 +5182,10 @@ const ThesisTimePreference = ({ setActiveTab }) => (
   <section className="thesis-tp-section">
     <Reveal>
       <div style={{ marginBottom: 18 }}>
-        <div style={{ fontSize: 11, color: "#f7931a", fontWeight: 850, letterSpacing: 1.4, textTransform: "uppercase", fontFamily: "'JetBrains Mono', monospace", marginBottom: 8 }}>
+        <div style={{ fontSize: 11, color: "#f7931a", fontWeight: 900, letterSpacing: 1.4, textTransform: "uppercase", fontFamily: "'JetBrains Mono', monospace", marginBottom: 8 }}>
           Time preference
         </div>
-        <div style={{ fontSize: 26, fontWeight: 850, color: "#ffffff", fontFamily: "'Outfit', sans-serif", lineHeight: 1.18, marginBottom: 10 }}>
+        <div style={{ fontSize: 26, fontWeight: 900, color: "#ffffff", fontFamily: "'Outfit', sans-serif", lineHeight: 1.18, marginBottom: 10 }}>
           {TIME_PREFERENCE_STORY.headline}
         </div>
         {TIME_PREFERENCE_STORY.paragraphs.map((p, i) => (
@@ -5234,10 +5234,10 @@ const ThesisLenses = () => (
   <section className="thesis-lenses-section">
     <Reveal>
       <div style={{ textAlign: "center", maxWidth: 720, margin: "0 auto 22px" }}>
-        <div style={{ fontSize: 11, color: "#f7931a", fontWeight: 850, letterSpacing: 1.4, textTransform: "uppercase", fontFamily: "'JetBrains Mono', monospace", marginBottom: 10 }}>
+        <div style={{ fontSize: 11, color: "#f7931a", fontWeight: 900, letterSpacing: 1.4, textTransform: "uppercase", fontFamily: "'JetBrains Mono', monospace", marginBottom: 10 }}>
           Positioning
         </div>
-        <div style={{ fontSize: 24, color: "#ffffff", fontWeight: 850, lineHeight: 1.22, fontFamily: "'Outfit', sans-serif", marginBottom: 10 }}>
+        <div style={{ fontSize: 24, color: "#ffffff", fontWeight: 900, lineHeight: 1.22, fontFamily: "'Outfit', sans-serif", marginBottom: 10 }}>
           BTC is not a company. It is a monetary asset attached to a network.
         </div>
         <div style={{ fontSize: 14, color: "var(--text-tertiary)", lineHeight: 1.65, fontFamily: "'Outfit', sans-serif" }}>
@@ -7069,7 +7069,7 @@ export default function BitcoinDashboard() {
         }
         .thesis-scrolly-intro { padding: 4px 0 0; }
         .thesis-scrolly-eyebrow {
-          font-size: 11px; color: #f7931a; font-weight: 850; letter-spacing: 1.4px;
+          font-size: 11px; color: #f7931a; font-weight: 900; letter-spacing: 1.4px;
           text-transform: uppercase; font-family: 'JetBrains Mono', monospace; margin-bottom: 8px;
         }
         .thesis-scrolly-sub {
@@ -7096,7 +7096,7 @@ export default function BitcoinDashboard() {
         }
         .thesis-rail-header { margin-bottom: 14px; }
         .thesis-rail-eyebrow {
-          font-size: 10px; color: #f7931a; font-weight: 850; letter-spacing: 1.4px;
+          font-size: 10px; color: #f7931a; font-weight: 900; letter-spacing: 1.4px;
           text-transform: uppercase; font-family: 'JetBrains Mono', monospace; margin-bottom: 6px;
         }
         .thesis-rail-sub {
@@ -7159,7 +7159,7 @@ export default function BitcoinDashboard() {
         .thesis-rail-item.active .thesis-rail-step { color: #f7931a; }
         .thesis-rail-text { display: flex; flex-direction: column; gap: 3px; }
         .thesis-rail-eyebrow-sm {
-          font-size: 9px; color: #f7931a; font-weight: 850; letter-spacing: 1.1px;
+          font-size: 9px; color: #f7931a; font-weight: 900; letter-spacing: 1.1px;
           text-transform: uppercase; font-family: 'JetBrains Mono', monospace;
         }
         .thesis-rail-title {
@@ -7483,7 +7483,7 @@ export default function BitcoinDashboard() {
         .thesis-pinned-chapter-headline {
           font-size: clamp(22px, 2.4vw, 32px);
           font-family: 'Outfit', sans-serif;
-          font-weight: 850;
+          font-weight: 900;
           color: #ffffff;
           line-height: 1.18;
           margin: 0;
@@ -7594,7 +7594,7 @@ export default function BitcoinDashboard() {
           font-size: clamp(22px, 4.4vw, 30px);
           color: #ffffff;
           font-family: 'Outfit', sans-serif;
-          font-weight: 850;
+          font-weight: 900;
           line-height: 1.18;
           letter-spacing: -0.4px;
           margin: 0;
@@ -7633,7 +7633,7 @@ export default function BitcoinDashboard() {
           font-size: clamp(17px, 3.6vw, 21px);
           color: #ffffff;
           font-family: 'Outfit', sans-serif;
-          font-weight: 850;
+          font-weight: 900;
           margin: 0;
           line-height: 1.25;
           letter-spacing: -0.3px;
@@ -7668,7 +7668,7 @@ export default function BitcoinDashboard() {
         }
         .thesis-tax-anchor {
           font-size: clamp(23px, 6vw, 30px); color: #ffffff; font-family: 'Outfit', sans-serif;
-          font-weight: 850; line-height: 1.16; letter-spacing: -0.5px; margin: 0;
+          font-weight: 900; line-height: 1.16; letter-spacing: -0.5px; margin: 0;
         }
         .thesis-tax-setup {
           font-size: 15px; color: #aab4cb; font-family: 'Outfit', sans-serif;
@@ -7700,7 +7700,7 @@ export default function BitcoinDashboard() {
           display: flex; flex-direction: column; gap: 8px;
           border-top: 1px solid var(--border-subtle); padding-top: 14px;
         }
-        .thesis-tax-guess-answer { font-size: 20px; color: #ffffff; font-family: 'Outfit', sans-serif; font-weight: 850; }
+        .thesis-tax-guess-answer { font-size: 20px; color: #ffffff; font-family: 'Outfit', sans-serif; font-weight: 900; }
         .thesis-tax-guess-answer strong { color: #ef4444; }
         .thesis-tax-guess-feedback, .thesis-tax-guess-lead {
           font-size: 13.5px; color: #aab4cb; font-family: 'Outfit', sans-serif; line-height: 1.62; margin: 0;
@@ -7719,7 +7719,7 @@ export default function BitcoinDashboard() {
         }
         .thesis-tax-step-headline {
           font-size: clamp(18px, 4.6vw, 22px); color: #ffffff; font-family: 'Outfit', sans-serif;
-          font-weight: 850; margin: 0; line-height: 1.24; letter-spacing: -0.3px;
+          font-weight: 900; margin: 0; line-height: 1.24; letter-spacing: -0.3px;
         }
         .thesis-tax-step-body {
           font-size: 13.5px; color: #aab4cb; font-family: 'Outfit', sans-serif; line-height: 1.64; margin: 0;
@@ -7741,7 +7741,7 @@ export default function BitcoinDashboard() {
         }
         .thesis-tax-coda-headline {
           font-size: clamp(20px, 5.2vw, 26px); color: #ffffff; font-family: 'Outfit', sans-serif;
-          font-weight: 850; margin: 0; line-height: 1.2; letter-spacing: -0.3px;
+          font-weight: 900; margin: 0; line-height: 1.2; letter-spacing: -0.3px;
         }
         .thesis-tax-coda-body {
           font-size: 14px; color: #c3cbdd; font-family: 'Outfit', sans-serif; line-height: 1.68; margin: 0;
@@ -8376,7 +8376,7 @@ export default function BitcoinDashboard() {
         .strategy-eyebrow {
           font-size: 11px;
           color: #f7931a;
-          font-weight: 850;
+          font-weight: 900;
           letter-spacing: 1.4px;
           text-transform: uppercase;
           font-family: 'JetBrains Mono', monospace;
@@ -8384,7 +8384,7 @@ export default function BitcoinDashboard() {
         }
         .strategy-title {
           font-size: 28px;
-          font-weight: 850;
+          font-weight: 900;
           color: var(--text-primary);
           font-family: 'Outfit', sans-serif;
           line-height: 1.18;
@@ -8392,7 +8392,7 @@ export default function BitcoinDashboard() {
         }
         .strategy-section-title {
           font-size: 24px;
-          font-weight: 850;
+          font-weight: 900;
           color: var(--text-primary);
           font-family: 'Outfit', sans-serif;
           line-height: 1.22;
@@ -8456,7 +8456,7 @@ export default function BitcoinDashboard() {
         .strategy-principle-title {
           font-size: 18px;
           color: var(--text-primary);
-          font-weight: 850;
+          font-weight: 900;
           font-family: 'Outfit', sans-serif;
           line-height: 1.3;
         }
@@ -8790,7 +8790,7 @@ export default function BitcoinDashboard() {
         }
         .strategy-mistake-title {
           font-size: 15px;
-          font-weight: 850;
+          font-weight: 900;
           color: var(--text-primary);
           font-family: 'Outfit', sans-serif;
           line-height: 1.25;
