@@ -21,5 +21,5 @@ For genuinely major news between Mondays, force-run with `/refresh-all <hint>` (
 ## Hard rules
 
 - **Headlines tab is live RSS.** Refresh automations never touch the live API or the Headlines tab UI — they only curate the fallback constants used when RSS is down (`FALLBACK_NEWS`) and the archives (`HISTORICAL_HIGHLIGHTS`, `SIX_MONTH_HIGHLIGHTS`).
-- **Scope rules** for every refresh skill live in `SCOPE.md`. Out-of-scope: Thesis tab, Strategy tab, live-API code, URL constants, `src/BitcoinDashboard.jsx` (the React component — refresh skills edit per-domain files in `src/data/` instead).
+- **Scope rules** for every refresh skill live in `SCOPE.md`. Out-of-scope: Thesis tab, Strategy tab, live-API code, URL constants, and all of `src/` outside `src/data/` (the app is split across the `src/BitcoinDashboard.jsx` shell plus `src/tabs/`, `src/components/`, `src/hooks/`, `src/lib/` — refresh skills edit per-domain files in `src/data/` only).
 - **Build:** after any `src/data/*.js` edit, rebuild with `npm run build`. The orchestrator runs the build exactly once at the end.

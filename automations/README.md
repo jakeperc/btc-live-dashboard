@@ -36,7 +36,7 @@ Out of scope for every command: Thesis tab, Strategy tab, live-API code, URL con
 ## Universal rules (apply to every automation)
 
 - Per-domain data lives in `src/data/`: `fallbacks.js`, `market-news.js`, `headlines.js`, `deep-analysis.js`, `adoption.js`, `thesis.js`, `strategy.js`. Each refresh skill edits ONLY its owned file.
-- **Do NOT Read `src/BitcoinDashboard.jsx`** to mutate refresh-owned data. It is a 7K-line React component — reading it just to find a constant burns tokens. Read your `src/data/<owner>.js` file directly.
+- **Do NOT Read `src/BitcoinDashboard.jsx` or any other app code under `src/` outside `src/data/`** (`src/tabs/`, `src/components/`, `src/hooks/`, `src/lib/`, `src/styles.css`) to mutate refresh-owned data — reading app code just to find a constant burns tokens. Read your `src/data/<owner>.js` file directly.
 - Use narrow `Edit` calls anchored on the constant name. Do not rewrite data files wholesale.
 - `index.html` is edited only when the dashboard's *scope, title, meta description, or theme colors* change — NOT for routine data refreshes. **Never edit `dist/index.html` directly** — it is regenerated.
 - After any source edit, rebuild so `dist/index.html` matches: `npm run build`, or the codex `node` + `vite` + `make-single-file` fallback if npm isn't on PATH (see auto-memory).

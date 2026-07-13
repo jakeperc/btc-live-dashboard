@@ -1,0 +1,16 @@
+# Upload this file next to the deployed index.html on each host
+# (jakepercy.com/bitcoin/ and nati-crypto.com/bitcoin/).
+#
+# The dashboard is a single self-contained HTML file rebuilt weekly.
+# "no-cache" does NOT mean "don't cache" — it means "revalidate before
+# using the cached copy". The server already sends an ETag, so repeat
+# visits become a ~1 kB 304 Not Modified check instead of a ~216 kB
+# re-download, and every visitor still picks up the Monday rebuild
+# immediately.
+#
+# Rollback: delete this file.
+<IfModule mod_headers.c>
+  <FilesMatch "\.html$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+</IfModule>

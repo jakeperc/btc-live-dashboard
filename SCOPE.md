@@ -14,7 +14,7 @@ What the automation prompts are allowed to change, where each thing lives, and t
 > | `/refresh-all` | full file, once |
 
 ## In scope
-Each refresh skill owns its own per-domain file under `src/data/`. Skills should read ONLY their file — never `src/BitcoinDashboard.jsx`, which is the React component and contains none of this data anymore.
+Each refresh skill owns its own per-domain file under `src/data/`. Skills should read ONLY their file — never the app code (`src/BitcoinDashboard.jsx` shell, `src/tabs/`, `src/components/`, `src/hooks/`, `src/lib/`), which contains none of this data.
 
 ### Tier 1 — Weekly / event-driven
 | Constant | File | Section in UI | Source of truth |
@@ -43,10 +43,10 @@ Each refresh skill owns its own per-domain file under `src/data/`. Skills should
 ## Out of scope — never touch
 - **Thesis tab data** (`src/data/thesis.js` — `THESIS_METRICS`, `SOFT_MONEY_COSTS`, `SILENT_TAX_*`, `BTC_ISSUANCE_DATA`, `MONEY_HISTORY`, `HARDNESS_DATA`, `PROPERTIES_MATRIX`, `TIME_PREFERENCE`, `THESIS_FLOW`, `POSITIONING_LENSES`).
 - **Strategy tab data** (`src/data/strategy.js` — `ALLOCATION_BANDS`, `COMMON_MISTAKES`, `HISTORICAL_DRAWDOWNS`, `STRATEGY_SOURCES`, `DCA_WEEKLY_OPTIONS`).
-- **`src/BitcoinDashboard.jsx`** — the React component. Refresh skills must never Read or Edit this file; their owned data lives in `src/data/`.
-- **Live-API code** — anything inside `useEffect`, `fetch(...)`, or `setInterval` (all in `BitcoinDashboard.jsx`).
-- **URL constants** in `BitcoinDashboard.jsx` (live endpoints — these auto-refresh themselves).
-- `PRICE_CHART_RANGES` and `TABS` in `BitcoinDashboard.jsx` (config, not data).
+- **All app code under `src/` outside `src/data/`** — the shell (`src/BitcoinDashboard.jsx`), `src/main.jsx`, `src/styles.css`, and everything under `src/tabs/`, `src/components/`, `src/hooks/`, and `src/lib/`. Refresh skills must never Read or Edit these files; their owned data lives in `src/data/`.
+- **Live-API code** — anything inside `useEffect`, `fetch(...)`, or `setInterval` (in `src/hooks/`).
+- **URL constants** in `src/lib/constants.js` (live endpoints — these auto-refresh themselves).
+- `PRICE_CHART_RANGES` (`src/tabs/DashboardTab.jsx`) and `TABS` (`src/lib/constants.js`) — config, not data.
 - **`automations/refresh-deep-analysis/memory/`** — owned exclusively by `/refresh-deep-analysis`. No other automation reads or writes here. The file `editorial-lessons.md` inside that directory is **user-owned** and must never be auto-mutated by any automation (including `/refresh-deep-analysis`).
 
 ## Editorial rules for the top-5 themes (`MARKET_THEME` + `CURATED_MARKET_UPDATES`)
