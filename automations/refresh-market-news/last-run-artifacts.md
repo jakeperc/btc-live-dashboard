@@ -1,142 +1,129 @@
 # refresh-market-news Last-Run Artifacts
-**Run Date:** July 12, 2026 (~18:00 local) — FORCE-RUN (user-ordered)
-**Research Window:** Jul 8–12, 2026  
-**Previous asOf:** JUL 8, 2026  
-**Current asOf:** JUL 12, 2026
+**Run Date:** July 19, 2026 (~05:40 UTC) — FORCE-RUN (user-ordered, chained into /refresh-deep-analysis)
+**Research Window:** Jul 13–18, 2026
+**Previous asOf:** JUL 12, 2026
+**Current asOf:** JUL 17, 2026
 
 ## Significance Gate Assessment
 
-**Triage Summary (Jul 8 → Jul 12, 2026):**
+**Triage Summary (Jul 12 → Jul 18, 2026):**
 
-The Jul 8–12 tape is materially choppier than the Jul 2–7 three-day inflow streak, but net-weekly flows remain positive and IBIT (largest institutional fund) has resumed inflows by Jul 10. FOMC minutes (Jul 8) confirm hawkish stance without new surprises. CLARITY calendar shows hard August 7 deadline. Strategy treasury sale on Jul 6 confirms sustained capital flexibility pivot. **Slots 1, 2, 4 refined; Slots 3, 5 held.**
+The week delivered the catalyst the dashboard had flagged as its milestone: the June CPI print (Jul 14) came in far cooler than expected and ETF flows responded with four consecutive inflow days, formally ending the eight-week $8B outflow streak. Separately, the CLARITY Act entered its decisive phase (merged draft, ethics defections, floor vote targeted week of Jul 20), the Iran ceasefire collapsed in practice (inverting the June 17 "peace deal" narrative), Strategy's Jul 13 8-K confirmed the accumulation halt, and Japan passed landmark crypto reclassification into law. **Slots 1–4 refined; Slot 5 REPLACED (Bhutan → Japan FIEA).**
 
 ### Slot-by-Slot Decisions
 
-1. **ETF/price (Slot 1) — REFINED.** 
-   - **Jul 8:** -$84.9M (IBIT -$59.1M, GBTC -$63.7M) — outflow reversal after 3-day $509M inflow streak
-   - **Jul 9:** -$95.3M (Ether also -$52.2M) — continued outflow wobble
-   - **Jul 10:** +$90.4M (IBIT +$86.8M, HODL +$3.6M) — recovery, largest fund re-engaging
-   - **Jul 11:** +$197.4M — sustained inflows, 7-day flows: +$124.9M
-   - **Materiality:** Choppier tape (not a straight reversal), but weekly aggregate positive and IBIT's return signals tactical rotation (institutional staying in, rebalancing). Price climbed from $61,882 (Jul 8) to $64,340 (Jul 10) to $64,217 (Jul 11) — consolidation near $65K resistance.
-   - **Action:** Refined narrative to acknowledge Jul 8–9 wobble, updated asOf to **JUL 12, 2026**, replaced primary sources with Farside direct source (X post for Jul 10 exact figures).
+1. **ETF/price (Slot 1) — REFINED, tone upgraded to `advancing`.**
+   - **Jul 14:** June CPI −0.4% MoM (largest monthly drop since Apr 2020); 3.5% YoY vs 3.8% forecast; core flat MoM, 2.6% YoY. Sept hike odds 75% → 63% (CME FedWatch).
+   - **Jul 14:** Combined BTC+ETH spot ETFs +$239.4M — ends 8-week, $8B+ BTC outflow streak.
+   - **Jul 15:** BTC ETFs +$108M (IBIT +$80.8M); BTC 3-week high $65,100.
+   - **Jul 16:** +$79.15M (IBIT +$33.4M, FBTC +$30.7M, BITB +$15M); BTC eases to ~$64.7K on chip-stock selloff + Middle East risk.
+   - **Jul 17:** +$132.3M (IBIT +$136.5M; FBTC −$4.2M — only fund in outflow). Fourth straight inflow day.
+   - **Options:** most crowded call strike moved $80K → $70K (~$1.63B OI).
+   - **Materiality:** milestone (CPI) resolved favorably and flows confirmed — this is the strongest sustained institutional demand since early May. asOf → JUL 17, status → "Inflow Streak Confirmed", statusTone active → advancing.
 
-2. **CLARITY Act (Slot 2) — REFINED.**
-   - **New:** Hard August 7, 2026 deadline for Senate passage before summer break (per CryptoSlate).
-   - **New:** National Defense Authorization Act consuming Senate floor time starting Jul 13.
-   - **Materiality:** CLARITY has no scheduled floor vote; combined with NDAA floor priority and August 7 cutoff, the regulatory pathway is now concrete (not just "stalled"). Adjacency sweep confirmed: floor time (scarce resource) is the binding constraint, not vote count.
-   - **Action:** Refined detail to highlight Aug 7 cutoff and NDAA contention, updated asOf to **JUL 9, 2026**.
+2. **CLARITY Act (Slot 2) — REFINED, tone stalled → active.**
+   - **Jul 13:** Senate returned; NDAA consumed the week's floor time (as predicted by the adjacency sweep).
+   - **~Jul 14:** Merged Banking–Agriculture draft released — **omits Section 604 ethics/conflict-of-interest provision** (barring officials/family from profiting on crypto in office; context: Trump's $1.4B crypto-linked 2025 income, $636M TRUMP memecoin).
+   - **Jul 15–17:** Sens. Murphy, Van Hollen, Merkley formally opposed. ~7 Dem votes still needed for 60.
+   - **Jul 17:** House Financial Services field hearing at Federal Hall, NYC (messaging: jobs/competitiveness). Thune pledges floor vote before recess; week of Jul 20 under active discussion. Polymarket 2026-passage odds 24% (Jul 13 record low) → 45% (Jul 17).
+   - **Materiality:** binding constraint shifted from floor time to the ethics-provision vote math; the bill is now in its showdown window (Jul 20 → Aug 7). asOf → JUL 17.
 
-3. **Macro / Iran + Warsh (Slot 3) — HOLD.**
-   - FOMC minutes (Jul 8 release) confirm June's hawkish dot plot (9/18 officials project hike by YE); no directional shift.
-   - June CPI (due Jul 14, 8:30 a.m. ET) remains the operative catalyst.
-   - asOf JUN 17 remains current; no new material macro development beyond FOMC reconfirmation.
+3. **Macro (Slot 3) — REFINED (major narrative inversion).**
+   - **Jul 17:** Halfway mark of the 60-day window. Ceasefire collapsed in practice: 300+ U.S. strikes on Iranian targets, Iranian attacks on commercial vessels in Hormuz, Trump declared ceasefire "over." Araghchi accuses U.S. of violating MoU Para 9. Neither side has formally exited; mediators (Jul 10, CNN) attempting revival.
+   - **Jul 14:** Cool CPI (see slot 1) + Fed Chair Warsh congressional testimony same day.
+   - **Oil:** Brent >$85 keeps inflation risk alive despite cool core CPI.
+   - **Materiality:** the June 17 "deal signed, tail risk eased" framing is now inverted — same underlying theme (geopolitics × Fed path), rewritten. asOf → JUL 17.
 
 4. **Strategy treasury (Slot 4) — REFINED.**
-   - **Jun 22:** Equity raise $335.5M, bought only 520 BTC, parked 90% in cash; first BTC sales since 2022.
-   - **Jul 6:** SEC filing shows additional 3,588 BTC sale (~$216M) for preferred dividends; holdings down to 843,775 BTC.
-   - **Materiality:** Jul 6 sale confirms the June narrative (strategic pivot to treasury prudence) rather than replacing it. Sustained capital management, not temporary liquidity need. Same underlying driver, different headline.
-   - **Action:** Refined narrative to include Jul 6 sustained BTC liquidation, updated asOf to **JUL 6, 2026**, replaced sources with direct (CoinDesk, BeInCrypto).
+   - **Jul 13 8-K:** sold 4,818,781 MSTR shares Jul 6–12 via ATM, ~$466.7M net; **zero BTC bought or sold**; USD reserve $3.0B (+$450M); holdings steady 843,775 BTC @ $75,476 avg (~$13B underwater); ~$23.79B ATM capacity remaining.
+   - **The Block:** Saylor signals purchases could resume.
+   - **Materiality:** confirms and extends the balanced-treasury pivot — now raising equity *without* buying BTC. Same driver, refined. asOf → JUL 13.
+   - **Caution for future runs:** SEC EDGAR links surfaced in search for "asst-2026" filings are **Strive Inc**, not Strategy — do not cite them for MSTR.
 
-5. **Bhutan sovereign (Slot 5) — HOLD.**
-   - No new development Jul 8–12.
-   - asOf JUN 6 remains current.
+5. **Sovereign/Bhutan (Slot 5) — REPLACED with Japan FIEA (INTERNATIONAL).**
+   - Bhutan: no dated development since Jun 6 (six weeks stale); DHI officials dispute the on-chain sale readings (CoinDesk, May 16).
+   - **Jul 15:** Japan's House of Councillors gave final approval to FIEA amendments — Bitcoin + ~104 crypto assets reclassified as financial instruments; insider-trading ban; issuer disclosures; penalties to 10 years; effective fiscal 2027; TSE spot-ETF listings targeted 2027 (JPX); companion tax reform 55% → flat 20% from Jan 1, 2028.
+   - **Materiality:** final-passage statute in the world's 4th-largest economy opening ETF rails vs. a six-week-old disputed drawdown story — clears the replacement threshold decisively.
 
-**Verdict:** Slots 1, 2, 4 refined (narrative + asOf updates). Slots 3, 5 held per replacement threshold. Force-run gate **open — material flow and regulatory timeline developments confirmed.**
+### De-dup check (final five)
+1. US ETF flows / CPI reversal (driver: institutional fund flows) — 2. CLARITY (driver: US market-structure legislation) — 3. Iran × Fed (driver: geopolitical/macro regime) — 4. Strategy (driver: corporate treasury) — 5. Japan FIEA (driver: Japanese statute). No shared drivers. CPI appears in slots 1 and 3 as context but the drivers differ (flows vs. Fed/geopolitics).
 
 ## Primary-Source URLs Verified This Run
 
-1. **Farside Investors on X — Bitcoin ETF flows Jul 10 (primary):**
-   https://x.com/FarsideUK/status/2075789082232242676
-   - Jul 10: $90.4M net inflow (IBIT $86.8M, HODL $3.6M)
-
-2. **CoinBriefing — US spot Bitcoin ETFs see $90M inflows, July 10:**
-   https://cryptobriefing.com/bitcoin-ethereum-etf-inflows-july-10/
-   - Jul 10: $90.4M net inflow, IBIT leading recovery
-
-3. **CoinStats AI — Bitcoin News Update July 11, 2026:**
-   https://coinstats.app/ai/a/crypto-news-update-11-July-2026
-   - Jul 11: $197.4M net inflow; 7-day flows: +$124.9M; volume compressed at $8.41B
-
-4. **CryptoSlate — CLARITY Act misses July target, August 7 becomes critical deadline:**
-   https://cryptoslate.com/clarity-act-misses-july-target-and-runs-into-an-august-7-senate-clock/
-   - Aug 7, 2026: Hard cutoff for Senate passage before summer break
-
-5. **TechTimes — Senate Crypto Bill Misses July 4: Three Unresolved Fights, Three Weeks Left:**
-   https://www.techtimes.com/articles/319679/20260704/senate-crypto-bill-misses-july-4-three-unresolved-fights-three-weeks-left.htm
-   - NDAA consuming July 13+ floor time; CLARITY floor vote pushed into late July/early August
-
-6. **CNBC — FOMC minutes (hawkish stance, Jul 8 release):**
-   https://www.cnbc.com/
-   - 9 of 18 officials project 25bp hike by end-2026; rates held 3.50–3.75%; inflation concerns persist
-
-7. **CoinDesk — Strategy selling hundreds of millions worth of Bitcoin (Jul 6):**
-   https://www.coindesk.com/markets/2026/07/06/one-month-that-shook-the-market-saylor-s-struggles-over-bitcoin-strategy-yields-big-loss
-   - Strategy Jul 6 sale: 3,588 BTC (~$216M) for preferred dividends
-
-8. **BeInCrypto — MicroStrategy Sold 7x More Bitcoin Than Reports Suggested:**
-   https://beincrypto.com/microstrategy-sold-far-more-bitcoin/
-   - Jul 6 SEC filing confirms additional BTC liquidation; holdings now 843,775 BTC
+1. **BLS — Consumer Price Index Summary, June 2026 (.gov, primary):**
+   https://www.bls.gov/news.release/cpi.nr0.htm
+2. **CNBC — June CPI falls 0.4%, annual 3.5%:**
+   https://www.cnbc.com/2026/07/14/consumer-price-index-inflation-report-june-2026.html
+3. **CoinDesk — U.S. June CPI fell 0.4%, likely cooling move toward Fed rate hikes:**
+   https://www.coindesk.com/markets/2026/07/14/u-s-june-cpi-fell-0-4-likely-cooling-move-toward-fed-rate-hikes
+4. **Crypto Briefing — IBIT leads Bitcoin ETFs with $79M inflows, July 16:**
+   https://cryptobriefing.com/blackrock-ibit-leads-bitcoin-etfs-79m-inflows-july-16/
+5. **Bloomingbit — US spot-Bitcoin ETFs see $132.3M net inflows (Jul 17):**
+   https://en.bloomingbit.io/feed/news/116503
+6. **Axios — CLARITY Act held up as Democrats seek provision (Jul 17):**
+   https://www.axios.com/2026/07/17/clarity-act-delay-provision
+7. **TechTimes — CLARITY heads to Federal Hall, Senate vote in doubt after ethics impasse:**
+   https://www.techtimes.com/articles/320563/20260715/clarity-act-heads-federal-hall-senate-vote-doubt-after-ethics-impasse.htm
+8. **Fox News — Trump's 60-day Iran deal reaches halfway mark as ceasefire collapses:**
+   https://www.foxnews.com/politics/trumps-60-day-iran-deal-reaches-halfway-mark-ceasefire-collapses-escalating-war
+9. **Bloomberg — Saylor's Strategy raises reserve to $3 billion with stock sale (Jul 13):**
+   https://www.bloomberg.com/news/articles/2026-07-13/saylor-s-strategy-raises-reserve-to-3-billion-with-stock-sale
+10. **The Block — Saylor signals another bitcoin buy as Strategy sits ~$13B underwater:**
+    https://www.theblock.co/post/406460/michael-saylor-signals-another-bitcoin-buy-as-strategy-sits-about-13-billion-underwater
+11. **CoinDesk — Japan reclassifies crypto as a financial asset (Jul 15):**
+    https://www.coindesk.com/policy/2026/07/15/japan-reclassifies-crypto-as-a-financial-asset-paves-way-for-tax-cuts
+12. **CoinDesk — Bitcoin rally cools as investors digest inflation data, oil clouds outlook (Jul 15):**
+    https://www.coindesk.com/daybook-us/2026/07/15/bitcoin-rally-cools-as-investors-digest-inflation-data-oil-clouds-outlook
+13. **CoinDesk — Most popular Bitcoin call option slips from $80K to $70K (Jul 16):**
+    https://www.coindesk.com/daybook-us/2026/07/16/the-most-popular-bitcoin-call-option-has-slipped-by-usd10-000
 
 ## Key Dated Facts (for /refresh-deep-analysis)
 
-### ETF Flows — Farside Investors Primary (Jul 8–12)
-| Date | Net Flow | Notes |
+### ETF Flows (Jul 14–17) — streak-break week
+| Date | BTC Net Flow | Notes |
 |---|---|---|
-| Jul 2 | +$221.72M | FBTC +$165.96M, ARKB +$91.84M (3-day streak begins) |
-| Jul 6 | +$265.69M | Continued inflow momentum |
-| Jul 7 | +$21.44M | 3-day total: ~$509M |
-| Jul 8 | -$84.9M | IBIT -$59.1M, GBTC -$63.7M (FOMC hawkish shock) |
-| Jul 9 | -$95.3M | Ether also -$52.2M (continued outflow wobble) |
-| Jul 10 | +$90.4M | IBIT +$86.8M, HODL +$3.6M (largest fund re-engages) |
-| Jul 11 | +$197.4M | Sustained inflows; 7-day aggregate: +$124.9M |
-
-**Key insight:** Jul 8–12 tape is choppier (two-day outflow wobble), but weekly net is positive and IBIT's recovery signals tactical rotation, not capitulation or panic. Implies institutional confidence in $60K support.
+| Jul 14 | +$239.4M (combined BTC+ETH) | Ends 8-week, $8B+ BTC outflow streak; CPI-day surge |
+| Jul 15 | +$108M | IBIT +$80.8M; BTC 3-week high $65,100 |
+| Jul 16 | +$79.15M | IBIT +$33.4M, FBTC +$30.7M, BITB +$15M |
+| Jul 17 | +$132.3M | IBIT +$136.5M; FBTC −$4.2M only outflow. 4th straight day |
 
 ### Bitcoin Price Action
 | Date | Price | Notes |
 |---|---|---|
-| Jul 7 | ~$62,000 | High from inflow period |
-| Jul 8 | $61,882 | Pressure from FOMC hawkish tone |
-| Jul 10 | $64,340 | Recovery on Jul 10 ETF inflows; strong move |
-| Jul 11 | $64,217 | Consolidation near $65K resistance |
+| Jul 14 | ~$64.2K → rally | CPI-day rally begins |
+| Jul 15 | $65,100 high | First time above $65K since Jun 22; rally fades same day |
+| Jul 16 | ~$64,755 | Chip-stock selloff, AI-spending fatigue, Iran risk |
+| Jul 17 | ~$64.7K zone | Consolidation; $65K now confirmed resistance, $60K support |
 
-**Next resistance:** $65,000 BTC; breakout pending CPI print (Jul 14, 8:30 a.m. ET).
+### Macro
+- **Jul 14:** June CPI −0.4% MoM (biggest drop since Apr 2020); 3.5% YoY (vs 3.8% exp); core flat MoM / 2.6% YoY; energy −5.7% MoM; shelter +0.1%. Sept hike odds 75% → 63%. Warsh testimony same day.
+- **Jul 17:** Iran 60-day window halfway mark — ceasefire collapsed in practice (300+ U.S. strikes, Hormuz shipping attacks, Trump: ceasefire "over"); talks not formally dead; Brent >$85.
+- **Jul 28–29:** FOMC — the operative catalyst for whether the inflow streak survives.
 
-### Regulatory — CLARITY Act Calendar (Adjacency Sweep)
-- **Jun 9:** Ethics talks collapse; bill fractures
-- **Jun 24:** House GOP calendar blockade (SAVE Act priority) freezes Senate floor
-- **Jul 13+:** National Defense Authorization Act consumes Senate floor time (competing for scarce floor-day budget)
-- **Aug 7, 2026:** Hard deadline for Senate passage before August recess
-- **Status:** Calendar gridlock is the binding constraint, not merit-based opposition; requires ~7 Democratic votes (60 needed).
+### Regulatory
+- **CLARITY:** merged draft (~Jul 14) omits Section 604 ethics language → Murphy, Van Hollen, Merkley formally opposed; Thune pledges pre-recess floor vote, week of Jul 20 in discussion; Polymarket 24% → 45%; Aug 7 recess cutoff; ~7 Dem votes needed.
+- **Japan (Jul 15):** FIEA amendment enacted — ~105 tokens reclassified as financial instruments; insider-trading ban; TSE spot-ETF path (2027); 20% flat tax (Jan 2028); effective fiscal 2027.
 
-### Corporate Treasury — Strategy / MicroStrategy
-- **Jun 15–22:** Equity raise $335.5M; only 520 BTC purchased; 90% proceeds to cash reserves (first pivot from "never sell" doctrine)
-- **Jun 1:** 32 BTC sale for preferred dividends
-- **Jul 6:** Additional 3,588 BTC sale (~$216M) for preferred dividends
-- **Current holdings:** 843,775 BTC (down from 847,363 post-Jun 22)
-- **Signal:** Sustained capital management; no bearish macro thesis (dividend obligations drive sales, not market view). Digital Credit Capital Framework (Jun 29) signals flexible treasury approach.
-
-### Macro — Federal Reserve / CPI Catalyst
-- **Jun 17 FOMC:** Dot plot hawkish; 9/18 officials project 25bp hike by end-2026
-- **Jul 8 minutes:** Hawkish tone reconfirmed; forward guidance removed
-- **Jul 14, 8:30 a.m. ET:** June CPI data release (critical macro catalyst for BTC flow inflection)
-- **Jul 28–29:** Next FOMC meeting
+### Corporate
+- **Strategy Jul 13 8-K:** $466.7M ATM raise (Jul 6–12), zero BTC transacted, USD reserve $3.0B, holdings 843,775 BTC @ $75,476 avg (~$13B underwater), $23.79B ATM capacity left.
+- **Jul 16:** dormant 8-year wallet moved 5,908 BTC (~$383M).
 
 ## Archives Updated (HISTORICAL_HIGHLIGHTS + FALLBACK_NEWS)
 
-### HISTORICAL_HIGHLIGHTS — 4-week window (cutoff: Jun 14)
-- **Aged out (>28 days):** Jun 6 (Bhutan), Jun 9 (CLARITY ethics), Jun 12 (SpaceX), Jun 12 (Iran text)
-- **Added (Jul 8–12):** Jul 11 ($197.4M inflow), Jul 10 ($90.4M IBIT-led recovery), Jul 8 (FOMC minutes)
-- **Final count:** 12 items retained (was 13); 3 added; 4 aged out. Net: 11 items. Range: Jun 17 – Jul 11. Within soft cap.
+### HISTORICAL_HIGHLIGHTS — 4-week window (cutoff: Jun 19, from asOf Jul 17)
+- **Aged out (>28 days):** Jun 17 Iran deal signing, Jun 17 Warsh FOMC dot plot, Jun 18 post-FOMC outflows (3 items).
+- **Pruned for cap:** Jul 8 "tactical rotation" ETF item (superseded by the streak-break entries).
+- **Added:** Jul 17 ETF 4th-day streak, Jul 17 CLARITY ethics showdown, Jul 17 Iran ceasefire collapse, Jul 15 Japan FIEA, Jul 14 CPI, Jul 13 Strategy 8-K (6 items).
+- **Final count:** 14 items (was 12). Range: Jun 22 – Jul 17. At cap.
 
-### FALLBACK_NEWS — past ~48h (Jul 10–12)
-- Jul 11: $197.4M net inflow, 7-day flows positive (starred)
-- Jul 10: $90.4M net inflow, IBIT leading, BTC $64K (starred)
-- Jul 8: FOMC minutes hawkish tone (starred)
-- Jul 8: Outflow context/tactical rotation (unstarred)
+### FALLBACK_NEWS — past ~48h (Jul 16–18)
+- Jul 17: ETF $132.3M 4th straight inflow day (starred)
+- Jul 17: CLARITY ethics defections / odds swing (starred)
+- Jul 17: Iran ceasefire collapse at halfway mark (starred)
+- Jul 16: dormant whale moves 5,908 BTC (unstarred)
 
 ## index.html
-Not touched — Slot 1 category unchanged (ETFs). No primary-identity shift. Choppier flows are **within the ETF reversal narrative**, not a shift away from it.
+Not touched — Slot 1 category unchanged (ETFs). The CPI/inflow confirmation is *within* the ETF reversal narrative. No primary-identity shift.
 
 ## Conclusion
-User-ordered force-run (Jul 8→12) complete. Significance gate: **open — material tape choppiness + IBIT recovery + CLARITY Aug 7 deadline + Strategy sustained capital reallocation confirmed.** Slots 1, 2, 4 refined (narratives + asOf updates to Jul 12, Jul 9, Jul 6). Slots 3, 5 held. Archives updated (4 aged out, 3 added). No index.html edits. **No rebuild run.** Ready for deep-analysis chain or orchestrator rebuild cycle.
+User-ordered force-run (Jul 12 → 18) complete on **Fable 5** (per user instruction; skill docs updated to specify Fable going forward). Significance gate: **open** — milestone catalyst (CPI) resolved + flow confirmation + CLARITY showdown + Iran inversion + Japan statute. Slots 1–4 refined, Slot 5 replaced (Bhutan → Japan). Archives updated (3 aged out, 1 pruned, 6 added). No index.html edit. **Rebuild deferred to end of chained run** (deep-analysis follows immediately; single rebuild at end per orchestrator convention).

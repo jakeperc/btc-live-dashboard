@@ -13,6 +13,14 @@ Past `contrarianTake` entries with **probability of vindication** at time of wri
 
 ## Active (still-open)
 
+### JUL 19, 2026 — "One soft print doesn't end a downtrend: the Fed is still hike-leaning, an oil re-shock is brewing, and the most informed money is stockpiling cash, not buying"
+
+- **Probability of vindication (at time of writing):** 0.25 — stepped DOWN from 0.30 (structural-break BEAR), with the case honestly RELOCATED: the old flow leg was REFUTED this week (four straight IBIT-led post-CPI inflow days; the positive-week watch scored HIT), so "the passive base isn't really back" no longer carries. The surviving case: (1) the macro edifice is one print thick — the market entered the CPI pricing a Sept hike >75% and exited still at ~65% with ~30% on a JULY hike; the print's −0.4% leaned on a 5.7% energy slump recorded before the Iran ceasefire collapsed, so July's CPI can hand the relief back (Brent >$85, Hormuz attacked); (2) behavioral — Strategy raised $467M and bought zero BTC ($3B cash bunker), and an 8-year-dormant whale moved 5,908 BTC (~$383M) into the bounce: the strongest hands are building optionality/exiting, not conviction-buying; (3) positioning — the crowded call strike moved DOWN $80K→$70K (a lower expected top). Still ≥0.10 (freshly re-evidenced) and <0.50 (base case 0.65).
+- **Resolution window:** 6 months — by Jan 19, 2027: washed-out bottom that re-rated (WRONG) vs relief high before a structural leg toward the $40Ks (VINDICATED).
+- **Vindication signals:** a July FOMC hike or Sept-hike odds >75% post-FOMC with flows relapsing; Brent >$100 sustained; a weekly close <$55K/<$50K; a Strategy sale THROUGH the $3B buffer; a 2nd sovereign/top-10 strategic seller. **Invalidation:** FOMC holds + Sept odds fade <50%; flows net-positive ≥3 of 4 weeks through Aug 14; durable >$66K weekly reclaim; CLARITY clears cloture.
+- **Distinct from prior:** JUL 12's bear leaned on the choppy tape + corporate cracks; the tape refuted the flow leg, so this entry EXPLICITLY retires it and re-grounds the bear in the macro-re-hardening + informed-seller legs — repriced down 0.30→0.25 for the refutation rather than recycled.
+- **Outcome:** still-open · **Brier:** n/a
+
 ### JUL 12, 2026 — "A relief rally inside a downtrend: a bumpy flow week doesn't undo a Fed that projected a hike, and the corporate side keeps producing bad news (record sale + a scrapped treasury merger)"
 
 - **Probability of vindication (at time of writing):** 0.30 — HELD from Jul 8 (structural-break BEAR). The base case held 0.60, so the complement is unchanged mechanically; evidentially the week was a wash for the bear — the choppy tape (streak broke Jul 8–9 on the hawkish minutes) is mild support, offset by IBIT dip-buying the recovery (passive base re-engaging again). One fresh bear datapoint: the BSTR/Cantor merger collapse (Jul 8) is a 2nd corporate crack on top of Strategy's unreversed record sale — the corporate architecture leaking while price drifts up. Still ≥0.10 (freshly evidenced) and <0.50 (base case mildly cyclical).
@@ -22,16 +30,9 @@ Past `contrarianTake` entries with **probability of vindication** at time of wri
 - **Vindication signals:** a weekly close <$55K/<$50K; a hot Jul 14 CPI unwinding the repricing; flows relapse with no positive July week; Strategy repeats the sale OR a 2nd top-10/sovereign strategic sale OR a 2nd treasury-vehicle collapse. **Invalidation:** a confirmed positive ETF WEEK repairing YTD; a durable >$66K weekly reclaim; soft CPI + a July FOMC ratifying dovish; CLARITY revives + clears cloture.
 - **Outcome:** still-open · **Brier:** n/a
 
-### JUL 8, 2026 — "Still a relief rally inside a downtrend — a 3-day flow bounce and cooling inflation bets don't undo a Fed that projected a hike, and the strongest hand (Strategy) is still lightened up"
+### JUL 8, 2026 — structural-break BEAR, stepped 0.35→0.30 (condensed JUL 19; full text in git)
 
-- **Probability of vindication (at time of writing):** 0.30 — HELD stance (structural-break BEAR) but stepped DOWN 0.35→0.30. Two reasons: (1) mechanical — the base case rose to 0.60 (THESIS-003), so the complement compresses; (2) evidential — the reversal broadened to an IBIT-led inflow (Jul 7), which is harder to square with a clean "structural AI-rotation exit" than the FBTC/ARKB-only bounce was, so the bear's load-bearing claim (the passive base has permanently left) weakened. Still ≥0.10 (not a strawman — Strategy's record sale is unreversed) and <0.50 (base case is mildly cyclical).
-- **Resolution window:** 6 months — by Jan 8, 2027 we should know whether the June low was a washed-out bottom that re-rated (base case, contrarian WRONG) or a relief high before a structural leg toward the $40Ks (contrarian VINDICATED).
-- **Body (full text in `DEEP_ANALYSIS.contrarianTake.body`, JUL 8):** The strongest bear evidence is unchanged and unreversed — Strategy's 3,588-BTC sale (largest ever) is the most ideological corporate holder selling into the recovery to meet fixed obligations, and a rising price still hasn't visibly reopened its issuance window. The macro relief, while broadening, rests on one labor print plus market breakevens against a Fed whose June dot plot projected a hike; June CPI (Jul 14) could unwind the whole repricing (May inflation ran hot 4.2%). The concession the bear now makes: the Jul 7 IBIT-led inflow is the passive bellwether re-engaging — the exodus looks substantially rate-driven, i.e. reversible — so the bear eases to 0.30 rather than holding 0.35.
-- **Distinct from prior:** Same stance as Jul 6 (structural-break bear) but re-priced DOWN on new evidence (the IBIT-led 3-day streak), not recycled. The operative concession is explicit — the returning bid broadened to the fund that led the selling — which is the opposite of drift.
-- **Vindication signals to watch:** a weekly close <$55K (or <$50K); June CPI (Jul 14) hot, unwinding the dovish repricing; the flow streak stalls and outflows resume with no positive July week; Strategy repeats the sale next dividend cycle or a 2nd top-10/sovereign holder discloses a strategic sale.
-- **Invalidation signals:** a confirmed positive ETF WEEK repairing YTD flows; BTC reclaims and holds >$66K weekly; June CPI soft + a July FOMC that ratifies the dovish tilt; CLARITY revives and clears cloture.
-- **Outcome:** still-open
-- **Brier:** n/a
+- **p=0.30, still-open (resolution Jan 8, 2027).** Same bear stance, re-priced DOWN on the IBIT-led 3-day streak (the passive bellwether re-engaging weakened the "passive base permanently left" claim). Core evidence: Strategy's record sale unreversed; the macro relief one labor print thick against a hike-projecting Fed. **How it aged (JUL 19): the flow leg was REFUTED** (4 straight post-CPI inflow days; positive-week watch HIT) — superseded by the fuller JUL 19 entry above, which relocates the bear to the macro-re-hardening + corporate-abstention legs. Shared vindication/invalidation signals as JUL 19.
 
 ### JUL 2 / JUL 6, 2026 — capitulation-bull → bear-flip transition (condensed JUL 12; full text in git + `DEEP_ANALYSIS` history)
 
@@ -51,52 +52,11 @@ Past `contrarianTake` entries with **probability of vindication** at time of wri
 - **Resolution windows:** Dec 5 / Dec 13 / Dec 20, 2026 (6-month). **Outcome:** still-open. **Brier:** n/a.
 - **Vindication signals (shared):** BTC weekly close <$55K/<$50K; no positive ETF week through end-July + YTD fails to repair; BTC/Nasdaq + BTC/SOXX keep deteriorating; a 2nd top-10/sovereign strategic sale. **Invalidation (shared):** a confirmed positive ETF WEEK; a durable >$66K reclaim; BTC re-couples and outperforms AI on a CLARITY/FOMC catalyst.
 
-### JUN 1, 2026 — "The outflows are stickier than their trigger — a relative-performance rotation into AI, not a tradeable Iran dip"
+### JUN 1 / MAY 29, 2026 — AI-opportunity-cost + digital-gold-premise bears (condensed JUL 19; full text in git)
 
-- **Status note (JUN 5, 2026):** still-open and PARTLY VINDICATED in mechanism. The outflows did persist and the price broke far lower (sub-$60K) — the "sticky distribution that the FOMC can't fix" read was directionally right. The AI-rotation attribution carried through the dip (Presto Research). Not yet scored (Nov 30 window). The Jun 5 take sharpens this into the harder structural-break claim.
-
-
-- **Probability of vindication (at time of writing):** 0.35 — same number as May 29 but a sharper, distinct thesis. Fresh support: the driver migrated away from Iran while outflows set a record. Offsetting evidence: contained ~9% drawdown + intact corporate floor.
-- **Resolution window:** 6 months — by Nov 30, 2026 we should know whether ETF flows recovered to net-positive over a quarter or whether the distribution ground on through macro relief; whether BTC tracked AI-equity beta or re-coupled to its own catalysts.
-- **Body:**
-
-> The bull case just got a gift it should be suspicious of. Oil collapsed ~19% to ~$92 on a tentative Iran ceasefire and core PCE cooled to a soft 0.2% monthly print — the macro relief that, on the consensus read, ends a tactical Iran-driven dip and resets the bid into the June FOMC. The honest counter: the ETF complex printed a record nine-day, ~$2.8B outflow streak straight through that relief, and CoinDesk now attributes the selling not to Iran but to Bitcoin lagging AI and semiconductor stocks. If the marginal allocator were fleeing geopolitical risk, falling oil and a cooler inflation print would pull them back; instead they kept selling to chase relative returns elsewhere. A rate decision cannot fix an opportunity-cost problem — Warsh does not make Bitcoin outperform Nvidia. The risk is that 2026 sees Bitcoin re-rated from 'institutional macro hedge' to 'high-beta tech-adjacent asset that underperforms when AI is the trade,' and the distribution grinds on regardless of how mid-June's catalysts land.
-
-- **Distinct from prior:** Pivots from May 29's digital-gold-premise critique (about safe-haven rotation TO gold) to an opportunity-cost critique (rotation TO AI equities). The two share the "weak structural bid" conclusion but via different mechanisms — gold-safe-haven vs. tech-relative-performance. The May 27 BTC/gold snap framing is now partly superseded: gold's bid held but the fresher tell is AI-equity outperformance, and the Iran/gold input is fading as oil collapses.
-- **Vindication signals to watch:**
-  - ETF outflows continue or resume despite a finalized Iran ceasefire + sub-$100 oil (decouples flows from the geopolitical input entirely).
-  - BTC/Nasdaq or BTC/SOXX relative strength keeps deteriorating through Q3 while AI-equity inflows stay strong.
-  - A positive FOMC/CLARITY mid-June outcome fails to produce a positive ETF inflow week within 4 weeks.
-  - THESIS-002 falsification condition #1 fires (≥4 consecutive weekly outflow weeks through June 30).
-- **Invalidation signals:**
-  - Spot ETFs print a positive net weekly inflow within 4 weeks of the streak ending (tactical confirmed).
-  - BTC re-couples to its own catalysts and outperforms AI equities on a CLARITY/FOMC catalyst.
-  - Strategy resumes ≥10K BTC accumulation through mid-July.
-- **Outcome:** still-open
-- **Brier:** n/a
-
-### MAY 29, 2026 — "Digital-gold framing was always a marketing layer over a risk-asset reality"
-
-- **Status note (JUN 1, 2026):** still-open and partly superseded by the Jun 1 take. The gold-rotation half is intact (gold held its bid) but the cleaner fresh evidence this week is AI-equity outperformance, not safe-haven flight — and the Iran input is fading as oil collapses. Carry both; the Nov 30 resolution window covers both.
-
-- **Probability of vindication (at time of writing):** 0.35 — up from May 20's 0.30. The Iran-shock + BTC/gold ratio uptrend snap + $2B+ two-week ETF distribution + Strategy's May 26 zero-BTC 8-K have moved vindication signals from theoretical to flow-priced.
-- **Resolution window:** 6 months — by Nov 30, 2026 we should know whether ETF flows recovered to net-positive over a quarter or whether the distribution phase persisted; whether Warsh's first FOMC delivered any softening at all; whether Strategy's accumulation cadence resumed.
-- **Body:**
-
-> Bull consensus calls the ETF outflows tactical — a brief allocator rotation that the corporate floor absorbs while the June FOMC + CLARITY floor vote deliver the next leg up. The honest counter: this is the first time Bitcoin has had a textbook geopolitical-risk-off catalyst (U.S. airstrikes near the Strait of Hormuz, Brent ~$115, sticky 3.8% CPI plus 6.0% PPI) — exactly the setup the digital-gold framing said BTC was built for. Through April BTC was beating gold by ~36% during the conflict; then on May 27 the BTC/gold three-month uptrend snapped. CoinDesk's read on the May 28 $528M IBIT outflow names the cause directly as 'Iran-driven sell-off,' and the same week gold + precious-metal funds drew $2.34B in inflows — the rotation has a destination, not just an exit. The capital-markets-reflexivity hypothesis logged May 20 just gained partial vindication: Strategy's May 26 8-K bought zero new BTC in the May 11–25 window — debt-repurchase math replaced accumulation when STRC issuance got harder. If the 2024-25 institutional bid was a pure liquidity trade rather than a structural hedge, the ETF distribution doesn't end with one positive FOMC — it bleeds for months until allocators decide BTC deserves a different label.
-
-- **Distinct from prior:** Pivots from May 20's capital-markets reflexivity bear (which lives on as one specific mechanism inside this broader frame) to a premise-level critique of the digital-gold thesis itself. May 18(b) "synchronized enthusiasm = peak" and May 18(a) "regulation = denatured reserve asset" are unrelated angles.
-- **Vindication signals to watch:**
-  - Two+ more weekly ETF outflow weeks through end of June (THESIS-002 falsification condition #1 fires).
-  - BTC/gold ratio continues to compress through Q3; gold ETF inflows exceed spot Bitcoin ETF inflows for 4+ consecutive weeks.
-  - Strategy files >4 consecutive 8-Ks without ≥1K BTC accumulation print AND cites NAV/STRC issuance constraints.
-  - Warsh delivers hawkish hold AND CLARITY floor stalls — synchronous negative.
-- **Invalidation signals:**
-  - Spot ETFs print first positive net weekly inflow within 4 weeks of May 28 (most likely vindication-killer).
-  - Strategy resumes ≥10K BTC accumulation pace through mid-July.
-  - Brent crude closes <$100 for 2+ consecutive weeks (Iran de-escalation removes the macro thesis input).
-- **Outcome:** still-open
-- **Brier:** n/a
+- **JUN 1 (p=0.35, still-open, resolution Nov 30):** "The outflows are stickier than their trigger — a relative-performance rotation into AI, not a tradeable Iran dip." A rate decision can't fix an opportunity-cost problem. **How it aged:** partly vindicated in mechanism through June (outflows persisted through macro relief; Presto corroborated the AI attribution) — then TEMPERED JUL 6–19: the jobs/CPI rate relief DID snap and reverse the flows (the exodus was substantially rate-driven after all), while price still fell WITH chips on Jul 16–17 (the beta leg survives). Watch the BTC/Nasdaq + BTC/SOXX systematic read.
+- **MAY 29 (p=0.35, still-open, resolution Nov 30):** "Digital-gold framing was a marketing layer over a risk-asset reality" — BTC failed its first textbook geopolitical-risk-off test (BTC/gold uptrend snapped May 27; gold funds drew $2.34B the week BTC ETFs bled). **How it aged:** the gold-rotation half is intact but superseded by the AI/rate framings; the reflexivity sub-claim (Strategy's issuance-gated bid) was fully vindicated by June–July's forced sales.
+- **Shared vindication:** flows relapse despite rate relief; BTC/SOXX deterioration; gold-vs-BTC fund flows diverging 4+ weeks. **Shared invalidation:** sustained positive flow weeks on rate cues (now printing); BTC outperforming AI on its own catalysts.
 
 ### MAY 18–20, 2026 — early structural-bear series (condensed JUL 8 for the 300 KB cap; full text in git)
 

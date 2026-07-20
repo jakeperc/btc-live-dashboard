@@ -1,5 +1,5 @@
 ---
-description: Orchestrator — cadence-gated parallel Haiku sub-agents + Opus 4.7 deep-analysis (fires as soon as market-news completes), single rebuild at end
+description: Orchestrator — cadence-gated parallel sub-agents (market-news on Fable 5, others Haiku) + Fable 5 deep-analysis (fires as soon as market-news completes), single rebuild at end
 ---
 
 You are the **Orchestrator** for the BTC Live Dashboard refresh suite.
@@ -35,7 +35,7 @@ Report which agents are due and which are skipped **before spawning anything**.
 
 ## Step 3 — Launch Phase 1 agents (background, parallel)
 
-Spawn all due Phase 1 agents in a single message using `model: haiku` and `run_in_background: true`. Agents not due are skipped entirely — do not spawn them.
+Spawn all due Phase 1 agents in a single message with `run_in_background: true` — `model: haiku` for Agents 1, 2 and 4; `model: fable` (Fable 5) for Agent 3 (Market News). Agents not due are skipped entirely — do not spawn them.
 
 Every agent prompt must include: **`SKIP REBUILD — the orchestrator runs npm run build once at the end.`**
 
@@ -45,7 +45,7 @@ Read `automations/refresh-fallbacks/README.md`, then `src/data/fallbacks.js`. Fe
 **Agent 2 — Adoption (if due, `model: haiku`, `run_in_background: true`)**
 Read `automations/refresh-adoption/README.md`, then `src/data/adoption.js`. Check internal cadence gates per-table — skip tables not due. Update due constants. Re-sort `COMPANY_HOLDINGS` and `COUNTRY_HOLDINGS` by `btc` descending after any row change. Use narrow `Edit` calls. Report per-table: skipped/updated, row delta, top-3 changes, sort verified. SKIP REBUILD.
 
-**Agent 3 — Market News (if due, `model: haiku`, `run_in_background: true`)**
+**Agent 3 — Market News (if due, `model: fable` / Fable 5, `run_in_background: true`)**
 Read `automations/refresh-market-news/README.md`, then `src/data/market-news.js` and the `HISTORICAL_HIGHLIGHTS` block of `src/data/headlines.js`. Follow the 5-phase playbook. Update `MARKET_THEME`, `CURATED_MARKET_UPDATES`, `FALLBACK_NEWS`, `HISTORICAL_HIGHLIGHTS`. After all edits, write `automations/refresh-market-news/last-run-artifacts.md` with the primary URLs + key facts validated this run. Report slot changes and HISTORICAL_HIGHLIGHTS delta. SKIP REBUILD.
 
 **Agent 4 — Headlines Archive (if due, `model: haiku`, `run_in_background: true`)**
@@ -59,7 +59,7 @@ If market-news was skipped (not due): check whether `automations/refresh-market-
 
 If deep-analysis is not due (cadence gate) and market-news was not force-targeted, skip Agent 5. **Note:** when deep-analysis fires only because market-news was force-targeted (i.e., deep-analysis was not itself due on cadence), it is treated as a force-run for manifest purposes — its timestamp does NOT bump (see Step 5).
 
-**Agent 5 — Deep Analysis (if due, `model: opus` / Opus 4.7)**
+**Agent 5 — Deep Analysis (if due, `model: fable` / Fable 5)**
 Follow the refresh-deep-analysis v2 5-phase playbook in full. Load memory files per `automations/refresh-deep-analysis/memory/INDEX.md` order. Read `automations/refresh-market-news/last-run-artifacts.md` instead of re-fetching those sources. Use **extended thinking** for the Phase 3 synthesis pass. Apply Brier scoring to resolved items. Update all auto-mutable memory files. Stay under 300 KB total memory directory size. SKIP REBUILD.
 
 ## Step 5 — Rebuild + update manifest + unified report

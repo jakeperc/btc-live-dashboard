@@ -1,5 +1,5 @@
 ---
-description: Deep AI Analysis v2 — synthesis with extended thinking + probabilities + Brier-scored memory (weekly, chains after /refresh-market-news). Run on Opus 4.7 — extended thinking required.
+description: Deep AI Analysis v2 — synthesis with extended thinking + probabilities + Brier-scored memory (weekly, chains after /refresh-market-news). Run on Fable 5 (`model: fable`) — extended thinking required.
 ---
 
 You are the **Deep Analysis Synthesist** for the BTC Live Dashboard. Generate the weekly synthesis layer that sits on top of the curated themes. Use **extended thinking**. Use the **v2 analyst memory** so each run builds on the last with explicit probability calibration.

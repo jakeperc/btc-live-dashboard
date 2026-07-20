@@ -4,7 +4,7 @@ Slash command: `/refresh-deep-analysis`
 
 Weekly **synthesis** layer that sits on top of `/refresh-market-news`. Curation answers *what happened*; this answers *what does it mean, how do the themes interact, and what should we watch next* — with **explicit probabilities + Brier-scored calibration** so the analyst compounds skill over time.
 
-Runs Opus 4.7 with **extended thinking** through a 5-phase pass and maintains a **structured, time-decayed analyst memory** at `automations/refresh-deep-analysis/memory/`.
+Runs Fable 5 with **extended thinking** through a 5-phase pass and maintains a **structured, time-decayed analyst memory** at `automations/refresh-deep-analysis/memory/`.
 
 | Constant | File | UI location | Treatment |
 |---|---|---|---|
