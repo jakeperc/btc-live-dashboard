@@ -197,7 +197,7 @@ export const CompaniesTab = ({ price }) => {
         Public Company Bitcoin Holdings
       </div>
       <div className="page-subtitle" style={{ fontSize: 13, color: "var(--text-dim)", fontFamily: "'JetBrains Mono', monospace", marginBottom: 4 }}>
-        Top publicly traded companies by BTC on balance sheet — March 2026
+        Top publicly traded companies by BTC on balance sheet — July 2026
       </div>
       <div className="holdings-summary" style={{ fontSize: 12, color: "var(--text-muted)", fontFamily: "'JetBrains Mono', monospace", marginBottom: 20, padding: "10px 14px", background: "var(--bg-card)", borderRadius: 10, border: "1px solid var(--border-subtle)" }}>
         Tracked corporate BTC: <span style={{ color: "#f7931a", fontWeight: 700 }}>{fmt(totalBtc)} BTC</span> across <span style={{ color: "#f7931a", fontWeight: 700 }}>{COMPANY_HOLDINGS.length} companies</span> — worth ~<span style={{ color: "#22c55e", fontWeight: 700 }}>${(totalBtc * safePrice / 1e9).toFixed(1)}B</span>
@@ -278,16 +278,18 @@ export const HoldingsTab = ({ price }) => {
     setSortKey(key);
   };
   const sortedCountries = [...COUNTRY_HOLDINGS].sort((a, b) => sortDir === "desc" ? b[sortKey] - a[sortKey] : a[sortKey] - b[sortKey]);
+  const totalGovBtc = COUNTRY_HOLDINGS.reduce((s, c) => s + c.btc, 0);
+  const govEntities = COUNTRY_HOLDINGS.filter(c => c.btc > 0).length;
   return (
     <div>
       <div className="page-title" style={{ fontSize: 22, fontWeight: 800, color: "var(--text-secondary)", fontFamily: "'Outfit', sans-serif", marginBottom: 4 }}>
         Government Bitcoin Holdings
       </div>
       <div className="page-subtitle" style={{ fontSize: 13, color: "var(--text-dim)", fontFamily: "'JetBrains Mono', monospace", marginBottom: 4 }}>
-        Nation-state BTC reserves as of March 2026
+        Nation-state BTC reserves as of July 2026
       </div>
       <div className="holdings-summary" style={{ fontSize: 12, color: "var(--text-muted)", fontFamily: "'JetBrains Mono', monospace", marginBottom: 20, padding: "10px 14px", background: "var(--bg-card)", borderRadius: 10, border: "1px solid var(--border-subtle)" }}>
-        Total government-held BTC: <span style={{ color: "#f7931a", fontWeight: 700 }}>650,288 BTC</span> across <span style={{ color: "#f7931a", fontWeight: 700 }}>13 entities</span> — worth ~<span style={{ color: "#22c55e", fontWeight: 700 }}>${(650288 * safePrice / 1e9).toFixed(1)}B</span>
+        Total government-held BTC: <span style={{ color: "#f7931a", fontWeight: 700 }}>{fmt(totalGovBtc)} BTC</span> across <span style={{ color: "#f7931a", fontWeight: 700 }}>{govEntities} entities</span> — worth ~<span style={{ color: "#22c55e", fontWeight: 700 }}>${(totalGovBtc * safePrice / 1e9).toFixed(1)}B</span>
       </div>
 
       <div className="holdings-chart-card" style={{ background: "var(--bg-card)", border: "1px solid var(--border-subtle)", borderRadius: 16, padding: "16px 8px", marginBottom: 20 }}>

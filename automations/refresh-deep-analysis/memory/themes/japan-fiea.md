@@ -3,8 +3,9 @@
 - **Slug:** `japan-fiea`
 - **Category:** International regulation / adoption
 - **First tracked:** JUL 19, 2026 (entered the top-5 replacing the Bhutan sovereign-drawdown slot)
-- **Last updated:** JUL 19, 2026
-- **Status (JUL 19):** Active — **ENACTED.** Japan's House of Councillors gave final approval on **Jul 15, 2026** to amendments to the Financial Instruments and Exchange Act (FIEA) moving Bitcoin and ~104 other crypto assets out of payments law and into the same regulatory category as stocks and bonds. Standalone p=0.60 = probability the reform translates into working adoption rails roughly on schedule (TSE spot-ETF listings ~2027; 20% flat tax from Jan 2028). NOT in the interaction matrix yet — deltas 0.00 this run, row/column assessment flagged for next run.
+- **Last updated:** JUL 26, 2026
+- **Status (JUL 26):** Active (analytically) — **NO dated development since the Jul 15 enactment; standalone HELD 0.60. Matrix row/column ADDED this run** (etfs +0.05, clarity +0.04, corporate +0.03, sovereign +0.02, fed/protocol 0.00; NOT in the correlated-risk cluster). **Structural significance ROSE with CLARITY's Jul 23 concession + THESIS-001's retirement: this statute now carries the institutional-unlock mechanism ALONE until at least the September Senate window** — Tokyo's 2027 spot-ETF rails hold the only statutory clock (see the "Two-jurisdiction divergence" pattern's resolved branch; the live watch is venue migration — U.S. issuers/exchanges announcing Tokyo plans). Housekeeping: the market-news card rail rotated this theme out to the headlines archives this run (slot 5 → the August forks card) — the memory file and matrix row stay; reassess slot membership next run.
+- **Status (JUL 19, condensed):** Active — **ENACTED.** Japan's House of Councillors gave final approval on **Jul 15, 2026** to FIEA amendments moving Bitcoin and ~104 other crypto assets out of payments law and into the same regulatory category as stocks and bonds. Standalone p=0.60 = probability the reform translates into working adoption rails roughly on schedule (TSE spot-ETF listings ~2027; 20% flat tax from Jan 2028).
 
 ## Why this theme earned a slot
 

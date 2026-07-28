@@ -3,8 +3,13 @@
 - **Slug:** `protocol-security`
 - **Category:** Protocol / technical
 - **First tracked:** MAY 18, 2026
-- **Last updated:** JUN 28, 2026
-- **Status:** Active — two distinct sub-threads: (1) quantum migration (long-tail, no urgency); (2) BIP-110 data-limit soft fork (near-dated, Aug 2026 flag day, low activation odds + chain-split tail). No material BIP-110 movement Jun 24–28 — signaling still negligible (~0.31%), no major pool, Core non-endorsing; watch-row held p=0.10 with the ~Aug 7 flag day now the binding date.
+- **Last updated:** JUL 26, 2026
+- **Status:** Active — two distinct sub-threads: (1) quantum migration (long-tail, no urgency); (2) BIP-110 data-limit soft fork (near-dated, Aug 2026 flag day, low activation odds + chain-split tail). JUL 26: the Sztorc thread is now DATED (see below) — August has TWO fork events; watch-row held p=0.10; BIP-110 signaling still sub-1%. Note: the market-news card rail's slot 5 rotated to an August-forks card this run — this theme is a candidate for formal top-5 entry next run if the fork window generates real market noise.
+
+## Key dated facts (JUL 26 additions)
+
+- **JUL 26, 2026** — **The "two August forks" flag SUBSTANTIATED:** (1) BIP-110 UASF flag day ~Aug 7 (block 961,632), signaling still sub-1%, no major pool, Core non-endorsing; (2) **Paul Sztorc's eCash Drivechain hard fork now has a concrete split point: block 964,000, estimated ~Aug 21 15:00 UTC** — a spinoff chain built on BIP-300/301 Drivechain functionality that credits existing BTC holders with an equivalent eCash balance (airdrop-style; NOT a contested rewrite of Bitcoin's rules). Institutional insulation: IBIT's SEC-filed prospectus states the trust permanently and irrevocably abandons rights to forked/airdropped assets — so no ETF-flow mechanics hang on the split; the market effect is headline noise. [Bitcoin.com News — August timeline](https://news.bitcoin.com/august-timeline-puts-bitcoin-bip-110-signaling-and-paul-sztorcs-hard-fork-in-focus/) · bip110.org
+- **JUL 25, 2026** — **Difficulty: the widely-projected ~16% cut did NOT materialize** — the realized adjustment at block 959,616 was **+0.99%**; the next retarget (~Aug 4) currently estimates ~+2.3%. Treat large pre-retarget difficulty projections as low-reliability. Context for the miner-stress candidate theme: Poolin filed Chapter 11 (Jul 22, $163.7M owed to ~11,700 frozen wallets); press cites cost-to-mine ~$84K vs ~$65K spot; ~$19B of miner capex migrating to AI/HPC hosting.
 
 ## Current state
 

@@ -809,7 +809,7 @@ export const DashboardTab = ({ btc, setActiveTab }) => {
           />
           <StatStrip
             label="Bhutan (Druk Holding)"
-            value="13,029 BTC"
+            value="3,704 BTC"
             sub={<>Hydro-powered sovereign mining program · <SourceLink href="https://arkhamintelligence.com/research/bhutan-bitcoin-holdings" label="arkhamintelligence.com" /></>}
           />
         </SectionGroup>
@@ -826,13 +826,13 @@ export const DashboardTab = ({ btc, setActiveTab }) => {
           />
           <StatStrip
             label="Strategy (MSTR)"
-            value="819,404 BTC"
-            sub={<>Largest single corporate holder · ~3.9% of supply · <SourceLink href="https://www.strategy.com/" label="strategy.com" /></>}
+            value="843,775 BTC"
+            sub={<>Largest single corporate holder · ~4.2% of supply · <SourceLink href="https://www.strategy.com/" label="strategy.com" /></>}
           />
           <StatStrip
             label="US Spot Bitcoin ETFs"
             value="~1.30M BTC"
-            sub={<>~$130B AUM · 6.6% of supply · <SourceLink href="https://farside.co.uk/btc/" label="farside.co.uk" /></>}
+            sub={<>~$84B AUM · 6.5% of supply · <SourceLink href="https://farside.co.uk/btc/" label="farside.co.uk" /></>}
             valueColor="var(--status-up)"
           />
           <StatStrip
