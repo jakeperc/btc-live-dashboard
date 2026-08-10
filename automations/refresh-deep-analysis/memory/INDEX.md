@@ -66,6 +66,7 @@ Persistent context for `/refresh-deep-analysis`. Read at the start of every run,
 ## Archived files (moved out of `memory/` to stay under the 300 KB cap)
 
 - **JUN 28, 2026:** `actors/cftc.md`, `actors/sec.md`, `actors/senate-banking.md`, `actors/trump-admin.md` moved to `../memory-archive/actors/` under INDEX hard rule #3 (longest-quiet actor files; zero material updates since MAY 18, no role in current themes). They are NOT in the routine warm-path load. **Restore to `actors/` if its actor re-enters a current theme materially** (e.g., CLARITY re-couples → `senate-banking.md`/`trump-admin.md`; a CFTC/SEC jurisdiction action lands). Audit trail preserved in the archive dir + git history.
+- **AUG 7, 2026:** `themes/sovereign-reserves.md` + `actors/fidelity.md` moved to `../memory-archive/` under hard rule #3 (cap pressure at 323 KB after the mid-week run's writes; sovereign-reserves out of the top-5 since JUL 19 with no sovereign event since; fidelity unloaded 3 consecutive runs, FBTC appearing only as flow line-items). **Restore `sovereign-reserves.md` on any sovereign reserve/drawdown event** (Argentina/Pakistan IMF watch, Bhutan, a G20 announcement); **restore `fidelity.md` if a within-complex composition divergence re-opens outside a stress window.**
 
 ## Hard rules
 
