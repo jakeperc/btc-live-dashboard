@@ -1,10 +1,10 @@
 {
-  "last-run": "2026-08-03T22:13:04Z",
+  "last-run": "2026-08-20T04:13:04Z",
   "agents": {
     "fallbacks": "2026-07-27T18:41:00Z",
-    "adoption": "2026-08-03T22:13:04Z",
-    "market-news": "2026-08-03T22:13:04Z",
+    "adoption": "2026-08-20T04:13:04Z",
+    "market-news": "2026-08-20T04:13:04Z",
     "headlines-archive": "2026-07-27T18:41:00Z",
-    "deep-analysis": "2026-08-03T22:13:04Z"
+    "deep-analysis": "2026-08-20T04:13:04Z"
   }
 }

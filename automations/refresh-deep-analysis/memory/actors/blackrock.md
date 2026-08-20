@@ -4,9 +4,11 @@
 - **Category:** Asset manager
 - **Role:** Issuer of IBIT — dominant U.S. spot Bitcoin ETF; institutional gateway
 - **First tracked:** MAY 18, 2026
-- **Last updated:** AUG 3, 2026
+- **Last updated:** AUG 19, 2026
 
 ## Snapshot
+
+- **AUG 19, 2026 — CONCENTRATION CUT BOTH WAYS ACROSS THE WHIPSAW:** IBIT led the Aug 7 inflow day (+$86.7M of +$101.7M) and set the tone for the relapse (−$53.6M on Aug 10's −$144.7M), but the −$389.7M outflow week was **FBTC-led (−$153M)** — the first FBTC-led weekly move since the June stress artifact; not yet a divergence signal (the JUL 19 lesson: composition tells are regime-conditional; watch only if it persists OUTSIDE a stress window, per the fidelity.md restore rule). No fresh IBIT AUM/holdings datapoint this run — owed next run for the crosses-Strategy watch (held 0.45; denominator fell to 840,447).
 
 - **AUG 7, 2026 — THE RESTART RAN THROUGH IBIT, AGAIN: 9,269 BTC (~$604M) across four straight inflow days (Aug 3–6)** — IBIT +$170.3M (Aug 4), ~$196.8–254.5M (Aug 5, tracker variance), +$128.3M (Aug 6, against GBTC −$32.8M) — ~80% of the complex's ~$750M week, front-running the jobs report. Concentration unchanged from the AUG 3 read (one fund wide, both directions); IBIT-crosses-Strategy watch stepped 0.40→**0.45** (numerator adding ~2,300 BTC/day while the denominator falls at 842,138); $150B-AUM watch held 0.20 (needs price AND flows; now marginally more plausible).
 - **AUG 3, 2026 — THE COMPLEX'S DEMAND IS NOW EFFECTIVELY ONE FUND WIDE.** Through the FOMC week IBIT was the only consistent magnet: **+$89.8M on decision day while the complex netted +$32.1M** (FBTC −$43.1M, ARKB −$14.6M), **+$183.4M ≈ 79% of Jul 30's +$233.1M**, then −$122.7M in the month-end Jul 31 washout (complex −$265.4M; FBTC −$54.8M). July's record-small ~$200M month is substantially an IBIT number — the breadth that marked the June re-engagement (all-12-funds-green days) is gone. Concentration cuts both ways: it makes the complex's bid look resilient in headline terms while a single manager's flow decides the tape's direction (a within-complex fragility the JUL 19 MISS taught us to price humbly, direction-not-composition). IBIT-crosses-Strategy watch held 0.40 — now aided by the denominator FALLING (Strategy 842,138 and shrinking). $150B-AUM watch stepped 0.25→0.20. [Coingabbar — Jul 29 flows](https://www.coingabbar.com/en/crypto-currency-news/bitcoin-etfs-snap-outflow-streak)

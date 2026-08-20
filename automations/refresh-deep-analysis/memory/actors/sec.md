@@ -4,12 +4,13 @@
 - **Category:** Regulator
 - **Role:** Pre-CLARITY: primary federal regulator for crypto via securities-law enforcement. Post-CLARITY: jurisdiction limited to securities-classified tokens; Bitcoin moves to CFTC.
 - **First tracked:** MAY 18, 2026
-- **Last updated:** MAY 18, 2026
+- **Last updated:** AUG 19, 2026 (RESTORED from ../memory-archive/ this run — the restore trigger fired: a major SEC action landed)
 
 ## Snapshot
 
+- **AUG 18–19, 2026 — THE AGENCY DELIVERED ITS DEFINING ACTION: "Regulation Crypto Assets" (33-11434), the first comprehensive crypto fundraising rulebook in SEC history**, proposed in a surprise announcement (a scheduled open meeting had been postponed): $5M/4-yr startup exemption; $75M/12-mo fundraising exemption (with financials + reporting); conditional safe harbor moving mature tokens OUT of the securities definition once promised managerial efforts complete; preemption of conflicting state registration; 60-day comment window (ends ~mid-late Oct — pin the date). Chair **Atkins** attended the Aug 19 White House summit alongside CFTC Chair Selig. Analytical frame: the rule mostly de-risks TOKEN fundraising (BTC was never a security); its BTC significance is the regime signal — regulation-by-lawsuit ends by rule, whether or not CLARITY passes — plus the substitution/momentum question for the Sep 15–16 cloture (see causal edge `administrative-rulemaking-substitution ↔ legislative-urgency`). A rule can be litigated (state regulators are the likely preemption challengers) and rescinded by a future administration; a statute cannot. [Atkins statement](https://www.sec.gov/newsroom/speeches-statements/atkins-statement-regulation-crypto-assets-081826) · [Rule PDF](https://www.sec.gov/files/rules/proposed/2026/33-11434.pdf)
 - Chair: Bitcoin-friendly nominee (Trump appointment Nov 18, 2025); ended Gensler-era enforcement posture.
-- Stance through 2026: shift from "regulation by enforcement" to clearer rulemaking + ETF approvals.
+- Stance through 2026: shift from "regulation by enforcement" to clearer rulemaking + ETF approvals — **now demonstrated at scale (Aug 18).**
 
 ## Causal links
 

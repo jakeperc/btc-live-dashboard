@@ -1,123 +1,130 @@
 # refresh-market-news Last-Run Artifacts
-**Run Date:** August 7, 2026 (~19:55 UTC) — mid-week force-run (`/refresh-market-news update regardless of threshold`), standalone (not under /refresh-all)
-**Research Window:** Aug 3 – Aug 7, 2026 (supplements the Aug 3 weekly run)
-**Previous asOf:** JUL 31, 2026
-**Current asOf:** AUG 7, 2026 (jobs-report day)
+**Run Date:** August 19, 2026 (~03:18 UTC Aug 20) — regular weekly cadence sweep under /refresh-all
+**Research Window:** Aug 8 – Aug 19, 2026 (last run: Aug 3 weekly + Aug 7 force-run)
+**Previous asOf:** AUG 7, 2026
+**Current asOf:** AUG 19, 2026
 
 ## Significance Gate Assessment
 
-Run was user-forced, but the gate would have opened on its own — Friday Aug 7 was the pivot day the Aug 3 run flagged, and all three of its scheduled events resolved:
+Gate opened decisively. All four of the Aug 7 run's flagged watch items resolved, plus two unanticipated majors (SEC rulemaking, White House summit → breakout):
 
-1. **Jobs report (Aug 7, BLS):** payrolls **−23,000** vs +83,000 expected — first monthly decline in months. May revised −66K, June −37K (−103K combined). Unemployment 4.1% (down via participation decline). Wages +3.2% Y/Y — coolest since May 2021. Government −53K (largely seasonal), private +30K.
-2. **September FOMC repriced:** CME FedWatch flipped from ~two-in-three **hike** to an expected **hold** within hours of the release. BTC → **$65,340 August high** (+1.3% on the day, from ~$63,150 Monday open).
-3. **CLARITY window officially died (Aug 6):** Thune confirmed no vote before the five-week recess; Senate returns **Sep 14**, first procedural vote **Sep 15–16** ("queued up first thing").
-4. **ETF inflows restarted:** four straight positive days Aug 3–6, ~**$750M** total (more than 3× July's entire ~$200M net); IBIT ~$604M of it.
-5. **BIP-110 mandatory signaling window opened (~Aug 7, block 961,632):** signaling ~0–2.45% of blocks / ~5 EH/s of ~940 EH/s — the predicted non-event so far; enforcing nodes (est. 2–8% of listening nodes) now reject non-signaling blocks.
+1. **SEC "Regulation Crypto Assets" proposed (Tue Aug 18)** — the SEC's first comprehensive crypto fundraising rulebook, issued in a surprise announcement (a scheduled open meeting had been postponed). Startup exemption: up to $5M over a 4-year period. Fundraising exemption: up to $75M per 12 months (with financial statements + reporting). Conditional safe harbor: tokens can exit the securities definition once the issuer's promised managerial efforts are complete/abandoned. Preempts conflicting state registration rules. 60-day comment period from Federal Register publication.
+2. **White House crypto summit (Wed Aug 19):** Trump hosted Coinbase, Kraken (Payward), Ripple, Robinhood, Gemini, Blockchain.com, Nasdaq, ICE; SEC Chair Atkins and CFTC Chair Selig attended. Trump urged a "fair version" of CLARITY, touted SBR/stockpile/CBDC-ban/GENIUS/Project Crypto, said Selig is working to bring Hyperliquid onshore (HYPE +19%).
+3. **BTC breakout (Aug 19):** +as much as 7.7–8% intraday to ~$69,500 high (trading ~$68,476 at Bloomberg print) — highest since June 1, biggest one-day gain since March 4. >$1B of shorts liquidated in ~1 hour — largest short-liquidation wave in records back to 2021 (Bloomberg). Prior context: BTC stagnated ~$63K Aug 11–17 ($62,951 Aug 15).
+4. **CPI (Aug 12):** headline 3.4% Y/Y (from 3.5%), core 2.5% (from 2.6%), monthly +0.1% — all in line. September repricing: ~62% hold / ~38–42% hike (CME FedWatch). "Buys the Fed time, not conviction."
+5. **Strategy (Aug 10 + Aug 17 8-Ks):** third sale in six weeks Aug 10 (1,690 BTC / $108.6M / avg $64,262 vs $75,385 cost; holdings → 840,447); Aug 17: NO buy/sale — eighth straight week without a purchase (last buy Jun 22). 2026 sales total ~6,948 BTC (note: includes a 32-BTC late-May disposal — avoid "third-ever" ordinals; dashboard now says "third sale in six weeks"). Stock sales $653.1M (Aug 10 wk: $650M → USD reserve, reserve $4.65B per bitcointreasuries.net) then $333.7M (Aug 17 wk: $52.4M dividends, $132.2M STRC buybacks, $149.1M reserve).
+6. **BIP-110 FAILED (~Aug 9):** final mandatory-window signaling 2.53% (51 blocks) vs 55% required; enforcing nodes split at block 961,632, minority chain mined 2 blocks and stalled (26 behind by Aug 9 AM); no exchange/wallet adoption; mainnet untouched. AntPool's first non-signaling block triggered the split.
+7. **MSCI consultation (Aug 14):** proposed screen ejects "non-operating companies" (operating assets <50% of total) from Global Investable Market Indexes; on May 2026 data would delete Strategy (MSTR), Metaplanet (3350), Yellow Cake. Feedback closes Sep 30, results Oct 16, effective November 2026 review. Strategy response: index providers should "measure markets, not dictate corporate assets" (Jan 2026 MSCI had declined to proceed "at this time").
 
 ### Slot-by-Slot Decisions
 
-1. **ETFs (Slot 1) — REFINED; statusTone stalled → advancing; asOf JUL 31 → AUG 7.**
-   - Daily flows: Aug 3 ≈ +$170M (inferred from $626M three-day total), Aug 4 +$211.5M (IBIT +$170.3M), Aug 5 +$244.4M (IBIT ~$196.8–254.5M depending on tracker), Aug 6 +$137.6M (Farside; SoSoValue-family figures differ — $128.69M also reported; IBIT +$128.3M, GBTC −$32.8M).
-   - Four-day total ~$750M ($754.69M COINOTAG weekly; ~$763.5M summing dailies — tracker variance; dashboard says "roughly $750 million"). IBIT four-day: 9,269 BTC ≈ $604M (Crypto Briefing).
-   - Aug 7 flow not yet published at run time (reports after close) — next run should capture it.
-   - Price: ~$63,150 Mon open → ~$64K midweek → $64,300 pre-report → **$65,340** post-report (Bitstamp, Cointelegraph). Next resistance: Jul 21 high ~$66,900.
-2. **CLARITY (Slot 2) — REFINED; stays stalled; label AUG 3 → AUG 6.**
-   - CoinDesk (fetched): Dems refused to proceed; demands = stricter ethics language (Trump crypto: >$1B disclosed 2025 earnings), tighter illicit finance, stablecoin-yield limits. Gallego–Tillis counter-proposal sent to White House late July — no public response. Thune quote Aug 6: "The Dems are insistent on no Clarity vote… [Lummis] was great."
-   - Mechanics: cloture filed pre-recess → Sep 15 first vote; filed after Sep 14 return → Sep 16 earliest. Unclear the bill even has 50 today (several R holdouts).
-   - Polymarket 2026-enactment odds ~13% (CCN), down from ~33% a week ago.
-   - **Adjacency sweep result:** Collins–Murray CR keeps government open through **Dec 11** (Senate 89–4; NBC/The Hill/WaTimes — all search-verified, fetches 403'd). September floor time is therefore NOT consumed by a shutdown fight — a genuine tailwind for the Sep 15–16 window. House action still required before Sep 30.
-3. **Macro (Slot 3) — REFINED (inversion: hawkish hold → jobs-driven pause); label JUL 29 → AUG 7.**
-   - Jobs figures as above. Seasonal-government caveat and private +30K included to keep it honest.
-   - Jackson Hole late August = Warsh's first keynote; Aug 12 July CPI is the remaining data gate before Sep 15–16 FOMC.
-   - Oil/Iran thread retained only as background (Fed statement source kept); CoinDesk Aug 7 flagged "oil back as a headwind" — not slotted, low confidence.
-4. **Strategy (Slot 4) — KEPT UNTOUCHED.** No development since the Aug 3 8-K (asOf AUG 3). Next weekly filing expected Mon Aug 10 — first thing for the Monday run to check (does the "Bitcoin Drive" tease finally produce a buy, third sale, or seventh no-buy week?).
-5. **Coldcard (Slot 5) — REFINED; label AUG 1 → AUG 4.**
-   - TRM Labs (fetched, Galaxy Research tally): **1,816 BTC / ~$116M / 5,200+ addresses / four waves** from Jul 30; first wave 594 BTC in ~25 min; ~$70M in first 41 min (Hacker News). Third-largest crypto hack of 2026; YTD >$1.2B across 276 incidents.
-   - Root cause detail upgraded: fw 4.0.1 (Mar 2021) fell back to weak software RNG — effective key strength 128 → as low as 40 bits, remotely brute-forceable.
-   - Higher $130M figure circulating (Yahoo Finance) — unconfirmed; dashboard stays on TRM/Galaxy $116M.
+1. **Slot 1 — REPLACED (ETFs → POLICY breakout); asOf AUG 7 → AUG 19; tone advancing.** The Aug-7 "inflows restarted" narrative was superseded twice over: the restart reversed (−$390M week Aug 10–14), then the breakout came from Washington (SEC rule + summit), not flows or the Fed. Materiality: first-ever comprehensive SEC crypto rulemaking + biggest one-day gain since March + record short squeeze. ETF flows folded into slot 1 as the "does it stick" confirmation test — no dedicated ETF slot this week.
+2. **Slot 2 (CLARITY) — REFINED; stays stalled; asOf AUG 6 → AUG 19.** New dated developments: Trump's Aug 19 "fair version" push; SEC rulemaking cuts both ways for the bill (administrative substitution vs momentum); CR nuance — Senate passed its CR 90–6 (through Dec 11) but the House version (Jul 21, 220–205) runs to Dec 4, chambers must reconcile before Sep 30 (modest September floor-time claim; not the clean "obstacle cleared" of the Aug 7 framing). Sep 15–16 first vote unchanged; ~1-in-8 odds retained from Aug 6 (not re-verified).
+3. **Slot 3 (MACRO) — REFINED; label AUG 7 → AUG 12.** In-line CPI; ~60% hold priced; Jackson Hole Aug 27–29, Warsh keynote Fri Aug 28, symposium theme "Financial Innovation: Implications for Payments and Policy"; Warsh signaled "big picture" not near-term guidance; Aug jobs report Sep 4; FOMC Sep 15–16. Oil/Iran thread dropped from the card (fully unwound as a driver).
+4. **Slot 4 (Strategy) — REFINED; label AUG 3 → AUG 17.** Third sale + eighth no-buy week + MSCI exclusion threat added (index mechanics = second-order structural pressure on the treasury model). Cash reserve "past $4.6B."
+5. **Slot 5 — REPLACED (Coldcard SECURITY → PROTOCOL forks); label AUG 4 → AUG 9.** Coldcard static since Aug 4 (tally still ~$116M, no arrests — refinement not justified under the gate); protocol has fresh dated developments (Aug 9 failure) plus a forward event inside 48h (eCash ~Aug 21, block 964,000, Drivechains, ~500K Satoshi-era coins reassigned on the new chain, auto-airdrop, scam warning included). Coldcard remains archived in HISTORICAL_HIGHLIGHTS (Jul 30).
 
 ### De-dup check (final five)
-1. ETF flows restart + jobs-driven repricing (driver: institutional fund flows) — 2. CLARITY September punt (driver: US legislative timing) — 3. Payrolls decline / September hold (driver: rates regime) — 4. Strategy second sale (driver: corporate treasury behavior) — 5. Coldcard breach (driver: self-custody hardware security). Jobs report appears in 1 (flows response) and 3 (regime) — same accepted structure as the Fed in prior runs. No two slots share an underlying driver.
+1. POLICY breakout (driver: executive-branch catalysts + squeeze mechanics) — 2. CLARITY (driver: Senate floor timing/vote math) — 3. Macro (driver: rates regime) — 4. Strategy (driver: corporate treasury behavior + index-inclusion mechanics) — 5. Forks (driver: consensus-change governance). Trump's CLARITY remark appears in 1 (catalyst) and 2 (bill development) — same accepted structure as the Aug 7 jobs report in slots 1+3. No two slots share an underlying driver.
 
 ## Primary-Source URLs Verified This Run
 
-1. **BLS Employment Situation July 2026 (primary; URL search-verified, direct fetch 403):**
-   https://www.bls.gov/news.release/archives/empsit_08072026.htm
-   (−23K payrolls; 4.1%; +3.2% wages; gov −53K / private +30K; figures corroborated by CNBC, UPI, Quartz, Cointelegraph)
-2. **CoinDesk — Senate won't vote on Clarity Act before summer break (Aug 6, fetched):**
-   https://www.coindesk.com/policy/2026/08/06/senate-won-t-vote-on-crypto-clarity-act-before-its-summer-break
-   (Dem demands; Gallego–Tillis; Sep 14 return; Sep 15/16 vote mechanics; Thune quotes; 50-vote doubt)
-3. **Cointelegraph — BTC tags $65,340 August high (Aug 7, fetched):**
-   https://cointelegraph.com/markets/bitcoin-price-tags-653k-august-high-as-low-us-jobs-numbers-cool-fed-rate-bets
-   (CME FedWatch hike→hold flip; May −66K / June −37K revisions; Bitget/Sygnum/QCP comments)
-4. **Crypto Briefing — IBIT $604M over four straight days (Aug 6, fetched):**
-   https://cryptobriefing.com/blackrock-ibit-bitcoin-etf-604m-inflows/
-   (9,269 BTC; $626M market-wide Aug 3–5; IBIT 70–80% share since launch)
-5. **TRM Labs — $116M Coldcard hack analysis (Aug 4, fetched):**
-   https://www.trmlabs.com/resources/blog/the-largest-hardware-wallet-exploit-of-2026-inside-the-usd-116-million-coldcard-hack
-   (1,816 BTC; 5,200+ addresses; four waves; 128→40-bit key strength; 3rd-largest 2026 hack; YTD $1.2B/276 incidents)
-6. **Bitcoin.com News — BIP-110 August deadline, 5 EH/s signaling (fetched):**
-   https://news.bitcoin.com/bip-110-pushes-bitcoin-toward-august-fork-deadline-with-only-5-eh-s-signaling/
-   (Block 961,632 ≈ Aug 7; mandatory window through 963,647; lock-in 963,648; 55% threshold; 0.31–2.45% signaling; nodes 2–8%; Lopp/Back chain-split warnings)
-7. **NBC News — CR deal through Dec 11 (search-verified; fetch 403):**
-   https://www.nbcnews.com/politics/congress/senate-leaders-reach-deal-avert-shutdown-2026-elections-rcna590564
-   (Collins–Murray; 89–4; averts October shutdown; corroborated by The Hill 6004900 + Washington Times Aug 3)
-8. **CCN — Polymarket odds fall to 13% (search-verified):**
-   https://www.ccn.com/news/crypto/clarity-act-supporters-opponents-senate-vote/
-9. **financefeeds — Aug 6 BTC ETF +$137.6M citing Farside (search-verified):**
-   https://financefeeds.com/crypto-etfs-extend-winning-streak-on-august-6-as-bitcoin-funds-add-137-6-million/
-10. **Farside Investors:** https://farside.co.uk/btc/ — **403 blocked (third consecutive run)**; dailies cross-checked via financefeeds/KuCoin/CryptoRank/Crypto Briefing.
-11. **BLS.gov direct + CNBC + The Hill:** all 403 this run — facts taken from multi-outlet corroboration; flagged per-fact above.
+1. **SEC — Atkins statement on Regulation Crypto Assets (Aug 18; search-verified, direct fetch 403):**
+   https://www.sec.gov/newsroom/speeches-statements/atkins-statement-regulation-crypto-assets-081826
+2. **SEC — Proposed rule 33-11434 PDF (search-verified):**
+   https://www.sec.gov/files/rules/proposed/2026/33-11434.pdf
+3. **Euronews — SEC unveils new crypto rules (Aug 19, FETCHED):** exemption figures, 60-day comment, safe harbor, state preemption, Blockchain Association reaction, Sep 15 cloture context.
+   https://www.euronews.com/business/2026/08/19/sec-unveils-new-crypto-rules-hailed-as-a-win-for-the-digital-asset-industry
+4. **Bloomberg (Yahoo-syndicated, FETCHED) — Bitcoin surges most since March ahead of White House meeting (Aug 19):** +7.7% intraday, $68,476 trading, highest since Jun 1, most since Mar 4.
+   https://www.bloomberg.com/news/articles/2026-08-19/bitcoin-surges-most-since-march-ahead-of-white-house-meeting
+5. **AP via Yahoo (FETCHED) — Trump hosts crypto executives (Aug 19):** attendee list, Atkins/Selig, "fair version" quote, Hyperliquid/HYPE +19%, CFTC Innovation Advisory Committee Aug 20.
+   https://currently.att.yahoo.com/att/trump-hosts-crypto-executives-white-231056652.html
+6. **SEC EDGAR — Strategy 8-K Aug 10, 2026 (search-verified; EDGAR fetch 403):**
+   https://www.sec.gov/Archives/edgar/data/0001050446/000119312526341297/mstr-20260810.htm
+7. **SEC EDGAR — Strategy 8-K Aug 17, 2026 (search-verified; EDGAR fetch 403):**
+   https://www.sec.gov/Archives/edgar/data/0001050446/000119312526353240/mstr-20260817.htm
+8. **CoinDesk — Strategy/Metaplanet face MSCI exclusion (Aug 14, search-verified):**
+   https://www.coindesk.com/markets/2026/08/14/bitcoin-holders-strategy-and-metaplanet-face-stock-index-exclusion-under-msci-s-new-proposal
+   + Strategy response: https://www.coindesk.com/markets/2026/08/14/strategy-says-msci-should-measure-markets-not-dictate-corporate-assets
+9. **CNBC — July CPI +0.1% m/m, 3.4% y/y (Aug 12, search-verified):**
+   https://www.cnbc.com/2026/08/12/cpi-inflation-report-july-2026.html
+   + CoinDesk (search-verified): https://www.coindesk.com/markets/2026/08/12/u-s-cpi-inflation-edges-lower-to-3-4-as-expected
+   + The Block "buys the Fed time, not conviction": https://www.theblock.co/news/markets/2026-08-12-bitcoin-dips-under-64000-in-line-cpi-buys-fed-time-not-conviction-analysts-411594
+10. **KuCoin flash (FETCHED) — BIP-110 fork fails, mainnet outpaces minority chain by 26 blocks (Aug 9):** 2.53% / 51 blocks, split at 961,632, 2-block stall, AntPool detail.
+    https://www.kucoin.com/news/flash/bitcoin-bip-110-fork-fails-as-mainnet-outpaces-minority-chain-by-26-blocks
+11. **eCash fork context (search-verified):** CoinDesk Apr 27 explainer (Satoshi-coin reassignment ~500K, "theft" criticism); AMINA research overview; block 964,000 ≈ Aug 21.
+    https://www.coindesk.com/tech/2026/04/27/a-long-time-developer-wants-to-fork-bitcoin-and-reassign-satoshi-coins-the-community-is-calling-it-a-theft
+    https://aminagroup.com/research/bitcoin-fork-august-2026-bip-110-ecash-covenants-and-the-quantum-clock/
+12. **Farside Investors:** https://farside.co.uk/btc/ — still 403 (fourth consecutive run); dailies via KuCoin/financefeeds/Blockchain.News/CoinStats cross-checks.
+13. **Jackson Hole (search-verified):** Aug 27–29, Warsh keynote Fri Aug 28 AM, theme "Financial Innovation: Implications for Payments and Policy."
+14. **CR floor-time sweep (search-verified):** Senate CR 90–6 through Dec 11 (passed ~Aug 8); House Jul 21 CR 220–205 through Dec 4 (NPR); reconciliation required before Sep 30.
+    https://www.npr.org/2026/07/21/nx-s1-5902245/government-funding-house-vote-continuing-resolution
 
 ## Key Dated Facts (for /refresh-deep-analysis)
 
-### ETF Flows — the restart
+### ETF Flows — restart, reversal, re-restart
 | Date | BTC Net Flow | Notes |
 |---|---|---|
-| Aug 3 | ≈ +$170M | Inferred: $626M 3-day total minus Aug 4–5 |
-| Aug 4 | +$211.5M | IBIT +$170.3M, FBTC +$19.6M, ARKB +$9.2M, BITB +$8.7M |
-| Aug 5 | +$244.4M | Strongest day since late July; IBIT dominant |
-| Aug 6 | +$137.6M | Farside figure; IBIT +$128.3M, GBTC −$32.8M |
-| **Aug 3–6** | **~$750M** | vs July's entire month ~$200M; IBIT 4-day ~$604M (9,269 BTC) |
-| Aug 7 | not yet published | Capture on Monday run — post-jobs-report session |
+| Aug 3–6 | ~+$750M | four straight days (prior run) |
+| Aug 7 | +$101.7M | fifth day; IBIT +$86.7M, FBTC +$41M, BTCO −$19.4M; 5-day run ≈ $865M |
+| Aug 10 | −$144.7M | IBIT −$53.6M; tone-setter for the week |
+| Aug 11 | +$7.8M | (some trackers +$4.9M) |
+| Aug 12 | −$61.2M | CPI day |
+| Aug 13 | −$131.1M | |
+| Aug 14 | −$56.2M | week −$389.7M — worst since June (Bloomberg: "largest in six weeks"); FBTC led weekly outflow −$153M |
+| Aug 17 | +$297.5M | biggest single day since the restart |
+| Aug 18 | +$21.8M | |
+| Aug 19 | not yet published | breakout day — capture next run |
 
-### Macro — the inversion
-- **Oil collapse (deeper-sweep addition):** Brent $101 (Jul 23) → $83.51 (Aug 3, −5.09% on talks announcement) → ~$79.45 settle (Aug 5). Drivers: U.S.–Iran talks running daily from Mon Aug 4 (Hormuz first, then nuclear); **Iran–Oman agreed geographic coordinates for a protected Hormuz shipping corridor**; Trump "Hormuz reopening soon" (Aug 5). Counter-currents: Houthis claimed attack on a Saudi tanker Aug 5 (CNN); strait still largely inaccessible; analysts see ~$120 Q4 risk if it stays closed (The National). 2026 Brent arc: >$126 April peak → <$72 early July → +24% July spike → high-$70s now. Unwinds most of the energy shock the Jul 29 FOMC statement blamed for elevated inflation.
-- Sources: https://www.thenationalnews.com/business/energy/2026/08/03/oil-prices-slump-on-potential-us-iran-deal-to-open-strait-of-hormuz/ (fetched); CNN Aug 5 live blog (451-blocked, search-verified); Yahoo/Reuters Aug 5 settle (search-verified).
-- **Aug 7 jobs:** −23K (exp +83K); first decline in months; May −66K / June −37K revisions; unemployment 4.1% via participation drop; wages +3.2% Y/Y (lowest since May 2021); government −53K largely seasonal, private +30K.
-- **Fed repricing:** September hike (~60–72% last week) → **hold expected** (CME FedWatch, same day). Remaining gates: **Aug 12 July CPI**, Jackson Hole (Warsh's first keynote, late Aug), **Sep 15–16 FOMC**.
-- **BTC:** $63,150 Mon open → $64,300 pre-report → **$65,340 August high** post-report. Resistance: Jul 21 high ~$66,900.
+### Market structure (not slotted; watch)
+- CME BTC futures OI ~123,000 BTC — lowest since Feb 2024; Binance overtook CME in futures OI for the first time since 2023 (institutional volume shifting to offshore perps). Candidate second-order driver for the ETF/institutional theme.
+
+### Macro
+- CPI Aug 12: 3.4% / core 2.5% / +0.1% m/m — all in line. Sept: ~62% hold, ~38–42% hike. Gates remaining: Jackson Hole Warsh keynote Aug 28; August jobs Sep 4; FOMC Sep 15–16.
+- BTC path: $65,340 (Aug 7 high) → ~$63K stagnation Aug 11–17 ($62,951 Aug 15) → Aug 19 breakout ~$69,500 high / ~$68,500 trading. Resistance cleared: Jul 21 high ~$66,900. Next: June levels ~$70K+.
 
 ### Regulatory
-- **CLARITY:** window missed (Aug 6 confirmed). Dem demands: ethics (Trump family crypto, >$1B 2025 disclosed earnings), illicit finance, stablecoin yield. Gallego–Tillis proposal unanswered at White House. Sep 14 return; vote Sep 15–16; Polymarket ~13% for 2026; possibly short of 50 votes today.
-- **Shutdown risk removed from September:** Collins–Murray CR through Dec 11 (Senate 89–4); House must still act before Sep 30. Floor-time tailwind for CLARITY's September window.
-
-### Protocol
-- **BIP-110:** mandatory signaling opened ~Aug 7 (block 961,632); ~0–2.45% blocks signaling / ~5 EH/s; enforcing nodes 2–8% of listening nodes; lock-in needs 55% of a 2,016-block period by 963,648 (~two weeks) — on current signaling it fails; enforcing nodes would track a near-zero-hashpower chain. Sztorc eCash fork still ~Aug 21 (block 964,000). **Monday run: check whether the window produced any reorg/split drama and whether signaling moved.**
+- SEC Regulation Crypto Assets: figures above; comment window ends ~mid-late October (60d from Federal Register publication — exact date TBD next run).
+- CLARITY: Sep 14 return, Sep 15–16 cloture; Trump "fair version" push Aug 19; Polymarket ~13% (Aug 6 datum, not re-verified); CR reconciliation (Dec 4 vs Dec 11 versions) still consumes some September floor time.
+- CFTC: inaugural Innovation Advisory Committee meeting Aug 20 (Selig) — capture outcome next run.
 
 ### Corporate
-- No Strategy development since Aug 3 8-K. **Next weekly filing Mon Aug 10** — watch: buy / third sale / seventh no-buy week; STRC rate; cash reserve above $4B.
+- Strategy: holdings 840,447 BTC (avg $75,385, aggregate $63.36B) as of Aug 16; ~6,948 BTC sold YTD; eighth no-buy week; reserve $4.65B + $149.1M added Aug 17-week. **Ordinal caution:** a 32-BTC late-May sale predates the "first" July disposal — dashboard uses "third sale in six weeks," never "third-ever."
+- MSCI: consultation Aug 14 → feedback Sep 30 → results Oct 16 → November review. Watch Strategy/Metaplanet responses and any index-fund front-running.
+- Not slotted: Norway NBIM record indirect BTC exposure 11,549 BTC / $725M H1 2026 (+60.5% Y/Y, 9,914 via MSTR stake) — adoption-agent territory; Metaplanet seeded US Nasdaq arm "Superplanet" with 2,100 BTC ($134.6M).
 
-### Security
-- Coldcard final-ish tally: 1,816 BTC / $116M / 5,200+ addresses (TRM/Galaxy, Aug 4). $130M figure (Yahoo) unconfirmed. Third-largest 2026 hack; YTD $1.2B/276 incidents.
+### Protocol
+- BIP-110 dead (2.53% final; minority chain 2 blocks, stalled; Ocean/Roughnecks only backers; difficulty math makes revival impractical). eCash hard fork ~Aug 21 at block 964,000 — capture launch outcome, any replay/scam incidents, and eCash market price next run.
 
 ## Archives Updated (HISTORICAL_HIGHLIGHTS + FALLBACK_NEWS)
 
-### HISTORICAL_HIGHLIGHTS — 4-week window (cutoff: Jul 10, from asOf Aug 7)
-- **Aged out (>28 days):** none (oldest item Jul 14 still inside window).
-- **Pruned for cap (same-thread supersession):** Jul 23 Thune-expects-miss (→ Aug 6 confirmed-no-vote); Jul 24 ETF streak-end (→ Jul 31 month-end + Aug 6 restart); Jul 20 Strategy zero-purchase filing (→ Aug 3 second-sale entry) (3).
-- **Updated in place:** Jul 30 Coldcard entry — tally 1,367→1,816 BTC, $89M→$116M, 4,500+→5,200+ addresses, added "third-largest crypto hack of 2026" (avoids a duplicate same-thread Aug 4 entry).
-- **Added:** Aug 7 jobs report / hike-bets collapse; Aug 6 CLARITY misses window; Aug 6 four-day ETF inflow restart (3).
-- **Final count: 14 (at cap).** Range Jul 14 – Aug 7. Sorted date-desc, all starred. Fact-check guard passed (no price > ATH constant; all years 2026).
+### HISTORICAL_HIGHLIGHTS — 4-week window (cutoff: Jul 22, from asOf Aug 19)
+- **Aged out (>28 days):** Jul 14 CPI, Jul 15 Japan FIEA, Jul 18 fork-showdown, Jul 18 GENIUS deadline, Jul 20 treasury exits (5).
+- **Dropped for cap (at-cutoff / superseded):** Jul 22 Poolin (at cutoff edge); Aug 3 Strategy second sale (superseded by Aug 10 third-sale entry) (2).
+- **Added:** Aug 19 White House breakout; Aug 18 SEC rulebook; Aug 14 MSCI consultation; Aug 14 ETF worst week; Aug 12 CPI; Aug 10 Strategy third sale (covers Aug 17 no-buy filing); Aug 9 BIP-110 failure (7).
+- **Edited in place:** Aug 7 jobs entry — "its high for August" → "its high for early August" (no longer true after Aug 19).
+- **Final count: 14 (at cap).** Range Jul 24 – Aug 19, sorted date-desc, all starred. Fact-check guard passed (no price > ATH; all years 2026).
 
-### FALLBACK_NEWS — past ~48h (Aug 6–7), fully replaced
-- Aug 7: payrolls −23K, September bets flip to hold, BTC $65,340 August high (starred, MACRO)
-- Aug 6: no CLARITY vote before recess; Sep 15–16 next; odds ~13% (starred, REGULATION)
-- Aug 6: fourth straight ETF inflow day, ~$750M week, IBIT-led (starred, ETFs)
-- Aug 7: BIP-110 mandatory signaling window opens, <1% hashpower (unstarred, PROTOCOL)
+### FALLBACK_NEWS — past ~48h (Aug 18–19), fully replaced
+- Aug 19: BTC +8% to ~$69,500, White House summit, $1B+ short squeeze (starred, MARKETS)
+- Aug 18: SEC proposes Regulation Crypto Assets (starred, REGULATION)
+- Aug 18: ETF inflows return +$297.5M/+$21.8M after −$390M week (unstarred, ETFs)
+- Aug 19: eCash fork ~Aug 21 preview + scam warning (unstarred, PROTOCOL)
 
 ## index.html
-Not touched — slot-1 category unchanged (ETFs). The stalled→advancing tone flip is a within-theme development, not a primary-identity shift.
+Not touched (hard-scoped out for this run). NOTE for orchestrator meta-guard: slot-1 category DID shift (ETFs → POLICY) — the orchestrator may choose to reassess `index.html:13` meta itself; this agent did not edit it per instructions.
+
+## Addendum — Slot 2 rewrite on user editorial hint (same run)
+
+Jake's mid-orchestration hint: make CLARITY's current status and effects unmistakable. Slot 2 rewritten (status-first structure + plain-English effects). New dated facts verified for it:
+
+- **House passage:** H.R. 3633 (Digital Asset Market Clarity Act, 119th Congress) passed the House **July 17, 2025, 294–134** (Roll Call 199), 78 Democrats in favor.
+  https://www.congress.gov/bill/119th-congress/house-bill/3633 (search-verified via congress.gov/GovTrack/member releases: https://dondavis.house.gov/media/press-releases/us-house-representatives-pass-clarity-act-bipartisan-support)
+- **Senate pipeline detail:** Senate Banking reported the bill **June 1, 2026, with the House text replaced** (substitute); motion to proceed + cloture motion on it entered in the Congressional Record **Aug 8, 2026** — i.e., cloture was formally teed up pre-recess, consistent with the Sep 15–16 first-vote mechanics.
+- **Effects (per CRS overview, congress.gov product IN12583 + House FSC section-by-section):** three-way asset classification (digital commodities / securities / payment stablecoins); **CFTC gets exclusive jurisdiction over digital-commodity spot markets** — exchanges, brokers, dealers register with CFTC; SEC keeps digital securities; Bitcoin is the paradigm 'digital commodity.'
+  https://www.congress.gov/crs-product/IN12583 ; https://financialservices.house.gov/uploadedfiles/2025-07-10_-_sbs_-_clarity_act_of_2025_final.pdf
+- **Major-updates sweep:** no new bill text, amendments, or cosponsor changes found in the Aug 8–19 window; the only developments remain Trump's Aug 19 "fair version" push (already slotted) and the SEC rulemaking interplay. Prediction-market odds: no fresh datum beyond the Aug 6 ~13%; card keeps "around one-in-eight." (One aggregator cited "24% chance" — defirate.com fact sheet, undated/unverified; NOT used.)
+- Slot 2 source list updated: congress.gov bill page added as primary; NBC CR source dropped (CR now a one-clause caution flag in the detail; NBC URL retained in this file's earlier section for deep-analysis).
 
 ## Conclusion
-Mid-week force-run (Fri Aug 7) complete on Fable 5, standalone invocation. All three of the Aug 3 run's flagged Friday events resolved and captured: jobs miss → September hold repricing → BTC August high (slots 1+3 inverted), CLARITY window officially missed (slot 2), BIP-110 window opened as a non-event (FALLBACK_NEWS only). Slot 4 (Strategy) untouched — no development. Both modules `node --check` + dynamic-import verified. **This was NOT a /refresh-all cadence run — the manifest was not bumped; Monday Aug 10 remains the next cadence anchor.** Monday run priorities: Strategy 8-K (Aug 10), Aug 7+ ETF flows, BIP-110 signaling trajectory, Aug 12 CPI setup, any Aug 7 flow reversal.
+Weekly cadence run (Aug 19) complete under /refresh-all. Slots 1 and 5 replaced (POLICY breakout in; forks resolution in; ETF slot folded into slot 1; Coldcard demoted to archive), slots 2–4 refined on dated developments (Trump push Aug 19 / CPI Aug 12 / 8-Ks Aug 10+17 + MSCI Aug 14). Both modules node --check + dynamic-import verified. Rebuild SKIPPED per orchestrator (single build at end). Next-run priorities: eCash fork outcome (~Aug 21), CFTC advisory committee readout (Aug 20), Warsh Jackson Hole keynote (Aug 28), Aug 19+ ETF flows (did the breakout pull money in?), whether BTC holds above $66,900, SEC comment-period reactions, Strategy Aug 24 filing (ninth no-buy week or a turn?).

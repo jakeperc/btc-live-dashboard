@@ -62,15 +62,16 @@ The matrix now nudges DOWN-or-flat in a cascade instead of reinforcing UP. It re
 
 ## Interaction matrix
 
-| From \ To | clarity-act | etfs | sovereign-reserves | corporate-treasuries | protocol-security | fed-monetary-policy | japan-fiea |
-|---|---|---|---|---|---|---|---|
-| **clarity-act** | -- | +0.08 | +0.05 | +0.10 | +0.03 | +0.04 | +0.04 |
-| **etfs** | +0.08 | -- | +0.06 | +0.10 | -0.02 | +0.10 | +0.05 |
-| **sovereign-reserves** | +0.05 | +0.06 | -- | +0.07 | +0.03 | +0.03 | +0.02 |
-| **corporate-treasuries** | +0.10 | +0.10 | +0.07 | -- | +0.04 | +0.07 | +0.03 |
-| **protocol-security** | +0.03 | -0.02 | +0.03 | +0.04 | -- | 0.00 | 0.00 |
-| **fed-monetary-policy** | +0.04 | +0.10 | +0.03 | +0.07 | 0.00 | -- | 0.00 |
-| **japan-fiea** | +0.04 | +0.05 | +0.02 | +0.03 | 0.00 | 0.00 | -- |
+| From \ To | clarity-act | etfs | sovereign-reserves | corporate-treasuries | protocol-security | fed-monetary-policy | japan-fiea | us-crypto-policy |
+|---|---|---|---|---|---|---|---|---|
+| **clarity-act** | -- | +0.08 | +0.05 | +0.10 | +0.03 | +0.04 | +0.04 | 0.00 |
+| **etfs** | +0.08 | -- | +0.06 | +0.10 | -0.02 | +0.10 | +0.05 | 0.00 |
+| **sovereign-reserves** | +0.05 | +0.06 | -- | +0.07 | +0.03 | +0.03 | +0.02 | 0.00 |
+| **corporate-treasuries** | +0.10 | +0.10 | +0.07 | -- | +0.04 | +0.07 | +0.03 | 0.00 |
+| **protocol-security** | +0.03 | -0.02 | +0.03 | +0.04 | -- | 0.00 | 0.00 | 0.00 |
+| **fed-monetary-policy** | +0.04 | +0.10 | +0.03 | +0.07 | 0.00 | -- | 0.00 | 0.00 |
+| **japan-fiea** | +0.04 | +0.05 | +0.02 | +0.03 | 0.00 | 0.00 | -- | 0.00 |
+| **us-crypto-policy** | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | -- |
 
 ## Pair reasoning
 
@@ -104,15 +105,7 @@ The matrix now nudges DOWN-or-flat in a cascade instead of reinforcing UP. It re
 
 **fed-monetary-policy <-> protocol-security** (0.00): No mechanism. Protocol is engineering-driven; rate cycles don't touch BIP signaling.
 
-**japan-fiea <-> etfs** (+0.05): A second major-market spot-ETF venue (TSE rails targeted 2027) legitimizes the wrapper globally and creates venue competition for issuers/flows. Slow-burn coupling — statutory clock, not tape-speed.
-
-**japan-fiea <-> clarity-act** (+0.04): The competitiveness channel (see causal edge `foreign-statutory-reclassification → domestic-legislative-pressure`): an enacted foreign equivalent pressures the U.S. timeline and, when the U.S. slips, carries the unlock mechanism alone (JUL 26: exactly this branch fired).
-
-**japan-fiea <-> corporate-treasuries** (+0.03): Metaplanet's home jurisdiction gains equity-style tax treatment + disclosure rules — improves the largest non-U.S. DAT's operating regime; weak direct coupling otherwise.
-
-**japan-fiea <-> sovereign-reserves** (+0.02): A G7 statute treating BTC as a financial instrument marginally strengthens the reserve-asset classification argument for sovereigns. Weak.
-
-**japan-fiea <-> fed-monetary-policy / protocol-security** (0.00): No mechanism — the FIEA process is domestic-statutory; rate cycles and BIP signaling don't touch it.
+**japan-fiea pairs** (condensed AUG 19): ↔etfs +0.05 (second major-market ETF venue, TSE 2027 — slow-burn); ↔clarity-act +0.04 (competitiveness channel; carries the unlock alone when the U.S. slips — fired JUL 26); ↔corporate +0.03 (Metaplanet's home regime); ↔sovereign +0.02 (G7 classification precedent); ↔fed/protocol 0.00 (no mechanism). Theme file archived AUG 19 (5th quiet run) — row retained.
 
 ## Tuning notes
 
@@ -122,4 +115,4 @@ The matrix now nudges DOWN-or-flat in a cascade instead of reinforcing UP. It re
 - When a new theme enters the top-5 that isn't in this matrix, add its row/column with 0.00 deltas and a note in `next-run-briefing.md` to assess interactions in the next run. Decide at that time whether it belongs in the correlated-risk cluster.
 - Review and re-calibrate this matrix during quarterly `/consolidate-deep-analysis` runs.
 
-Last updated: 2026-07-26 (added the `japan-fiea` row/column — deltas +0.04 clarity / +0.05 etfs / +0.02 sovereign / +0.03 corporate / 0.00 protocol+fed — initialized from structural reasoning per the JUL 19 flag; excluded from the correlated-risk cluster. NOTE: the market-news card rail rotated Japan-FIEA out to the headlines archives this same run (slot 5 → August forks card); the row stays because the theme remains analytically active — reassess slot membership + a possible protocol-slot row next run. Prior: 2026-06-05 contagion regime added; magnitudes otherwise unchanged from 2026-05-29.)
+Last updated: 2026-08-19 (added the `us-crypto-policy` row/column at ALL-ZERO deltas per the novel-theme rule — slot 1 rotated ETFs → POLICY on the SEC's Regulation Crypto Assets + the White House summit. NEXT RUN MUST ASSESS real deltas: candidates — us-crypto-policy↔clarity-act strongly two-way (the substitution/momentum channel; possibly the matrix's first ASYMMETRIC pair — administrative progress arguably dampens legislative urgency while legislative failure boosts the administrative track's importance); us-crypto-policy↔etfs positive (the Aug 17–19 policy-shock flow restart is the first datapoint); us-crypto-policy↔corporate-treasuries weak-positive. Cluster call: likely NOT in the correlated-risk cluster (process/agenda-driven, like clarity-act) despite moving the tape 8% in a day — the tape move ran through positioning, not through the theme's own probability. Prior: 2026-07-26 added the `japan-fiea` row/column — deltas +0.04 clarity / +0.05 etfs / +0.02 sovereign / +0.03 corporate / 0.00 protocol+fed — initialized from structural reasoning per the JUL 19 flag; excluded from the correlated-risk cluster. NOTE: the market-news card rail rotated Japan-FIEA out to the headlines archives this same run (slot 5 → August forks card); the row stays because the theme remains analytically active — reassess slot membership + a possible protocol-slot row next run. Prior: 2026-06-05 contagion regime added; magnitudes otherwise unchanged from 2026-05-29.)
