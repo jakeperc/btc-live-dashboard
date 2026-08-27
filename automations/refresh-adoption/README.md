@@ -155,6 +155,17 @@ If a table is polled but every candidate change fails the gate, skip the `Edit` 
 
 Press articles (CoinDesk, Bitcoin Magazine) as **context only**, never as the BTC-count source.
 
+## Voice
+
+`method` and `status` are the only prose in this file, and they are the most-read strings on the Adoption tab — one line per row, scanned dozens at a time.
+
+**Explain by consequence, not by category.** The house model is already in this data: "Keeps all the BTC it mines", "Sold coins in July to raise cash", "Selling — most coins pledged against a loan due December", "Treasury — earns income selling options against its BTC". Each says what the company DOES. Compare with "Trading inventory" or "Exchange treasury (post-IPO)", which name a category and tell a newcomer nothing.
+
+- **≤12 words.** These are labels, not sentences.
+- **Spell out the shorthand a newcomer will not know:** DCA ("buys a fixed amount on a schedule"), self-mined ("keeps the coins it mines"), fiat ("government money"), treasury reserve ("holds BTC as company savings").
+- Never SHOUT-CAPS, never an emoji in `method`/`status` (the `flag` field is the only place emoji belong).
+- The full standard is `SCOPE.md` § "Audience & plain-language standard".
+
 ## Common pitfalls
 
 - **Forgetting to re-sort.** Both holdings tables MUST be sorted by `btc` descending after any change.

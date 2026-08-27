@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { XAxis, YAxis, Tooltip, ResponsiveContainer, AreaChart, Area, ReferenceArea } from "recharts";
-import { WORKED_EXAMPLE, RETAIL_REALITY, STRATEGY_RULES, CUSTODY_LADDER, ALLOCATION_BANDS, COMMON_MISTAKES, HISTORICAL_DRAWDOWNS, DRAWDOWN_CAVEAT, STRATEGY_SOURCES, DCA_WEEKLY_OPTIONS } from "../data/strategy.js";
+import { WORKED_EXAMPLE, RETAIL_REALITY, STRATEGY_RULES, CUSTODY_LADDER, ALLOCATION_BANDS, COMMON_MISTAKES, HISTORICAL_DRAWDOWNS, DRAWDOWN_CAVEAT, STRATEGY_SOURCES, STRATEGY_EPIGRAPH, DCA_WEEKLY_OPTIONS } from "../data/strategy.js";
 import { fmt } from "../lib/format.js";
 import { computeDcaOutcome, computeMaxDrawdown } from "../lib/market-math.js";
 import { useIsMobile, shouldAnimate, Reveal, useCountUp } from "../hooks/ui.jsx";
@@ -660,6 +660,32 @@ export const StrategyMistakes = () => (
   </section>
 );
 
+export const StrategyEpigraph = () => (
+  <section className="strategy-section">
+    <Reveal>
+      <figure className="strategy-epigraph-card">
+        <div className="strategy-epigraph-mark" aria-hidden="true">“</div>
+        <div className="strategy-epigraph-eyebrow">{STRATEGY_EPIGRAPH.eyebrow}</div>
+        <blockquote className="strategy-epigraph-quote" cite={STRATEGY_EPIGRAPH.url}>
+          {STRATEGY_EPIGRAPH.quote}
+        </blockquote>
+        <figcaption className="strategy-epigraph-attrib">
+          <span className="strategy-epigraph-name">— {STRATEGY_EPIGRAPH.attribution}</span>
+          <a
+            className="strategy-epigraph-cite"
+            href={STRATEGY_EPIGRAPH.url}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {STRATEGY_EPIGRAPH.context} <span aria-hidden="true">↗</span>
+          </a>
+        </figcaption>
+        <div className="strategy-epigraph-gloss">{STRATEGY_EPIGRAPH.gloss}</div>
+      </figure>
+    </Reveal>
+  </section>
+);
+
 export const StrategySources = () => (
   <section className="strategy-section">
     <Reveal>
@@ -704,6 +730,8 @@ export const StrategyTab = ({ btc, setActiveTab }) => {
       <StrategyCustodyLadder />
       <Reveal scale><div className="section-divider" /></Reveal>
       <StrategyAllocationBands />
+      <Reveal scale><div className="section-divider" /></Reveal>
+      <StrategyEpigraph />
       <Reveal scale><div className="section-divider" /></Reveal>
       <StrategySources />
     </div>

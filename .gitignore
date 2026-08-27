@@ -3,3 +3,9 @@ dist
 .vite
 *.log
 .DS_Store
+
+# check:plain transients. The pre-Editor snapshot carries a full copy of each data
+# file (it is the restore source when the numeric invariant fails), so it must never
+# be committed. last-check.md is regenerated on every run.
+automations/refresh-plain-language/.invariants-*.json
+automations/refresh-plain-language/last-check.md

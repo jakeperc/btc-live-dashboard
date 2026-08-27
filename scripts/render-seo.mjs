@@ -62,8 +62,8 @@ function asOfToISO(asOf) {
 
 function introSection() {
   return `  <header>
-    <h1>Bitcoin Intelligence — Live Dashboard by Nati-Crypto</h1>
-    <p>A free, real-time Bitcoin dashboard built by <strong>Nati-Crypto</strong> in <strong>Cincinnati, Ohio</strong>. It pairs live price and on-chain metrics with a weekly, probability-scored deep analysis, a hard-money thesis, an allocation-and-risk strategy framework, curated headlines, and global adoption data — sovereign reserves, public-company treasuries, and ETF flows — on a single page.</p>
+    <h1>Bitcoin Intelligence — Live Bitcoin Dashboard</h1>
+    <p>A free, real-time Bitcoin dashboard built by <strong>Jake Percy</strong> in <strong>Cincinnati, Ohio</strong>. It pairs live price and on-chain metrics with a weekly, probability-scored deep analysis, a hard-money thesis, an allocation-and-risk strategy framework, curated headlines, and global adoption data — sovereign reserves, public-company treasuries, and ETF flows — on a single page.</p>
     <p>The sections below are a text rendition of the dashboard's curated content, regenerated every week. Live figures (current price, block height, hash rate, ETF flows) load in the interactive app.</p>
   </header>`;
 }
@@ -78,7 +78,7 @@ function analysisSection() {
   const cross = d.crossCurrents
     .map(
       (c) =>
-        `    <article>\n      <h4>${esc(c.title)}</h4>\n      <p>${esc(
+        `    <article>\n      <h4>${esc(c.title)}</h4>\n${c.plain ? `      <p><strong>${esc(c.plain)}</strong></p>\n` : ""}      <p>${esc(
           c.body
         )}</p>\n      <p><em>Themes: ${c.themesConnected.map(esc).join(", ")}</em></p>\n    </article>`
     )
@@ -88,12 +88,12 @@ function analysisSection() {
       (w) =>
         `      <li><strong>${esc(w.event)}</strong> — probability ${pct(
           w.probability
-        )} (${esc(w.window)}). ${esc(w.signal)}</li>`
+        )} (${esc(w.window)}).${w.plain ? ` ${esc(w.plain)}` : ""} ${esc(w.signal)}</li>`
     )
     .join("\n");
   return `  <section aria-labelledby="seo-analysis">
     <h2 id="seo-analysis">Weekly Deep Analysis — ${esc(d.asOf)}</h2>
-    <p><strong>${esc(d.headline)}</strong></p>
+${d.plainSummary ? `    <p><strong>${esc(d.plainSummary)}</strong></p>\n` : ""}    <p>${esc(d.headline)}</p>
     <h3>Market Context</h3>
     <p>${esc(d.marketContext)}</p>
     <h3>${esc(pa.themeTitle)} — thesis probability ${pct(pa.thesisProbability)}</h3>
@@ -308,9 +308,9 @@ ${sourcesList(STRATEGY_SOURCES)}
 
 function aboutSection() {
   return `  <section aria-labelledby="seo-about">
-    <h2 id="seo-about">About Nati-Crypto</h2>
-    <p>Nati-Crypto is a Cincinnati, Ohio Bitcoin resource providing live market intelligence, education, and analysis. "Nati" is short for Cincinnati — the Queen City's Bitcoin community hub.</p>
-    <p><a href="https://nati-crypto.com">Visit Nati-Crypto</a></p>
+    <h2 id="seo-about">About this dashboard</h2>
+    <p>Bitcoin Intelligence is a Cincinnati, Ohio Bitcoin resource providing live market intelligence, education, and analysis. It is written and maintained by Jake Percy.</p>
+    <p><a href="https://jakepercy.com">jakepercy.com</a></p>
   </section>`;
 }
 
@@ -339,8 +339,8 @@ export function renderJsonLd({ origin }) {
     description: d.headline,
     articleBody: d.primaryAnalysis.body.join("\n\n"),
     ...(datePublished ? { datePublished, dateModified: datePublished } : {}),
-    author: { "@type": "Organization", name: "Nati-Crypto", url: "https://nati-crypto.com" },
-    publisher: { "@type": "Organization", name: "Nati-Crypto", url: "https://nati-crypto.com" },
+    author: { "@type": "Person", name: "Jake Percy", url: "https://jakepercy.com" },
+    publisher: { "@type": "Person", name: "Jake Percy", url: "https://jakepercy.com" },
     mainEntityOfPage: { "@type": "WebPage", "@id": origin },
     about: { "@type": "Thing", name: "Bitcoin" },
     isAccessibleForFree: true,

@@ -8,14 +8,12 @@ const distDir = join(repoRoot, "dist");
 const indexPath = join(distDir, "index.html");
 const assetsDir = join(distDir, "assets");
 
-// The same single file is deployed to two live domains. A shared cross-domain
-// canonical would suppress whichever domain it doesn't point at, so we emit one
-// self-canonical file per domain instead — each one tells Google "I am the
-// canonical for my own URL," and both index independently.
-// Primary (dist/index.html) = jakepercy.com/bitcoin.
+// One live domain, one self-canonical file: dist/index.html = jakepercy.com/bitcoin.
+// (This used to emit a second per-domain variant when the page was also served
+// from a separate brand domain; that domain is gone, so index.html is the whole
+// deploy and index.html's canonical is already correct as authored.)
 const TARGETS = [
   { origin: "https://jakepercy.com/bitcoin", out: "index.html" },
-  { origin: "https://nati-crypto.com/bitcoin", out: "index.nati-crypto.html" },
 ];
 
 const html = await readFile(indexPath, "utf8");
@@ -65,12 +63,13 @@ base = base.replace(marker, () => seoHtml);
 const buildStamp = new Date().toISOString();
 base = base.replace(/<head>/i, `<head>\n    <!-- build: ${buildStamp} -->`);
 
-// 4) Emit one self-canonical file per live domain. The lookahead avoids touching
-//    the og-image path (…/bitcoin/og-image.png) and the bare brand root
-//    (https://nati-crypto.com), rewriting only the page URL itself. The inlined
-//    bundle is appended before </body> (module scripts are deferred, so order
-//    relative to <head> doesn't change execution timing).
-const pageUrl = /https:\/\/nati-crypto\.com\/bitcoin(?![/\w-])/g;
+// 4) Emit the self-canonical file. The lookahead avoids touching the og-image
+//    path (…/bitcoin/og-image.png), rewriting only the page URL itself — a no-op
+//    while index.html already carries the primary origin, but it keeps the loop
+//    correct if another target is ever added back. The inlined bundle is appended
+//    before </body> (module scripts are deferred, so order relative to <head>
+//    doesn't change execution timing).
+const pageUrl = /https:\/\/jakepercy\.com\/bitcoin(?![/\w-])/g;
 for (const { origin, out } of TARGETS) {
   let variant = base.replace(pageUrl, origin);
   const articleLd = renderJsonLd({ origin });

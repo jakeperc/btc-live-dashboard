@@ -1,7 +1,52 @@
 import { useState } from "react";
 import { DEEP_ANALYSIS } from "../data/deep-analysis.js";
-import { Term, SectionGroup, DipExplainerCard } from "../components/shared.jsx";
+import { GLOSSARY, GLOSSARY_BY_KEY } from "../data/glossary.js";
+import { buildMatcher, linkNamed, linkCard } from "../lib/glossary-match.js";
+import { Term, Prose, SectionGroup, DipExplainerCard } from "../components/shared.jsx";
 import { pBadge } from "./DashboardTab.jsx";
+
+// ─── Glossary segmentation, computed ONCE at module scope ────────────────────
+// DEEP_ANALYSIS and GLOSSARY are build-time constants, so which words get linked
+// can never change at runtime. Doing this during render — with a Set tracking
+// "first occurrence" — would drop every link on the next re-render (this tab stays
+// mounted and re-renders on each price poll) and would break under StrictMode.
+//
+// One scope per collapsible card: the main read, each watch row, the contrarian
+// take. Within a scope only the first occurrence of a term is linked, capped, so a
+// paragraph never turns into a field of buttons for a screen-reader user.
+const MATCHER = buildMatcher(GLOSSARY);
+const _A = DEEP_ANALYSIS ?? {};
+const _PRIMARY = _A.primaryAnalysis ?? {};
+const _CC = _A.crossCurrents ?? [];
+
+const MAIN_READ = linkNamed(
+  [
+    ...(_PRIMARY.body ?? []).map((p, i) => [`body${i}`, p]),
+    ["marketContext", _A.marketContext ?? ""],
+    ..._CC.flatMap((c, i) => [[`cc${i}`, c?.body ?? ""]]),
+    ...(_PRIMARY.falsificationConditions ?? []).map((c, i) => [`fals${i}`, c]),
+  ],
+  MATCHER,
+  8
+);
+
+const WATCH_SIGNALS = (_A.watchList ?? []).map(
+  (w) => linkCard([w?.signal ?? ""], MATCHER, 4).segments[0]
+);
+
+const CONTRARIAN_BODY = linkCard(
+  [typeof _A.contrarianTake === "string" ? _A.contrarianTake : (_A.contrarianTake?.body ?? "")],
+  MATCHER,
+  4
+).segments[0];
+
+// Every term the page actually links, for the "Terms on this page" panel — the only
+// glossary affordance that works on a phone, where a dotted underline is easy to miss.
+const PAGE_TERMS = [...new Set([
+  ...MAIN_READ.keys,
+  ...WATCH_SIGNALS.flat().filter((s) => s.key).map((s) => s.key),
+  ...CONTRARIAN_BODY.filter((s) => s.key).map((s) => s.key),
+])].map((k) => GLOSSARY_BY_KEY[k]).filter(Boolean);
 
 // Collapse-by-default card for the Analysis tab: an easy-to-read summary stays in the
 // header; the technical depth lives in the expanded body. Mirrors DipExplainerCard's
@@ -64,7 +109,7 @@ export const AnalysisCard = ({ eyebrow, eyebrowColor, summary, badge, accent, de
 
 // One "What to watch" row: collapses to window + event + probability; the dense signal
 // reasoning is one tap away in the expand.
-export const WatchRow = ({ item }) => {
+export const WatchRow = ({ item, signalSegments = null }) => {
   const [open, setOpen] = useState(false);
   return (
     <div style={{
@@ -129,12 +174,14 @@ export const WatchRow = ({ item }) => {
               Watching for: {item.event}
             </div>
           )}
-          <div style={{
-            fontSize: "var(--fs-sm)", color: "var(--text-secondary)",
-            fontFamily: "var(--font-sans)", lineHeight: 1.65,
-          }}>
-            {item.signal}
-          </div>
+          <Prose
+            as="div"
+            segments={signalSegments ?? [{ text: item.signal }]}
+            style={{
+              fontSize: "var(--fs-sm)", color: "var(--text-secondary)",
+              fontFamily: "var(--font-sans)", lineHeight: 1.65,
+            }}
+          />
         </div>
       )}
     </div>
@@ -224,12 +271,15 @@ export const DeepAnalysisTab = () => {
             {primary.themeTitle}
           </div>
           {(primary.body || []).map((p, i) => (
-            <p key={i} style={{
-              fontSize: "var(--fs-sm)", color: "var(--text-secondary)",
-              fontFamily: "var(--font-sans)", lineHeight: 1.7, margin: 0,
-            }}>
-              {p}
-            </p>
+            <Prose
+              key={i}
+              as="p"
+              segments={MAIN_READ.fields[`body${i}`] ?? [{ text: p }]}
+              style={{
+                fontSize: "var(--fs-sm)", color: "var(--text-secondary)",
+                fontFamily: "var(--font-sans)", lineHeight: 1.7, margin: 0,
+              }}
+            />
           ))}
 
           {a.marketContext && (
@@ -241,12 +291,14 @@ export const DeepAnalysisTab = () => {
               }}>
                 Market backdrop
               </div>
-              <div style={{
-                fontSize: "var(--fs-sm)", color: "var(--text-secondary)",
-                fontFamily: "var(--font-sans)", lineHeight: 1.65,
-              }}>
-                {a.marketContext}
-              </div>
+              <Prose
+                as="div"
+                segments={MAIN_READ.fields.marketContext ?? [{ text: a.marketContext }]}
+                style={{
+                  fontSize: "var(--fs-sm)", color: "var(--text-secondary)",
+                  fontFamily: "var(--font-sans)", lineHeight: 1.65,
+                }}
+              />
             </div>
           )}
 
@@ -268,12 +320,24 @@ export const DeepAnalysisTab = () => {
                     }}>
                       {c.title}
                     </div>
-                    <div style={{
-                      fontSize: "var(--fs-sm)", color: "var(--text-secondary)",
-                      fontFamily: "var(--font-sans)", lineHeight: 1.6,
-                    }}>
-                      {c.body}
-                    </div>
+                    {/* Plain lead line when the drafter wrote one. No firstSentence()
+                        fallback: it splits on "U.S." and would print a lead of "U.S." */}
+                    {c.plain && (
+                      <div style={{
+                        fontSize: "var(--fs-sm)", fontWeight: 600, color: "var(--text-primary)",
+                        fontFamily: "var(--font-sans)", lineHeight: 1.45, marginBottom: 4,
+                      }}>
+                        {c.plain}
+                      </div>
+                    )}
+                    <Prose
+                      as="div"
+                      segments={MAIN_READ.fields[`cc${i}`] ?? [{ text: c.body }]}
+                      style={{
+                        fontSize: "var(--fs-sm)", color: "var(--text-secondary)",
+                        fontFamily: "var(--font-sans)", lineHeight: 1.6,
+                      }}
+                    />
                   </div>
                 ))}
               </div>
@@ -294,7 +358,9 @@ export const DeepAnalysisTab = () => {
                 fontSize: "var(--fs-sm)", fontFamily: "var(--font-sans)", lineHeight: 1.6,
               }}>
                 {primary.falsificationConditions.map((c, i) => (
-                  <li key={i} style={{ marginBottom: 4 }}>{c}</li>
+                  <li key={i} style={{ marginBottom: 4 }}>
+                    <Prose segments={MAIN_READ.fields[`fals${i}`] ?? [{ text: c }]} />
+                  </li>
                 ))}
               </ul>
             </div>
@@ -312,7 +378,7 @@ export const DeepAnalysisTab = () => {
         >
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {a.watchList.map((w, i) => (
-              <WatchRow key={i} item={w} />
+              <WatchRow key={i} item={w} signalSegments={WATCH_SIGNALS[i]} />
             ))}
           </div>
         </AnalysisCard>
@@ -327,12 +393,50 @@ export const DeepAnalysisTab = () => {
           badge={pBadge(contrarian.probability, "Vindication")}
           summary={contrarianPlain}
         >
-          <div style={{
-            fontSize: "var(--fs-sm)", color: "var(--text-primary)",
-            fontFamily: "var(--font-sans)", lineHeight: 1.65,
-          }}>
-            {contrarian.body}
-          </div>
+          <Prose
+            as="div"
+            segments={CONTRARIAN_BODY ?? [{ text: contrarian.body }]}
+            style={{
+              fontSize: "var(--fs-sm)", color: "var(--text-primary)",
+              fontFamily: "var(--font-sans)", lineHeight: 1.65,
+            }}
+          />
+        </AnalysisCard>
+      )}
+
+      {/* Terms on this page — the glossary affordance that works on a phone, where a
+          dotted underline mid-paragraph is easy to miss entirely. */}
+      {PAGE_TERMS.length > 0 && (
+        <AnalysisCard
+          eyebrow={`Terms on this page · ${PAGE_TERMS.length}`}
+          summary="Plain-English definitions for the terms used above."
+        >
+          <dl style={{ margin: 0, display: "flex", flexDirection: "column", gap: 10 }}>
+            {PAGE_TERMS.map((t) => (
+              <div key={t.key}>
+                <dt style={{
+                  fontSize: "var(--fs-sm)", fontWeight: 700, color: "var(--text-primary)",
+                  fontFamily: "var(--font-sans)", lineHeight: 1.35,
+                }}>
+                  {t.label}
+                </dt>
+                <dd style={{
+                  margin: 0, fontSize: "var(--fs-sm)", color: "var(--text-secondary)",
+                  fontFamily: "var(--font-sans)", lineHeight: 1.55,
+                }}>
+                  {t.plain}
+                  {t.source && (
+                    <>
+                      {" "}
+                      <a href={t.source} target="_blank" rel="noreferrer" style={{ color: "var(--text-dim)", fontSize: "var(--fs-xs)" }}>
+                        source
+                      </a>
+                    </>
+                  )}
+                </dd>
+              </div>
+            ))}
+          </dl>
         </AnalysisCard>
       )}
 

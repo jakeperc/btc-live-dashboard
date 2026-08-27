@@ -7,8 +7,19 @@ import { SUPPLY_HISTORY } from "../data/supply-history.js";
 import { TOTAL_SUPPLY, HALVING_BLOCK } from "../lib/constants.js";
 import { fmt, fmtUSD, formatRemainingTime, formatElapsed, marketCapComparison, isImportantHeadline } from "../lib/format.js";
 import { useElapsed, Pulse, useIsMobile, Reveal, usePersistedState } from "../hooks/ui.jsx";
-import { SourceLink, Term, StatCard, StatStrip, SectionGroup, SupplyMeter, DipExplainerCard, PriceDisplay, ErrorBanner, buildMarketPulse, MarketPulseCard } from "../components/shared.jsx";
+import { SourceLink, Term, Prose, StatCard, StatStrip, SectionGroup, SupplyMeter, DipExplainerCard, PriceDisplay, ErrorBanner, buildMarketPulse, MarketPulseCard } from "../components/shared.jsx";
 import { AnalysisCard, WatchRow, DeepAnalysisTab } from "./AnalysisTab.jsx";
+import { GLOSSARY } from "../data/glossary.js";
+import { buildMatcher, linkCard } from "../lib/glossary-match.js";
+
+// Glossary segmentation happens ONCE, here, not during render: CURATED_MARKET_UPDATES
+// and GLOSSARY are build-time constants, and this component re-renders every second
+// via useElapsed on the block timer — a render-time first-occurrence Set would drop
+// every link one tick after mount.
+const GLOSSARY_MATCHER = buildMatcher(GLOSSARY);
+const CURATED_SEGMENTS = CURATED_MARKET_UPDATES.map(
+  (u) => linkCard([u.detail ?? ""], GLOSSARY_MATCHER, 5).segments[0]
+);
 
 // ─── PRICE CHART (unified, time-range selector) ─────────────────
 // target = number of visual data points to render for each range (uniform density)
@@ -656,7 +667,13 @@ export const DashboardTab = ({ btc, setActiveTab }) => {
               {CURATED_MARKET_UPDATES.map((update, i) => (
                 <div key={update.title} style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
                   <span style={{ fontSize: 10, fontFamily: "var(--font-mono)", color: "var(--accent-bitcoin)", fontWeight: 800, minWidth: 18, flexShrink: 0 }}>0{i + 1}</span>
-                  <span style={{ fontSize: "var(--fs-xs)", color: "var(--text-secondary)", fontFamily: "var(--font-sans)", fontWeight: 600, lineHeight: 1.35 }}>{update.title}</span>
+                  {/* Plain text only — a <Term> here would swallow the expand click. */}
+                  <span style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                    <span style={{ fontSize: "var(--fs-xs)", color: "var(--text-secondary)", fontFamily: "var(--font-sans)", fontWeight: 600, lineHeight: 1.35 }}>{update.title}</span>
+                    {update.plain && (
+                      <span style={{ fontSize: "var(--fs-xs)", color: "var(--text-muted)", fontFamily: "var(--font-sans)", fontWeight: 400, lineHeight: 1.4 }}>{update.plain}</span>
+                    )}
+                  </span>
                 </div>
               ))}
             </div>
@@ -696,9 +713,19 @@ export const DashboardTab = ({ btc, setActiveTab }) => {
                     <div style={{ fontSize: "var(--fs-lg)", fontWeight: 800, color: "var(--text-primary)", fontFamily: "var(--font-sans)", lineHeight: 1.25, marginBottom: 8 }}>
                       {update.title}
                     </div>
-                    <div style={{ fontSize: "var(--fs-sm)", color: "var(--text-tertiary)", fontFamily: "var(--font-mono)", lineHeight: 1.55 }}>
-                      {update.detail}
-                    </div>
+                    {update.plain && (
+                      <div style={{ fontSize: "var(--fs-sm)", color: "var(--text-secondary)", fontFamily: "var(--font-sans)", fontWeight: 600, lineHeight: 1.45, marginBottom: 8 }}>
+                        {update.plain}
+                      </div>
+                    )}
+                    {/* Body copy is sans, not mono: this is 150+ words of prose for a
+                        newcomer, and a monospace wall at --text-tertiary was the least
+                        readable block on the dashboard. */}
+                    <Prose
+                      as="div"
+                      segments={CURATED_SEGMENTS[index]}
+                      style={{ fontSize: "var(--fs-sm)", color: "var(--text-secondary)", fontFamily: "var(--font-sans)", lineHeight: 1.6 }}
+                    />
                   </div>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                     {update.sources.map((source) => (

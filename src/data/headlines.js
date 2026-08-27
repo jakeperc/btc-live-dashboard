@@ -25,6 +25,7 @@ export const HISTORICAL_HIGHLIGHTS = [
 
 export const SIX_MONTH_HIGHLIGHTS = [
   { date: "May 21", title: "Congress introduces the ARMA bill to write the U.S. Strategic Bitcoin Reserve into law; it targets buying 1M BTC over five years with a 20-year holding mandate", source: "Bitcoin Foundation", tag: "REGULATION", important: true },
+  { date: "May 14", title: "Senate Banking Committee passes CLARITY Act 15-9 on bipartisan basis; commodities route to CFTC, securities to SEC under the Digital Asset Market Clarity Act", source: "Senate Banking Committee", tag: "REGULATION", important: true },
   { date: "May 13", title: "Senate confirms Kevin Warsh as Federal Reserve chair by 54–45 — the closest Fed-chair vote of the modern era; he succeeds Jerome Powell on May 22 and now sets the interest-rate backdrop Bitcoin trades against", source: "U.S. Senate", tag: "FED", important: true },
   { date: "Apr 27", title: "SEC Chair Paul Atkins attends Bitcoin 2026 conference in Las Vegas; first sitting SEC chair at major Bitcoin event signals regulatory pivot", source: "Bitcoin Magazine", tag: "REGULATION", important: true },
   { date: "Apr 20", title: "Strategy (formerly MicroStrategy) purchases 34,164 BTC ($2.54B) in the largest institutional buy of 2026, lifting holdings to a peak near 850K BTC — later trimmed by summer sales", source: "SEC EDGAR", tag: "CORPORATE", important: true },
@@ -33,5 +34,4 @@ export const SIX_MONTH_HIGHLIGHTS = [
   { date: "Mar 4",  title: "Kraken Financial becomes the first digital-asset bank with its own account at the Federal Reserve (a 'master account'), giving it direct access to the central bank's payment rails", source: "Federal Reserve", tag: "CORPORATE", important: true },
   { date: "Mar 3",  title: "Pakistan National Assembly passes Virtual Assets Act 2026; sovereign Bitcoin allocation framework with 2,000 MW energy commitment", source: "Dawn", tag: "RESERVES", important: true },
   { date: "Feb 4",  title: "Treasury Secretary Bessent confirms U.S. Strategic Bitcoin Reserve valued at $15–20B from seized assets; government halts all Bitcoin sales", source: "U.S. Treasury", tag: "RESERVES", important: true },
-  { date: "Jan 29", title: "SEC and CFTC announce 'Project Crypto' joint initiative; first inter-agency Bitcoin regulatory coordination framework", source: "SEC", tag: "REGULATION", important: true },
 ];

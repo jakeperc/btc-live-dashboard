@@ -67,6 +67,17 @@ const FALLBACK_ATH      = 126198.07;                         // float, 2 decimal
 const FALLBACK_ATH_DATE = "2025-10-06T00:00:00.000Z";        // ISO 8601 string
 ```
 
+## `YARDSTICKS` — the comparator table
+
+This skill also owns `YARDSTICKS` in `src/data/fallbacks.js`. It is not a fallback; it is the table that lets every other skill turn a bare figure into a scale a reader can feel ("00M per sale — about a tenth of one normal week of ETF buying"). `SCOPE.md` § "Audience & plain-language standard" principle 5 depends on it existing and being current.
+
+- Refresh it on the **same monthly cadence** as the constants above.
+- Every entry needs `value`, `unit`, `plain`, `asOf` and a **primary `source`**. No source, no entry.
+- Round hard — these are orders of magnitude, not accounting.
+- `plain` is the phrase as it will read inside someone else's sentence, so write it to slot in.
+- **Stale is worse than missing.** If you cannot re-source an entry this run, delete it rather than let a writer compare against a number that has moved.
+- The file currently carries `TODO` markers for four entries that need a primary source on your next run (average weekly ETF flow, total ETF assets, daily spot volume, US M2). Fill them or remove the markers.
+
 ## Common pitfalls
 
 - **Editing `FALLBACK_ATH` to be less than `FALLBACK_PRICE`.** ATH means *all-time high* — by definition >= current price.

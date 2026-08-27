@@ -130,6 +130,29 @@
   --status-info-soft: rgba(2, 119, 189, 0.12);
 }
 
+/* Glossary terms — the dotted underline is the only affordance saying "tap me
+   for a definition", so it has to clear the WCAG 1.4.11 non-text 3:1 line in
+   BOTH themes. --text-dim is 3.6:1 on the dark card but only ~3.05:1 on the
+   light one, so light theme steps up to --text-muted (4.6:1). */
+.term {
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-decoration-color: var(--text-dim);
+  text-underline-offset: 2px;
+}
+.term:hover,
+.term:focus-visible {
+  text-decoration-color: var(--accent-bitcoin);
+}
+.term:focus-visible {
+  outline: 2px solid var(--accent-bitcoin);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+:root[data-theme="light"] .term {
+  text-decoration-color: var(--text-muted);
+}
+
 :root[data-theme="light"] .app-shell {
   background: linear-gradient(180deg, #eef1f7 0%, #e7ebf3 100%) !important;
 }
@@ -317,6 +340,11 @@
 :root[data-theme="light"] .strategy-investable-callout {
   background: linear-gradient(160deg, rgba(247, 147, 26, 0.07) 0%, var(--bg-card) 100%) !important;
 }
+:root[data-theme="light"] .strategy-epigraph-card {
+  background: linear-gradient(160deg, rgba(247, 147, 26, 0.07) 0%, var(--bg-card) 100%) !important;
+}
+:root[data-theme="light"] .strategy-epigraph-mark { opacity: 0.10 !important; }
+:root[data-theme="light"] .strategy-epigraph-quote { color: var(--text-primary) !important; }
 /* Strategy: drawdown bar track */
 :root[data-theme="light"] .strategy-drawdown-track {
   background: var(--bg-card-soft) !important;
@@ -2647,6 +2675,92 @@ button, a, [role="button"], [role="tab"], [role="radio"] { -webkit-tap-highlight
   border-top: 1px solid var(--border-subtle, #242b49);
 }
 
+/* ─── Strategy: closing epigraph (Satoshi, Jan 2009) ─── */
+.strategy-epigraph-card {
+  position: relative;
+  overflow: hidden;
+  margin: 0;
+  background: linear-gradient(160deg, #f7931a14 0%, #0f1426 100%);
+  border: 1px solid #f7931a44;
+  border-left: 4px solid #f7931a;
+  border-radius: var(--radius-lg);
+  padding: 26px 30px 22px;
+}
+.strategy-epigraph-mark {
+  position: absolute;
+  top: -34px;
+  right: 14px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 150px;
+  font-weight: 900;
+  line-height: 1;
+  color: #f7931a;
+  opacity: 0.13;
+  pointer-events: none;
+  user-select: none;
+}
+.strategy-epigraph-eyebrow {
+  position: relative;
+  font-size: 11px;
+  color: #f7931a;
+  font-weight: 900;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  font-family: 'JetBrains Mono', monospace;
+  margin-bottom: 14px;
+}
+.strategy-epigraph-quote {
+  position: relative;
+  margin: 0 0 14px;
+  max-width: 760px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  font-style: italic;
+  line-height: 1.45;
+  color: var(--text-primary, #ffffff);
+  text-wrap: balance;
+}
+.strategy-epigraph-quote::before { content: "“"; }
+.strategy-epigraph-quote::after { content: "”"; }
+.strategy-epigraph-attrib {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+}
+.strategy-epigraph-name {
+  color: var(--text-secondary, #c8d0e0);
+  font-weight: 700;
+}
+.strategy-epigraph-cite {
+  color: var(--text-muted);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color 150ms ease, border-color 150ms ease;
+}
+@media (hover: hover) {
+  .strategy-epigraph-cite:hover {
+    color: #f7931a;
+    border-bottom-color: #f7931a55;
+  }
+}
+.strategy-epigraph-cite span { font-size: 11px; margin-left: 3px; }
+.strategy-epigraph-gloss {
+  position: relative;
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid #f7931a2e;
+  max-width: 760px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 13.5px;
+  line-height: 1.7;
+  color: var(--text-muted);
+}
+
 /* ─── Strategy: drawdown recovery + caveat ─── */
 .strategy-drawdown-recovery {
   grid-column: 2;
@@ -3042,6 +3156,9 @@ button, a, [role="button"], [role="tab"], [role="radio"] { -webkit-tap-highlight
     padding: 14px 16px 14px 18px;
   }
   .strategy-band-num { font-size: 22px; }
+  .strategy-epigraph-card { padding: 20px 18px 18px; }
+  .strategy-epigraph-quote { font-size: 17px; }
+  .strategy-epigraph-mark { font-size: 110px; top: -24px; right: 6px; }
   .strategy-fouryear-card {
     grid-template-columns: minmax(0, 1fr);
     gap: 10px;

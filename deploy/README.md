@@ -2,8 +2,8 @@
 
 ## `.htaccess` — enable cheap repeat visits (optional, recommended)
 
-Both live hosts (jakepercy.com and nati-crypto.com, Apache shared hosting)
-currently send an `ETag` but **no `Cache-Control` header**, so browsers guess
+The live host (jakepercy.com, Apache shared hosting) currently sends an
+`ETag` but **no `Cache-Control` header**, so browsers guess
 how long to cache the page. Uploading the `.htaccess` in this folder next to
 the deployed `index.html` tells them to *revalidate on every visit*:
 
@@ -14,7 +14,7 @@ the deployed `index.html` tells them to *revalidate on every visit*:
 ### How to deploy
 
 1. Upload `deploy/.htaccess` to the same directory as the deployed
-   `index.html` on each host (the `/bitcoin/` folder).
+   `index.html` (the `/bitcoin/` folder).
 2. Verify:
 
    ```
@@ -31,10 +31,9 @@ Delete the uploaded `.htaccess`. Behavior returns to today's default
 
 ## What gets deployed
 
-`npm run build` regenerates both self-contained files:
+`npm run build` regenerates the self-contained file:
 
 - `dist/index.html` → upload to jakepercy.com/bitcoin/
-- `dist/index.nati-crypto.html` → upload to nati-crypto.com/bitcoin/ (rename to `index.html` there)
 
-Each file is fully self-contained (CSS + JS + SEO content inlined); no other
+It is fully self-contained (CSS + JS + SEO content inlined); no other
 assets need uploading.

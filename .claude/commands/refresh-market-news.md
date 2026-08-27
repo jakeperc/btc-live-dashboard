@@ -16,13 +16,17 @@ Data is split across two per-domain modules — do NOT Read `src/BitcoinDashboar
 
 ## Read first
 
-1. `SCOPE.md` § "Editorial rules for the top-5 themes" and § "Out of scope" — non-negotiable rules.
+1. `SCOPE.md` § "Editorial rules for the top-5 themes", § "Audience & plain-language standard", and § "Out of scope" — non-negotiable rules.
+1b. `automations/refresh-plain-language/reader-feedback.md` + `drafter-notes.md` — reader comprehension feedback; hard constraints on this draft.
 2. `automations/refresh-market-news/README.md` — full 5-phase workflow, JS shape, sources, pitfalls.
 3. `src/data/market-news.js` and the `HISTORICAL_HIGHLIGHTS` block of `src/data/headlines.js` — current values.
 
 ## Hard constraints
 
 - Edit ONLY the four constants above (plus optionally `index.html:13` meta description).
+- **Every `CURATED_MARKET_UPDATES` item needs a `plain` field** — one sentence, ≤30 words, what happened plus why it matters to someone who owns Bitcoin. It is the collapsed card view and the only line most readers see.
+- **Write the plain layer yourself** (Phase 1 step 7b): define every term and every person at first use, give every number a yardstick (`YARDSTICKS` in `src/data/fallbacks.js`), keep the longest sentence under 45 words. The Editor downstream cannot add facts.
+- **Run `npm run check:plain -- --file src/data/market-news.js`** before finishing. Fix hard findings, re-run once, proceed and report the rest. Never loop.
 - Use narrow `Edit` calls anchored on the constant name. Never Read or rewrite the data files wholesale.
 - Never touch Thesis, Strategy, live-API code, URL constants, or anything in `SCOPE.md` § "Out of scope".
 - Preserve JS shapes exactly (keys, types, `statusTone` enum, date formats).

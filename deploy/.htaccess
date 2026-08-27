@@ -1,5 +1,5 @@
-# Upload this file next to the deployed index.html on each host
-# (jakepercy.com/bitcoin/ and nati-crypto.com/bitcoin/).
+# Upload this file next to the deployed index.html
+# (jakepercy.com/bitcoin/).
 #
 # The dashboard is a single self-contained HTML file rebuilt weekly.
 # "no-cache" does NOT mean "don't cache" — it means "revalidate before

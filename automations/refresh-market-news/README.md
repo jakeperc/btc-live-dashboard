@@ -41,6 +41,14 @@ The **editorial rules** for the top-5 themes live in `SCOPE.md` § "Editorial ru
 8. **Compose** the slots using the shapes in "JS shape spec".
 9. **Edit** `src/data/market-news.js` — replace `MARKET_THEME` and `CURATED_MARKET_UPDATES` only via narrow anchored `Edit` calls.
 
+7b. **Plain pass.** Before writing, do the pass the Editor cannot do for you — it may not add facts, and you have the sources open.
+   - Write `plain` for all four cards and `whyItMatters` for the theme. These are Tier 1: a newcomer reads them alone, with no context.
+   - Define every term and every person at first use, in the field where it first appears — "cloture — the Senate vote that ends debate", "Strategy (the software company, formerly MicroStrategy, that holds more Bitcoin than any other)".
+   - Give every number a yardstick, from the story or from `YARDSTICKS` in `src/data/fallbacks.js`.
+   - Keep the longest sentence under 45 words. `CURATED[0].detail` in the Aug 19 build had a 67-word sentence.
+   - Read each card aloud. If a relative would squint, rewrite it.
+7c. **Run `npm run check:plain -- --file src/data/market-news.js`.** Fix hard findings, re-run **once**, then proceed regardless and note anything left in your report. Never loop — the Editor is the backstop and the publish is never blocked on style.
+
 ### Phase 2 — `HISTORICAL_HIGHLIGHTS` (rolling 4-week window)
 
 10. **Re-read** the current `HISTORICAL_HIGHLIGHTS` array from `src/data/headlines.js`.
@@ -86,10 +94,10 @@ const MARKET_THEME = {
   title: "...",                      // names the theme (not a single headline)
   status: "Senate Markup",           // short status string
   statusTone: "active",              // one of: advancing | active | stalled | passed
-  narrative: "...",                  // 1–2 plain-English sentences — what is happening
-  whyItMatters: "...",               // 1–2 plain-English sentences — stakes for a non-expert
+  narrative: "...",                  // what is happening. <=90 words, every term defined at first use
+  whyItMatters: "...",               // the stakes for a non-expert. <=60 words. TIER 1 — this is what the card shows while COLLAPSED, so it must stand alone with zero jargon
   milestoneLabel: "Next checkpoint", // usually keep as "Next checkpoint"
-  milestone: "...",                  // next concrete dated event to watch
+  milestone: "...",                  // next concrete dated event to watch. <=60 words. Lives behind the expand
   sources: [
     { label: "Source name", url: "https://..." },
     // 1–3 entries, primary sources only
@@ -102,8 +110,9 @@ const MARKET_THEME = {
 ```js
 {
   label: "CATEGORY • MMM D",  // category in caps, date in "MMM D" format
-  title: "...",                // names the theme
-  detail: "...",               // 1–2 plain-English sentences — what + why a non-expert should care
+  title: "...",                // names the theme. <=15 words
+  plain: "...",                // NEW, REQUIRED — ONE sentence, <=30 words: what happened + why it matters to someone who owns Bitcoin. TIER 1: this is the collapsed card view, and the only line most readers see
+  detail: "...",               // <=150 words. Define every term and every person at first use; give every number a yardstick
   sources: [
     { label: "Source name", url: "https://..." },
   ],
@@ -150,6 +159,10 @@ Never cite aggregators, re-blogs, or social media as the primary source.
 
 Short-form analysis for a smart newbie. Translate jargon ("spot ETF inflows" → "money flowing into Bitcoin funds traded on the stock market"). Plain English. No `BREAKING:`, no clickbait, no emojis.
 
+**The binding standard is `SCOPE.md` § "Audience & plain-language standard"** — tier map, word budget, probability bands and worked rewrites. Read it before drafting. This file duplicates only the shape.
+
+The model to copy is already in this data: the Aug 19 protocol card defines its terms inline, ends with what a beginner should do (nothing) and warns about the matching scam. That is the register.
+
 ## Common pitfalls
 
 - **Replacing a slot with a fresher headline of the same theme.** Don't. Refine `narrative` / `detail` instead.
@@ -158,5 +171,7 @@ Short-form analysis for a smart newbie. Translate jargon ("spot ETF inflows" →
 - **`MARKET_THEME.asOf` drift.** Set to the most recent material development in the theme — not today's date by reflex.
 - **`HISTORICAL_HIGHLIGHTS` overlap with `SIX_MONTH_HIGHLIGHTS`.** Items older than 4 weeks belong in `SIX_MONTH_HIGHLIGHTS` (managed by `/refresh-headlines-archive`).
 - **Updating `index.html:13` on every run.** Only update on a *material* shift in primary narrative.
+- **Skipping `plain`.** Without it the collapsed card shows a bare title, and the collapsed view is what most readers see.
+- **A wall of mono.** `detail` renders as body prose now, not monospace — write it as prose, not as a wire report.
 - **Forgetting to rebuild.** `dist/index.html` must match source.
 - **Touching anything outside the four constants.** Scope creep is a violation.

@@ -35,6 +35,7 @@ Follow the load order in `memory/INDEX.md`. Briefly:
 
 1. **`memory/INDEX.md`** — orchestrator + decay rules.
 2. **`memory/editorial-lessons.md`** — user constraints, hard for this run.
+2b. **`automations/refresh-plain-language/reader-feedback.md`** and **`automations/refresh-plain-language/drafter-notes.md`** — the reader-facing feedback loop. The first is user-owned comprehension law; the second is what last week Editor had to fix, plus the items it could NOT fix because they needed facts you have and it does not. Both live outside `memory/`, so the memory-directory ownership rule is untouched. Treat both as hard constraints on this draft.
 3. **`memory/next-run-briefing.md`** — work through priority TODOs **before** broad research. Score deadlines, theses to falsification-check, theme files to refresh.
 4. **`memory/calibration.md`** — read aggregate Brier + active bias corrections. Apply as priors in Phase 3.
 5. **`memory/heuristics.md`** — load promoted heuristics; treat as durable priors.
@@ -67,19 +68,26 @@ Follow the load order in `memory/INDEX.md`. Briefly:
     - Apply calibration bias corrections from `memory/calibration.md` to today's probabilities.
 18. **Compose** in this order:
     - **`asOf`** — today's date, `MMM D, YYYY` uppercase.
-    - **`headline`** — one sharp framing sentence.
+    - **`headline`** — one sharp framing sentence, **≤20 words**. It is rendered under the plain summary, so it is prose, not a slug.
     - **`plainSummary`** — one plain-English sentence (≤45 words, zero jargon) a curious non-investor fully understands on its own: the week's bottom line. **Plain-field standard** (applies to every `plain*` below): a smart 12-year-old reading level, no jargon, no ticker/level/acronym soup, and do NOT restate probability numbers (the UI shows them). These `plain*` fields are the *collapsed/default* view of the Analysis tab — what most readers see before expanding — so they must stand alone.
-    - **`marketContext`** — 1 short paragraph (~80–120 words), macro-aware.
+    - **`marketContext`** — 1 paragraph, **≤100 words**, macro-aware. Its opening sentence is Tier 1: a newcomer must understand it standing alone.
     - **`primaryAnalysis.themeTitle`** — mirrors `MARKET_THEME.title`.
     - **`primaryAnalysis.plain`** — one plain-English sentence restating the main read (plain-field standard above).
-    - **`primaryAnalysis.body`** — 4–6 paragraphs as `string[]`. Each: causal chain / stakeholder analysis / historical analog / invalidation condition. Not paraphrase of `MARKET_THEME.narrative`.
+    - **`primaryAnalysis.body`** — 4–6 paragraphs as `string[]`, **≤120 words each and ≤650 words in total**. Each paragraph: ONE idea, opening with a Tier 1 sentence (≤25 words, no undefined terms) that says what changed for a reader, then the mechanism — causal chain, stakeholder analysis, or historical analog. Not a paraphrase of `MARKET_THEME.narrative`. Invalidation belongs in `falsificationConditions`, not in every paragraph.
     - **`primaryAnalysis.thesisProbability`** — `p` for the primary thesis playing out (e.g., for CLARITY → institutional unlock, p of clean-passage-and-allocator-response over 12 months). Rounded to 0.05.
-    - **`primaryAnalysis.falsificationConditions`** — 3–5 concrete observable conditions any one of which retires the thesis.
-    - **`crossCurrents`** — 2–3 items. Each must connect ≥2 themes in `themesConnected`. Body = paragraph on the *interaction*, not the individual themes.
-    - **`watchList`** — 4–6 items. Each: `{ event, plain, category, window, probability, signal }`. Probability rounded to 0.05. `category` ∈ {regulation, macro, protocol, corporate, sovereign, etf, market-structure}. `plain` = a short, jargon-free phrase saying why the item matters / what it would mean in human terms (plain-field standard above).
-    - **`contrarianTake`** — `{ probability, plain, body }`. Probability in [0.10, 0.45]. Body ~120–180 words. `plain` = one jargon-free sentence summarizing the other side (plain-field standard above).
+    - **`primaryAnalysis.falsificationConditions`** — 3–5 concrete observable conditions any one of which retires the thesis. **≤35 words each, comparators spelled out in words** ("at least two of the three weeks", never "≥2 of 3"). This field is read-only to the Editor — it is the scoring letter next week's resolution reads — so if you leave a glyph here, the Editor must expand it, that expansion pushes the field over cap, and nobody downstream can fix it.
+    - **`crossCurrents`** — 2–3 items, each `{ title, plain, body, themesConnected }`. Each must connect at least 2 themes in `themesConnected`. `title` ≤15 words. **`plain`** — one Tier 1 sentence, ≤30 words, saying what the interaction means for a reader; it is the lead line the card shows. `body` ≤150 words on the *interaction*, not on the individual themes.
+    - **`watchList`** — 4–6 items. Each: `{ event, plain, category, window, probability, signal }`. Probability rounded to 0.05. `category` ∈ {regulation, macro, protocol, corporate, sovereign, etf, market-structure}. `event` ≤25 words, written in plain words — no glyph math, spell "at least". `plain` ≤35 words, jargon-free, saying what the item would mean in human terms, and using the band phrase for its probability (never the number). `signal` ≤100 words in this shape: **"Last time: … (≤20 words). Why this number: … If yes, … If no, …"** — Tier 3, so forecasting language is welcome but thesis IDs, raw decimals, category names and HIT/MISS verdicts are not.
+    - **`contrarianTake`** — `{ probability, plain, body }`. Probability in [0.10, 0.45]. `body` **≤150 words**. `plain` = one jargon-free sentence, ≤45 words, summarising the other side using its band phrase.
     - **`calibration`** — `{ aggregateBrier, briefSummary }`. Read from `memory/calibration.md`. `briefSummary` is one short sentence ("18 items scored, aggregate Brier 0.21, mildly overconfident on regulation"). Omit if N < 8 resolutions.
     - **`sources`** — primary sources only.
+
+18a. **Plain pass — write for the reader, not the ledger.** Do this while the sources are still in front of you; it is the step the Editor CANNOT do for you, because the Editor may not add facts.
+    - **Author every `plain*` field yourself.** They are the collapsed view — the only thing most readers ever see.
+    - **Define every term and every person at first use**, in the field where it first appears. "cloture — the Senate vote that ends debate"; "Strategy (the software company, formerly MicroStrategy, that holds more Bitcoin than any other)". A newcomer reads "Strategy disclosed a sale" as a common noun.
+    - **Give every number a yardstick**, from the field itself or from `YARDSTICKS` in `src/data/fallbacks.js`. "00M per sale — about a tenth of one normal week of ETF buying."
+    - **Strip the ledger.** Thesis IDs, raw Brier decimals, calibration category names, regime labels, HIT/MISS verdicts and "haircut"/"on its letter" idiom are already recorded in the memory files — repeating them in prose costs the reader and gains the ledger nothing. Say "we gave this 65% odds and were wrong", which is the strongest sentence on the page for a technical reader. `calibration.briefSummary` is the single rendered window into the ledger; its existing inline gloss ("Brier — lower is better") is the house exemplar.
+    - **Match certainty to probability.** Use the band phrase from `SCOPE.md` § "Audience & plain-language standard". A 10%-probability row whose plain line says "unaffected either way" is a violation — 10% is a real tail.
 
 ### Phase 3b — Cross-theme interaction matrix
 
@@ -108,6 +116,8 @@ Follow the load order in `memory/INDEX.md`. Briefly:
     - (j) **Has calibration bias been applied?** If `calibration.md` flags overconfidence in regulation by +X%, did today's regulatory probabilities get haircut by that amount?
     - (k) **Were cross-theme interactions applied?** Check `themeInteractions.adjustments` — are net deltas reasonable (within ±0.15)? Does the reasoning chain track? Any novel theme missing from the matrix flagged? **Is `themeInteractions.regime` set and does it match the tape — `contagion` in a deleveraging cascade, `reinforcing` otherwise? In a cascade, confirm the correlated-risk cluster's net deltas are ≤ 0 (the matrix must not be lifting `etfs`/`corporate-treasuries`/`fed-monetary-policy` into a downside move).**
     - (l) **Are the `plain*` fields truly plain?** Could a curious non-investor understand `plainSummary`, `primaryAnalysis.plain`, `contrarianTake.plain`, and every `watchList[].plain` with no other context and no jargon? If any needs a glossary term to parse, or restates a probability number, rewrite it. These are the collapsed/default view of the Analysis tab.
+    - (m) **Read every paragraph aloud.** Could you say it to a relative at dinner and have them nod rather than squint? Any sentence over 45 words fails on length alone; the longest sentence in the Aug 19 build was 92.
+    - (n) **Run `npm run check:plain -- --file src/data/deep-analysis.js`.** Fix hard findings, re-run **once**, then proceed regardless and list anything still outstanding in your report. Do NOT loop: the Editor is the backstop and the weekly publish is never blocked on style. Findings in fields you own but the Editor may not touch (`watchList[].event`, `falsificationConditions`) are specifically yours to fix — nobody downstream can.
 20. **Revise.** Apply notes. Work from interaction-adjusted probabilities. If a section fails its check, cut and redraft.
 
 ### Phase 5 — Significance gate, write, update memory, rebuild
@@ -165,8 +175,9 @@ const DEEP_ANALYSIS = {
   },
   crossCurrents: [
     {
-      title: "...",
-      body: "...",
+      title: "...",                              // <=15 words
+      plain: "...",                              // NEW — 1 Tier 1 sentence, <=30 words: what this interaction means for a reader. Rendered as the lead line above the body.
+      body: "...",                               // <=150 words, on the INTERACTION
       themesConnected: ["...", "..."],
     },
   ],
@@ -234,6 +245,9 @@ Short-form analysis for a smart newbie. Translate jargon at first use. Plain Eng
 - **Memory bloat.** If total >300 KB, decay rules weren't applied. Re-prune.
 - **Overwriting `editorial-lessons.md`.** Hard violation.
 - **Aggregator URLs in `sources[]`.** Replace with the underlying primary source.
+- **Ledger leak.** `THESIS-004 retires` is a memory sentence, not a dashboard sentence. So are raw Brier decimals, `Fed-INTENT`, `HELD 0.25`, `scored MISS`, "haircut" and "on its letter". Write the lesson in words instead — that version is stronger for every audience.
+- **Dropping the plain layer.** `DEEP_ANALYSIS` is replaced in full each run, so a `plain` field you omit is a field that vanishes from the site. `crossCurrents[].plain` is the newest and the easiest to forget.
+- **Caps treated as targets.** They are ceilings. A clear 60-word paragraph is finished; do not pad it to 120.
 - **Forgetting to rebuild.** `dist/index.html` must match source.
 
 ## Memory subsystem

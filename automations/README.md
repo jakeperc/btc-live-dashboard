@@ -17,6 +17,7 @@ Editorial rules that span automations live in `SCOPE.md` (single source of truth
 |---|---|---|
 | `/refresh-market-news` | `MARKET_THEME`, `CURATED_MARKET_UPDATES`, `HISTORICAL_HIGHLIGHTS`, `FALLBACK_NEWS` | weekly |
 | `/refresh-deep-analysis` | `DEEP_ANALYSIS` (v2: probabilities + Brier calibration) + analyst memory at `automations/refresh-deep-analysis/memory/` | weekly (chains after `/refresh-market-news`) |
+| `/refresh-plain-language` | Event-gated (Step 4.5) | Prose values in `deep-analysis.js`, `market-news.js`, `adoption.js` + `drafter-notes.md` | The Editor: fresh-eyes plain-language pass. Never reads the analyst memory. |
 | `/consolidate-deep-analysis` | Distills `memory/heuristics.md`, re-bins `memory/calibration.md`, consolidates `memory/causal-model.md`, archives stale theme/actor files, writes `memory/briefings/YYYY-Q#.md` | quarterly (~every 13 weeks) |
 | `/refresh-headlines-archive` | `SIX_MONTH_HIGHLIGHTS` | monthly |
 | `/refresh-adoption` | `COMPANY_HOLDINGS` (weekly), `COUNTRY_HOLDINGS` (monthly), `ADOPTION_INDEX_TOP20` + `ADOPTION_DATA` (quarterly) | mixed |
@@ -33,9 +34,10 @@ Out of scope for every command: Thesis tab, Strategy tab, live-API code, URL con
 4. Add a row to the roster table above.
 5. If the orchestrator should call it, add it to `automations/refresh-all/README.md`.
 
-## Universal rules (apply to every automation)
+## Universal rules
 
-- Per-domain data lives in `src/data/`: `fallbacks.js`, `market-news.js`, `headlines.js`, `deep-analysis.js`, `adoption.js`, `thesis.js`, `strategy.js`. Each refresh skill edits ONLY its owned file.
+- **Plain language is measured, not assumed.** `SCOPE.md` § "Audience & plain-language standard" is the standard; `npm run check:plain` enforces it. Every prose-writing skill runs `npm run check:plain -- --file src/data/<its own file>` before finishing, fixes hard findings once, re-runs once, then proceeds — never loops. `/refresh-plain-language` is the backstop and the only skill that edits across owners.
+- Per-domain data lives in `src/data/`: `fallbacks.js`, `market-news.js`, `headlines.js`, `deep-analysis.js`, `adoption.js`, `glossary.js`, `thesis.js`, `strategy.js`. Each refresh skill edits ONLY its owned file — the single exception is `/refresh-plain-language`, which rewrites prose values across three of them by design.
 - **Do NOT Read `src/BitcoinDashboard.jsx` or any other app code under `src/` outside `src/data/`** (`src/tabs/`, `src/components/`, `src/hooks/`, `src/lib/`, `src/styles.css`) to mutate refresh-owned data — reading app code just to find a constant burns tokens. Read your `src/data/<owner>.js` file directly.
 - Use narrow `Edit` calls anchored on the constant name. Do not rewrite data files wholesale.
 - `index.html` is edited only when the dashboard's *scope, title, meta description, or theme colors* change — NOT for routine data refreshes. **Never edit `dist/index.html` directly** — it is regenerated.

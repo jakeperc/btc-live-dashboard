@@ -179,6 +179,21 @@ export const HISTORICAL_DRAWDOWNS = [
 export const DRAWDOWN_CAVEAT =
   "Every crash above was followed by a recovery — but that's survivorship in the data: Bitcoin is the asset that kept recovering, which is why it's the one on this page. Past recovery is not a guarantee of future recovery, and most individual altcoins that crashed alongside Bitcoin in these same cycles never reclaimed their highs.";
 
+// Closing epigraph — the last words on the page, sitting above Sources.
+// Primary source: Satoshi Nakamoto, Cryptography Mailing List, 16 January 2009,
+// replying on the "Bitcoin v0.1 released" thread (Nakamoto Institute email
+// archive #17). Verbatim, including his unhyphenated "self fulfilling".
+// Chosen because the claim in it is deliberately small — "get some, in case" —
+// which is the same posture the four rules and the schedule above teach.
+export const STRATEGY_EPIGRAPH = {
+  eyebrow: "The last word",
+  quote: "It might make sense just to get some in case it catches on. If enough people think the same way, that becomes a self fulfilling prophecy.",
+  attribution: "Satoshi Nakamoto",
+  context: "Cryptography Mailing List · 16 January 2009",
+  url: "https://satoshi.nakamotoinstitute.org/emails/cryptography/17/",
+  gloss: "Bitcoin was less than two weeks old when its creator wrote that, and a coin had no price at all. Notice how small the claim is. Not bet the house, not sell everything else — just own a little, in case it turns into something. That is this whole page in one sentence.",
+};
+
 export const STRATEGY_SOURCES = [
   {
     label: "BlackRock — Sizing Bitcoin in traditional portfolios",
@@ -207,6 +222,10 @@ export const STRATEGY_SOURCES = [
   {
     label: "Thaler & Benartzi (2004) — Save More Tomorrow",
     url: "https://www.anderson.ucla.edu/documents/areas/fac/accounting/smartjpe226.pdf",
+  },
+  {
+    label: "Satoshi Nakamoto — Cryptography Mailing List, 16 January 2009",
+    url: "https://satoshi.nakamotoinstitute.org/emails/cryptography/17/",
   },
 ];
 

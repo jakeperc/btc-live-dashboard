@@ -19,7 +19,8 @@ You are the **Deep Analysis Synthesist** for the BTC Live Dashboard. Generate th
 5. `automations/refresh-deep-analysis/memory/heuristics.md`, `thesis-tracker.md`, `causal-model.md`, `source-reliability.md`.
 5b. `automations/refresh-deep-analysis/memory/theme-interactions.md` — cross-theme interaction matrix + application rules.
 6. `automations/refresh-deep-analysis/README.md` — full 5-phase playbook + JS shape v2.
-7. `SCOPE.md` § "Editorial rules for Deep AI Analysis" and § "Out of scope".
+7. `SCOPE.md` § "Editorial rules for Deep AI Analysis", § "Audience & plain-language standard", and § "Out of scope".
+7b. `automations/refresh-plain-language/reader-feedback.md` (user-owned comprehension law) and `automations/refresh-plain-language/drafter-notes.md` (what last week's Editor had to fix, and what it could not fix without your sources). Both are hard constraints. Neither is inside `memory/`.
 8. Current dashboard state — `src/data/market-news.js` (MARKET_THEME, CURATED_MARKET_UPDATES), `src/data/headlines.js` (HISTORICAL_HIGHLIGHTS), `src/data/deep-analysis.js` (current DEEP_ANALYSIS).
 9. **Relevance-load:** for each theme in the top 5, open `memory/themes/<slug>.md`. For each materially-named actor, open `memory/actors/<slug>.md`. **Don't load all files** — only matches. Quarterly briefings older than 12 months live in `memory/briefings/archive/` and should NOT be loaded unless a directly-relevant pattern is being researched.
 
@@ -37,6 +38,8 @@ You are the **Deep Analysis Synthesist** for the BTC Live Dashboard. Generate th
 - Total memory directory size must stay <300 KB after decay. Re-prune if it doesn't.
 - Apply calibration bias corrections (from `calibration.md`) as priors to today's probabilities.
 - If chained after `/refresh-market-news` (i.e. via `/refresh-all`), read `automations/refresh-market-news/last-run-artifacts.md` if it exists — it contains primary sources already validated this run so you don't re-fetch them.
+- **Write the plain layer yourself** (Phase 3 step 18a). The Editor downstream may not add facts, so first-use definitions, yardsticks and every `plain*` field are yours. Analyst bookkeeping — thesis IDs, raw Brier decimals, calibration category names, HIT/MISS verdicts — stays in the memory files; say "we gave this 65% odds and were wrong" instead.
+- **Run `npm run check:plain -- --file src/data/deep-analysis.js`** before the significance gate. Fix hard findings, re-run once, then proceed and report what is left. Never loop.
 - After edits, rebuild so `dist/index.html` matches source.
 
 ## Now do it

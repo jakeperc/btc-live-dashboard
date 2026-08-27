@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "npm run build:vite && node scripts/make-single-file.mjs",
     "build:vite": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "check:plain": "node scripts/check-plain.mjs",
+    "test:glossary": "node scripts/test-glossary-match.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",

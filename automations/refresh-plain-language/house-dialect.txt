@@ -1,0 +1,108 @@
+# House dialect — ordinary English words used in a market sense, plus short trade
+# jargon that readability indexes miss (a one-syllable word like "tranche" scores
+# as easy prose and is not).
+#
+# Rule 11 flags any of these in a Tier 1 or Tier 2 field that has no inline gloss
+# within ~60 characters (a parenthesis, an em dash, "which", "that is", "means").
+# Tier 3 fields are exempt — they speak to a technical reader by design.
+#
+# Owner: the user. /refresh-plain-language proposes additions in drafter-notes.md;
+# it never edits this file. One term per line, lower case. `#` comments allowed.
+#
+# Over time this list IS the assumed-knowledge specification for the dashboard.
+
+# ── market-structure shorthand ───────────────────────────────────────────────
+the book
+the tape
+tape
+bid
+structural bid
+print
+prints
+tranche
+overhang
+positioning
+leg
+re-rating
+re-rate
+round-trip
+front-ran
+front-run
+open interest
+perpetuals
+perpetual futures
+offshore
+basis
+spread to
+thinned
+thin tape
+candle
+squeeze
+short base
+short covering
+deleveraging
+re-levers
+liquidation cascade
+non-expiry
+weekly close
+index review
+index deletion
+passive selling
+forced sellers
+dilutive
+dilution
+at-the-market
+atm issuance
+cost basis
+below-cost
+preferred
+preferred obligations
+buyback
+buybacks
+allocator
+marginal allocator
+pricing power
+absorption
+flows
+fund flows
+net flows
+
+# ── macro shorthand ──────────────────────────────────────────────────────────
+rate path
+rate gate
+the gate
+gated
+hawkish
+dovish
+dot plot
+long end
+long bond
+yield curve
+real yields
+soft data
+growth scare
+macro floor
+repricing
+tailwind
+headwind
+non-sovereign
+managed market
+
+# ── legislative / regulatory shorthand ───────────────────────────────────────
+cloture
+filibuster
+preemption
+safe harbor
+continuing resolution
+floor time
+must-pass
+set-piece
+
+# ── house coinages (these should not appear in rendered prose at all) ────────
+doctrine
+arming signal
+the tell
+transmission model
+event-gated
+level-gated
+half-life

@@ -1,6 +1,7 @@
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useLayoutEffect, useRef, useMemo, useId } from "react";
 import { createPortal } from "react-dom";
 import { DIP_EXPLAINER } from "../data/explainer.js";
+import { GLOSSARY } from "../data/glossary.js";
 import { fmt, fmtUSD } from "../lib/format.js";
 import { Pulse, prefersReducedMotion, useIsMobile, Reveal } from "../hooks/ui.jsx";
 
@@ -45,27 +46,12 @@ export const SourceLink = ({ href, label }) => (
   </a>
 );
 
-export const TERM_DEFINITIONS = {
-  hashrate:   "Total computing power securing Bitcoin. More hashrate means harder to attack.",
-  halving:    "Every ~4 years, new BTC issuance cuts in half. Programmed scarcity built into the protocol.",
-  difficulty: "Mining auto-adjusts every 2,016 blocks to keep new blocks arriving ~every 10 minutes.",
-  dominance:  "Bitcoin's share of the total crypto market value.",
-  lightning:  "A faster, cheaper payment layer built on top of Bitcoin for small, near-instant transactions.",
-  etf:        "Exchange-Traded Fund: a way to buy Bitcoin through your regular brokerage as a stock-like share. Lets pension funds and 401(k)s hold BTC without touching crypto directly.",
-  probability: "My estimated chance this happens, between 0 (impossible) and 1 (certain). 0.60 means I think it's modestly more likely than not.",
-  brier:      "A score for how well-calibrated my past forecasts have been. Lower is better — 0 is perfect, 0.25 is coin-flip level, anything under 0.10 is strong.",
-  distribution: "When existing holders are selling down their position over time — the opposite of accumulation.",
-  liquidation: "When a trader who borrowed money to bet on Bitcoin is automatically sold out because the price moved against them. Lots of these at once snowball into a fast drop.",
-  leverage: "Borrowing money to make a bigger bet than your own cash allows — it magnifies both gains and losses.",
-  deleveraging: "A wave of borrowed-money bets being unwound — traders selling to pay back loans. It pushes prices down fast, then burns itself out.",
-  drawdown: "How far the price has fallen from its most recent peak, in percent. A 50% drawdown means it's half its high.",
-  sats: "Short for 'satoshis' — the smallest unit of Bitcoin. 100,000,000 sats = 1 BTC, the same way 100 cents = $1.",
-  selfcustody: "Holding your own private keys instead of leaving your Bitcoin on an exchange or with a custodian. Nobody can move it without you — but nobody can recover it for you either.",
-  coldstorage: "Keeping private keys on a device that's never connected to the internet (like a hardware wallet), so remote hackers can't reach them.",
-  m2: "A measure of the total money supply — cash, checking accounts, and easily-accessible savings. When M2 grows faster than the economy produces goods, each existing dollar's claim on those goods shrinks.",
-  dca: "Dollar-cost averaging: buying a fixed amount on a fixed schedule (e.g. $50 every week) instead of trying to time the market. Removes the decision of 'is now the right time?' entirely.",
-  seedphrase: "A list of 12–24 words that can recreate your private keys on any wallet. Anyone who has it can spend your Bitcoin — anyone who loses it, permanently, can't.",
-};
+// Definitions live in src/data/glossary.js so the refresh automations and
+// scripts/check-plain.mjs can read them without importing React. This map keeps
+// every existing <Term k="…"> call site working unchanged.
+export const TERM_DEFINITIONS = Object.fromEntries(GLOSSARY.map((g) => [g.key, g.plain]));
+
+const BOTTOM_NAV_SAFE_AREA = 88; // mobile tab bar; a popover under this is unreadable
 
 export const Term = ({ k, children }) => {
   const def = TERM_DEFINITIONS[k];
@@ -73,6 +59,7 @@ export const Term = ({ k, children }) => {
   const [pos, setPos] = useState({ top: 0, left: 0 });
   const btnRef = useRef(null);
   const popRef = useRef(null);
+  const popId = useId();
 
   useEffect(() => {
     if (!open) return;
@@ -82,17 +69,31 @@ export const Term = ({ k, children }) => {
       setOpen(false);
     };
     const onKey = (e) => { if (e.key === "Escape") setOpen(false); };
-    const onScroll = () => setOpen(false);
+    // Deliberately NOT closing on scroll: a term on the last visible line opens
+    // below the fold, and the scroll needed to read it used to dismiss it.
+    // Resize genuinely invalidates the anchor rect, so that one still closes.
+    const onResize = () => setOpen(false);
     document.addEventListener("mousedown", onDocPointer);
     document.addEventListener("touchstart", onDocPointer, { passive: true });
     document.addEventListener("keydown", onKey);
-    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onResize);
     return () => {
       document.removeEventListener("mousedown", onDocPointer);
       document.removeEventListener("touchstart", onDocPointer);
       document.removeEventListener("keydown", onKey);
-      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onResize);
     };
+  }, [open]);
+
+  // Flip above the anchor when opening downward would run off the bottom.
+  useLayoutEffect(() => {
+    if (!open || !popRef.current || !btnRef.current) return;
+    const anchor = btnRef.current.getBoundingClientRect();
+    const popHeight = popRef.current.offsetHeight;
+    const below = anchor.bottom + 8;
+    const fitsBelow = below + popHeight <= window.innerHeight - BOTTOM_NAV_SAFE_AREA;
+    const top = fitsBelow ? below : Math.max(12, anchor.top - popHeight - 8);
+    setPos((prev) => (Math.abs(prev.top - top) < 1 ? prev : { ...prev, top }));
   }, [open]);
 
   if (!def) return <>{children}</>;
@@ -111,38 +112,47 @@ export const Term = ({ k, children }) => {
     setOpen(p => !p);
   };
 
-  const childText = typeof children === "string" ? children : "term";
+  const onKeyDown = (e) => {
+    if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") {
+      e.preventDefault();
+      onTap(e);
+    }
+  };
 
   return (
     <>
-      <button
+      {/* A <span role="button">, not a real <button>: browsers blockify form
+          controls, so a <button> is stuck at inline-block and a multi-word term
+          ("at-the-market issuance") cannot wrap across a line break. A span with
+          button semantics + key handling is inline, wraps naturally, and cannot
+          nest illegally inside another interactive element. */}
+      <span
         ref={btnRef}
-        type="button"
+        role="button"
+        tabIndex={0}
+        className="term"
         aria-expanded={open}
-        aria-label={`Define ${childText}`}
+        // No aria-label: it would REPLACE the visible word in the accessible name,
+        // so a linked paragraph would read as "…the spot Define ETF button flows…".
+        // The definition is exposed as a description instead.
+        aria-describedby={open ? popId : undefined}
         onClick={onTap}
+        onKeyDown={onKeyDown}
         style={{
-          background: "none",
-          border: "none",
-          padding: 0,
-          margin: 0,
+          display: "inline",
           color: "inherit",
           font: "inherit",
           letterSpacing: "inherit",
-          textTransform: "inherit",
-          textDecoration: "underline",
-          textDecorationStyle: "dotted",
-          textDecorationColor: "var(--text-dim)",
-          textUnderlineOffset: 2,
           cursor: "help",
           WebkitTapHighlightColor: "transparent",
         }}
       >
         {children}
-      </button>
+      </span>
       {open && typeof document !== "undefined" && createPortal(
         <div
           ref={popRef}
+          id={popId}
           role="tooltip"
           style={{
             position: "fixed",
@@ -171,6 +181,25 @@ export const Term = ({ k, children }) => {
         document.body
       )}
     </>
+  );
+};
+
+// Renders pre-segmented text produced by linkCard() in src/lib/glossary-match.js.
+//
+// Stateless by design. Segmentation is a BUILD-TIME concern — the glossary and the
+// data modules are frozen constants — so it happens once at module scope in the tab
+// files. Tracking "first occurrence" with a Set mutated during render would break
+// on the very next render, and DashboardTab re-renders every second.
+export const Prose = ({ segments, as: Tag = "span", style, className }) => {
+  if (!Array.isArray(segments)) return null;
+  return (
+    <Tag style={style} className={className}>
+      {segments.map((seg, i) =>
+        seg?.key
+          ? <Term key={i} k={seg.key}>{seg.text}</Term>
+          : <span key={i}>{seg?.text ?? ""}</span>
+      )}
+    </Tag>
   );
 };
 
@@ -730,7 +759,10 @@ export const MarketPulseCard = ({ pulse, streakDays, setActiveTab }) => {
             )}
           </div>
 
-          {theme.milestone && (
+          {/* Why it matters is the plain-English stakes, so it is what stays visible
+              when the card is collapsed. The milestone — a dense, dated, jargon-heavy
+              checkpoint — moved into the expanded body. Consequence first. */}
+          {theme.whyItMatters && (
             <div style={{
               fontSize: "var(--fs-sm)", color: "var(--text-primary)",
               fontFamily: "var(--font-sans)", lineHeight: 1.5,
@@ -743,9 +775,9 @@ export const MarketPulseCard = ({ pulse, streakDays, setActiveTab }) => {
                 fontSize: "var(--fs-xs)", textTransform: "uppercase",
                 letterSpacing: 1.1, fontFamily: "var(--font-mono)", marginRight: 8,
               }}>
-                {theme.milestoneLabel || "Next Checkpoint"}
+                Why it matters
               </span>
-              {theme.milestone}
+              {theme.whyItMatters}
             </div>
           )}
 
@@ -792,7 +824,7 @@ export const MarketPulseCard = ({ pulse, streakDays, setActiveTab }) => {
                 {theme.narrative}
               </div>
 
-              {theme.whyItMatters && (
+              {theme.milestone && (
                 <div style={{
                   fontSize: "var(--fs-sm)", color: "var(--text-secondary)",
                   fontFamily: "var(--font-sans)", lineHeight: 1.55,
@@ -802,9 +834,9 @@ export const MarketPulseCard = ({ pulse, streakDays, setActiveTab }) => {
                     fontSize: "var(--fs-xs)", textTransform: "uppercase",
                     letterSpacing: 1.1, fontFamily: "var(--font-mono)", marginRight: 8,
                   }}>
-                    Why it matters
+                    {theme.milestoneLabel || "Next Checkpoint"}
                   </span>
-                  {theme.whyItMatters}
+                  {theme.milestone}
                 </div>
               )}
 
