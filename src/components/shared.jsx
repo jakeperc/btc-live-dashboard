@@ -500,12 +500,16 @@ export const DipExplainerCard = ({ fromATH, theme, setActiveTab }) => {
       <div style={{
         marginTop: 12,
         display: "flex", flexWrap: "wrap", alignItems: "baseline", gap: 8,
-        padding: "10px 12px",
-        background: "var(--bg-base)",
+        padding: "10px 14px",
+        background: "var(--elev-recessed-bg)",
         border: "1px solid var(--border-subtle)",
         borderRadius: "var(--radius-md, 10px)",
-        borderLeft: `3px solid ${down ? "var(--status-down)" : "var(--status-up)"}`,
+        boxShadow: "var(--elev-recessed-shadow)",
       }}>
+        <span aria-hidden="true" style={{
+          width: 7, height: 7, borderRadius: "50%", alignSelf: "center", flexShrink: 0,
+          background: down ? "var(--status-down)" : "var(--status-up)",
+        }} />
         <span style={{ fontSize: "var(--fs-sm)", color: "var(--text-primary)", fontFamily: "var(--font-sans)", fontWeight: 700 }}>
           {movePhrase}
         </span>
@@ -538,14 +542,11 @@ export const DipExplainerCard = ({ fromATH, theme, setActiveTab }) => {
           </div>
 
           {/* Perspective — the calm, time-preference framing */}
-          <div style={{
-            padding: "14px 16px",
-            background: "var(--accent-bitcoin-faint, var(--bg-card-soft))",
-            border: "1px solid var(--border-subtle)",
+          <div className="elev-raised" style={{
+            padding: "16px 18px",
             borderRadius: "var(--radius-md, 10px)",
-            borderLeft: "3px solid var(--accent-bitcoin)",
           }}>
-            <div style={{ fontSize: 10, color: "var(--text-muted)", fontFamily: "var(--font-mono)", fontWeight: 700, letterSpacing: 1.2, textTransform: "uppercase", marginBottom: 8 }}>
+            <div className="kicker-dash" style={{ fontSize: 10, color: "var(--accent-bitcoin)", fontFamily: "var(--font-mono)", fontWeight: 700, letterSpacing: 1.2, textTransform: "uppercase", marginBottom: 8 }}>
               {DIP_EXPLAINER.perspective.heading}
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -708,10 +709,7 @@ export const MarketPulseCard = ({ pulse, streakDays, setActiveTab }) => {
   const today = new Date().toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
 
   return (
-    <div className="market-pulse-card" style={{
-      background: "var(--bg-card)",
-      border: "1px solid var(--border-subtle)",
-      borderLeft: `3px solid ${toneColor}`,
+    <div className="market-pulse-card elev-raised" style={{
       borderRadius: "var(--radius-lg)",
       padding: "18px 22px",
       display: "flex", flexDirection: "column", gap: 12,
@@ -753,6 +751,7 @@ export const MarketPulseCard = ({ pulse, streakDays, setActiveTab }) => {
                 color: toneColor, background: toneSoft,
                 padding: "4px 10px", borderRadius: "var(--radius-sm)",
                 textTransform: "uppercase", letterSpacing: 1.1, whiteSpace: "nowrap",
+                boxShadow: "inset 0 1px 0 rgba(255,255,255,0.07), inset 0 0 0 1px rgba(255,255,255,0.04)",
               }}>
                 {theme.status}
               </span>
@@ -768,7 +767,6 @@ export const MarketPulseCard = ({ pulse, streakDays, setActiveTab }) => {
               fontFamily: "var(--font-sans)", lineHeight: 1.5,
               padding: "8px 12px", background: toneSoft,
               borderRadius: "var(--radius-sm)",
-              borderLeft: `2px solid ${toneColor}`,
             }}>
               <span style={{
                 fontWeight: 700, color: toneColor,

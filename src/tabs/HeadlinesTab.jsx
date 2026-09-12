@@ -53,21 +53,25 @@ export const HeadlineCard = ({ item, i, forceStar = false, variant = "standard" 
           <div className="headline-title" style={{ fontSize: 14, color: "var(--text-secondary)", fontWeight: 600, lineHeight: 1.4, fontFamily: "var(--font-sans)" }}>{item.title}</div>
         </div>
         <div style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 6 }}>
-          <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 10, background: tc.bg, color: tc.text, fontWeight: 700, fontFamily: "var(--font-mono)" }}>{item.tag}</span>
+          <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 10, background: tc.bg, color: tc.text, fontWeight: 700, fontFamily: "var(--font-mono)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.07), inset 0 0 0 1px rgba(255,255,255,0.04)" }}>{item.tag}</span>
           <span style={{ fontSize: 11, color: "var(--text-dim)", fontFamily: "var(--font-mono)" }}>{item.source}</span>
         </div>
       </div>
     </>
   );
-  const cardStyle = {
+  // Starred stories are raised (lighter surface + gradient border + shadow) via
+  // .elev-raised instead of stripe-flagged: importance reads as elevation, and
+  // the tag pill keeps carrying the category color.
+  const cardStyle = starred ? {
+    borderRadius: 12, padding: "14px 16px", display: "flex", alignItems: "flex-start", gap: 12,
+  } : {
     background: "var(--bg-card)",
     border: "1px solid var(--border-subtle)",
-    borderLeft: starred ? "3px solid var(--accent-bitcoin)" : "1px solid var(--border-subtle)",
     borderRadius: 12, padding: "14px 16px", display: "flex", alignItems: "flex-start", gap: 12,
   };
   return (
     <Reveal delay={Math.min(i * 0.04, 0.4)}>
-      <a href={headlineHref(item)} target="_blank" rel="noopener noreferrer" className="card-hover headline-card" style={{ textDecoration: "none", ...cardStyle }}>
+      <a href={headlineHref(item)} target="_blank" rel="noopener noreferrer" className={`card-hover headline-card${starred ? " elev-raised" : ""}`} style={{ textDecoration: "none", ...cardStyle }}>
         {Body}
       </a>
     </Reveal>

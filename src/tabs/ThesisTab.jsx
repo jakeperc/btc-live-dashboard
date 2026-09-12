@@ -375,7 +375,7 @@ export const ThesisSilentTaxFallback = () => {
       <div className="thesis-pinned-fallback-stack">
         {SILENT_TAX_CHAPTERS.map((ch, i) => (
           <Reveal key={i} delay={Math.min(0.04 * i, 0.18)}>
-            <article className="thesis-pinned-fallback-chapter" style={{ borderLeftColor: ch.color }}>
+            <article className="thesis-pinned-fallback-chapter">
               <div className="thesis-pinned-fallback-chapter-eyebrow" style={{ color: ch.color }}>{ch.eyebrow}</div>
               <h3 className="thesis-pinned-fallback-chapter-headline">{ch.headline}</h3>
               <p className="thesis-pinned-fallback-chapter-body">{ch.body}</p>
@@ -419,7 +419,7 @@ export const SilentTaxStepCard = ({ step, from }) => {
   }, []);
   const val = useCountUp(step.pp, { trigger: inView, duration: 1100, from });
   return (
-    <article ref={ref} className="thesis-tax-step" style={{ borderLeftColor: step.color }}>
+    <article ref={ref} className="thesis-tax-step">
       <div className="thesis-tax-step-eyebrow" style={{ color: step.color }}>{step.eyebrow}</div>
       <h3 className="thesis-tax-step-headline">{step.headline}</h3>
       <p className="thesis-tax-step-body">{step.body}</p>

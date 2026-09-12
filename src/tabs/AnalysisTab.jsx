@@ -54,10 +54,7 @@ const PAGE_TERMS = [...new Set([
 export const AnalysisCard = ({ eyebrow, eyebrowColor, summary, badge, accent, defaultOpen = false, children }) => {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <div style={{
-      background: "var(--bg-card)",
-      border: "1px solid var(--border-subtle)",
-      borderLeft: accent ? `3px solid ${accent}` : "1px solid var(--border-subtle)",
+    <div className="elev-raised" style={{
       borderRadius: "var(--radius-lg)",
       padding: "16px 20px",
     }}>
@@ -73,7 +70,7 @@ export const AnalysisCard = ({ eyebrow, eyebrowColor, summary, badge, accent, de
       >
         <span style={{ display: "flex", flexDirection: "column", gap: 6, minWidth: 0 }}>
           <span style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-            <span style={{
+            <span className="kicker-dash" style={{
               fontSize: "var(--fs-xs)", color: eyebrowColor || "var(--accent-bitcoin)",
               textTransform: "uppercase", letterSpacing: 1.2, fontWeight: 700,
               fontFamily: "var(--font-mono)",

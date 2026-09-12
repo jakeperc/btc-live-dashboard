@@ -81,6 +81,25 @@
   --dur-fast: 0.2s;
   --dur-base: 0.3s;
   --dur-slow: 0.6s;
+
+  /* material / elevation — depth from light, not hue. Raised surfaces sit a
+     few % lighter than the card base with a 1px "machined" top edge and a
+     two-layer shadow (tight contact + wide ambient). Recessed wells sit
+     darker with an inset shadow: meta/legal content reads quiet because it
+     is physically lower, not because it is grayed out. */
+  --elev-raised-bg: linear-gradient(180deg, #1e2138 0%, #181b2e 100%);
+  --elev-raised-edge: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  --elev-raised-shadow: 0 1px 2px rgba(0, 0, 0, 0.35), 0 12px 32px -18px rgba(0, 0, 0, 0.55);
+  --elev-raised-shadow-hover: 0 2px 4px rgba(0, 0, 0, 0.35), 0 18px 44px -18px rgba(0, 0, 0, 0.62);
+  --elev-recessed-bg: #121226;
+  --elev-recessed-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.42), inset 0 -1px 0 rgba(255, 255, 255, 0.02);
+  /* warm light pool — a lighting effect, not a tint; hero moments only */
+  --pool-warm: radial-gradient(120% 100% at 18% -12%, rgba(247, 147, 26, 0.07) 0%, rgba(247, 147, 26, 0) 55%);
+  /* gradient hairline border (top-lit) + top glint — painted as background
+     layers behind a transparent border via the padding-box/border-box trick */
+  --card-border-grad: linear-gradient(180deg, rgba(255, 255, 255, 0.11) 0%, rgba(255, 255, 255, 0.045) 45%, rgba(255, 255, 255, 0.028) 100%);
+  --card-border-grad-hover: linear-gradient(180deg, rgba(255, 255, 255, 0.17) 0%, rgba(255, 255, 255, 0.07) 100%);
+  --elev-glint: linear-gradient(90deg, rgba(255, 255, 255, 0) 6%, rgba(255, 255, 255, 0.09) 50%, rgba(255, 255, 255, 0) 94%) top / 100% 1px no-repeat padding-box;
 }
 
 /* Light theme overrides — only applied via the explicit data-theme="light"
@@ -128,6 +147,19 @@
   --status-warn-soft: rgba(180, 83, 9, 0.12);
   --status-info: #0277bd;
   --status-info-soft: rgba(2, 119, 189, 0.12);
+  /* material / elevation — on white, depth comes from shadow instead of
+     surface lightness; the top-edge highlight is invisible so it stays white. */
+  --elev-raised-bg: linear-gradient(180deg, #ffffff 0%, #fbfcfe 100%);
+  --elev-raised-edge: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  --elev-raised-shadow: 0 1px 2px rgba(20, 30, 55, 0.06), 0 12px 32px -18px rgba(20, 30, 55, 0.18);
+  --elev-raised-shadow-hover: 0 2px 4px rgba(20, 30, 55, 0.07), 0 18px 44px -18px rgba(20, 30, 55, 0.24);
+  --elev-recessed-bg: #e2e7f0;
+  --elev-recessed-shadow: inset 0 1px 3px rgba(20, 30, 55, 0.10), inset 0 -1px 0 rgba(255, 255, 255, 0.65);
+  --pool-warm: radial-gradient(120% 100% at 18% -12%, rgba(247, 147, 26, 0.06) 0%, rgba(247, 147, 26, 0) 55%);
+  /* on white, the border darkens slightly toward the bottom (lit from above) */
+  --card-border-grad: linear-gradient(180deg, #e5e9f1 0%, #d8deea 100%);
+  --card-border-grad-hover: linear-gradient(180deg, #d6dce8 0%, #c6cedd 100%);
+  --elev-glint: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0) 100%) top / 100% 1px no-repeat padding-box;
 }
 
 /* Glossary terms — the dotted underline is the only affordance saying "tap me
@@ -171,14 +203,8 @@
 :root[data-theme="light"] .header-tabs [role="tab"][aria-selected="false"]:hover {
   color: var(--text-primary) !important;
 }
-:root[data-theme="light"] .market-pulse-card {
-  background: linear-gradient(160deg, var(--bg-card) 0%, var(--bg-card-soft) 100%) !important;
-}
-/* Naked stat strips sit directly on the light page (no card) — dark text
-   tokens read fine now; just give the divider a subtle dark hairline. */
-:root[data-theme="light"] .tier3-strip {
-  border-top-color: var(--border-subtle) !important;
-}
+/* .market-pulse-card and .tier3-strip now build on theme-flipping tokens
+   (--elev-* material, --border-subtle hairline) — no light override needed. */
 :root[data-theme="light"] .tier3-strip .tier3-label {
   color: var(--text-muted) !important;
 }
@@ -284,7 +310,6 @@
 :root[data-theme="light"] .curated-card,
 :root[data-theme="light"] .tier2-card,
 :root[data-theme="light"] .holdings-card,
-:root[data-theme="light"] .lede-card,
 :root[data-theme="light"] .strategy-worked-step,
 :root[data-theme="light"] .strategy-reality-inv-card,
 :root[data-theme="light"] .strategy-cadence-chart,
@@ -337,12 +362,8 @@
   background: linear-gradient(160deg, rgba(239, 68, 68, 0.06) 0%, var(--bg-card) 100%) !important;
   border-color: rgba(239, 68, 68, 0.30) !important;
 }
-:root[data-theme="light"] .strategy-investable-callout {
-  background: linear-gradient(160deg, rgba(247, 147, 26, 0.07) 0%, var(--bg-card) 100%) !important;
-}
-:root[data-theme="light"] .strategy-epigraph-card {
-  background: linear-gradient(160deg, rgba(247, 147, 26, 0.07) 0%, var(--bg-card) 100%) !important;
-}
+/* .strategy-investable-callout and .strategy-epigraph-card now build on the
+   --elev-* material tokens, which carry their own light-theme values. */
 :root[data-theme="light"] .strategy-epigraph-mark { opacity: 0.10 !important; }
 :root[data-theme="light"] .strategy-epigraph-quote { color: var(--text-primary) !important; }
 /* Strategy: drawdown bar track */
@@ -553,11 +574,11 @@
   opacity: 1;
   box-shadow: 0 0 0 3px var(--accent-bitcoin-soft);
 }
-.card-hover { transition: border-color var(--dur-base) ease, box-shadow var(--dur-base) ease; -webkit-tap-highlight-color: transparent; }
+.card-hover { transition: border-color var(--dur-base) ease, box-shadow var(--dur-base) ease, transform var(--dur-base) var(--ease-out); -webkit-tap-highlight-color: transparent; }
 @media (hover: hover) {
-  .card-hover:hover { border-color: var(--border-strong) !important; box-shadow: 0 2px 12px rgba(0, 0, 0, 0.18); }
+  .card-hover:hover { border-color: var(--border-strong) !important; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 10px 28px -14px rgba(0, 0, 0, 0.5); transform: translateY(-1px); }
 }
-.card-hover:active { border-color: var(--border-accent) !important; }
+.card-hover:active { border-color: var(--border-accent) !important; transform: translateY(0) scale(0.995); }
 .glow-border { animation: glowPulse 6s ease-in-out infinite; }
 .section-divider { height: 1px; background: linear-gradient(90deg, transparent, var(--accent-bitcoin-faint), var(--border-subtle), var(--accent-bitcoin-faint), transparent); margin: 0; }
 .section-divider-analytical { height: 1px; background: linear-gradient(90deg, transparent, var(--accent-analytical-faint), var(--border-subtle), var(--accent-analytical-faint), transparent); margin: 8px 0; }
@@ -565,13 +586,13 @@
 /* ─── Card tier system ─── */
 /* Tier 1 — Hero: dominant focal element. Used for price, market pulse, DCA simulator, lede headline. */
 .tier1-card {
-  background: var(--bg-card);
+  background: var(--elev-raised-bg);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-xl);
   padding: 28px 24px;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+  box-shadow: var(--elev-raised-edge), var(--elev-raised-shadow);
 }
 /* Tier 2 — Standard: supporting cards. Flatter than the original gradient. */
 .tier2-card {
@@ -584,9 +605,9 @@
 }
 /* Tier 3 — Stat strip: borderless, just a top hairline rule. Quiet, scannable. */
 .tier3-strip {
-  background: transparent;
+  /* hairline that dissolves toward the right edge instead of a hard rule */
+  background: linear-gradient(90deg, var(--border-subtle) 0%, var(--border-subtle) 55%, transparent 100%) top / 100% 1px no-repeat;
   border: 0;
-  border-top: 1px solid var(--border-subtle);
   border-radius: 0;
   padding: 14px 4px 10px;
   display: flex;
@@ -726,22 +747,22 @@
 
 /* Lede card — Tier 1 starred Headline */
 .lede-card {
-  background: var(--bg-card);
+  background: var(--elev-raised-bg);
   border: 1px solid var(--border-subtle);
-  border-left: 4px solid var(--accent-bitcoin);
   border-radius: var(--radius-lg);
   padding: 22px 24px;
   display: block;
   text-decoration: none;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: var(--elev-raised-edge), var(--elev-raised-shadow);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s var(--ease-out);
   position: relative;
   overflow: hidden;
 }
 @media (hover: hover) {
   .lede-card:hover {
     border-color: var(--border-strong);
-    border-left-color: var(--accent-bitcoin-bright);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.16), 0 0 16px var(--accent-bitcoin-faint);
+    box-shadow: var(--elev-raised-edge), var(--elev-raised-shadow-hover);
+    transform: translateY(-2px);
   }
 }
 .lede-card .lede-eyebrow {
@@ -1440,7 +1461,6 @@ button, a, [role="button"], [role="tab"], [role="radio"] { -webkit-tap-highlight
 .thesis-pinned-fallback-chapter {
   background: linear-gradient(160deg, #11142a 0%, #0f1426 100%);
   border: 1px solid var(--border-subtle);
-  border-left: 3px solid #ef4444;
   border-radius: 14px;
   padding: 16px 18px 14px;
   display: flex;
@@ -1534,7 +1554,7 @@ button, a, [role="button"], [role="tab"], [role="radio"] { -webkit-tap-highlight
 .thesis-tax-walk { display: flex; flex-direction: column; gap: 12px; }
 .thesis-tax-step {
   background: linear-gradient(160deg, #11142a 0%, #0f1426 100%);
-  border: 1px solid var(--border-subtle); border-left: 3px solid #ef4444;
+  border: 1px solid var(--border-subtle);
   border-radius: 14px; padding: 18px 18px 16px;
   display: flex; flex-direction: column; gap: 9px;
 }
@@ -2230,32 +2250,43 @@ button, a, [role="button"], [role="tab"], [role="radio"] { -webkit-tap-highlight
   font-family: 'Outfit', sans-serif;
   max-width: 780px;
 }
-.strategy-disclaimer-ribbon {
-  display: grid;
-  grid-template-columns: 26px minmax(0, 1fr);
-  gap: 14px;
-  align-items: start;
-  padding: 16px 18px;
-  border: 1px solid #fbbf2455;
-  border-left: 4px solid #fbbf24;
-  border-radius: var(--radius-lg, 14px);
-  background: linear-gradient(160deg, #fbbf2410 0%, #ef444408 100%);
+/* Disclosure well — standing legal/meta copy set INTO the page (recessed
+   material) rather than dressed as an alert. Quiet by construction. */
+.disclosure-well {
+  background: var(--elev-recessed-bg);
+  box-shadow: var(--elev-recessed-shadow);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 13px 18px;
 }
-.strategy-disclaimer-icon { display: block; margin-top: 2px; }
-.strategy-disclaimer-head {
-  font-size: 13px;
-  font-weight: 900;
-  color: #fbbf24;
-  font-family: 'JetBrains Mono', monospace;
-  letter-spacing: 1.1px;
-  text-transform: uppercase;
-  margin-bottom: 6px;
-}
-.strategy-disclaimer-body {
-  font-size: 13px;
-  color: var(--text-secondary, #c8d0e0);
-  line-height: 1.55;
+.disclosure-well-text {
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--text-muted);
+  line-height: 1.65;
   font-family: 'Outfit', sans-serif;
+  max-width: 720px;
+}
+.disclosure-well-text strong {
+  color: var(--text-tertiary);
+  font-weight: 700;
+}
+
+/* Editorial kicker dash — a short inline rule before an eyebrow label; the
+   magazine convention that replaces the card-edge accent stripe. */
+.kicker-dash::before,
+.strategy-investable-eyebrow::before,
+.strategy-epigraph-eyebrow::before {
+  content: "";
+  display: inline-block;
+  width: 18px;
+  height: 2px;
+  border-radius: 1px;
+  background: currentColor;
+  vertical-align: middle;
+  margin-right: 9px;
+  margin-top: -2px;
+  opacity: 0.9;
 }
 
 .strategy-principle-grid {
@@ -2515,11 +2546,11 @@ button, a, [role="button"], [role="tab"], [role="radio"] { -webkit-tap-highlight
 }
 
 .strategy-investable-callout {
-  background: linear-gradient(160deg, #f7931a14 0%, #0f1426 100%);
-  border: 1px solid #f7931a44;
-  border-left: 4px solid #f7931a;
+  background: var(--elev-raised-bg);
+  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
-  padding: 18px 20px;
+  padding: 20px 22px;
+  box-shadow: var(--elev-raised-edge), var(--elev-raised-shadow);
 }
 .strategy-investable-eyebrow {
   font-size: 11px;
@@ -2551,12 +2582,10 @@ button, a, [role="button"], [role="tab"], [role="radio"] { -webkit-tap-highlight
   align-items: center;
   background: var(--bg-card, #111629);
   border: 1px solid var(--border-subtle, #242b49);
-  border-left-width: 4px;
   border-radius: 12px;
   padding: 18px 20px 18px 22px;
   overflow: hidden;
 }
-.strategy-band-stripe { display: none; }
 .strategy-band-num {
   font-family: 'JetBrains Mono', monospace;
   font-size: 24px;
@@ -2680,11 +2709,20 @@ button, a, [role="button"], [role="tab"], [role="radio"] { -webkit-tap-highlight
   position: relative;
   overflow: hidden;
   margin: 0;
-  background: linear-gradient(160deg, #f7931a14 0%, #0f1426 100%);
-  border: 1px solid #f7931a44;
-  border-left: 4px solid #f7931a;
+  background: var(--pool-warm), var(--elev-raised-bg);
+  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   padding: 26px 30px 22px;
+  box-shadow: var(--elev-raised-edge), var(--elev-raised-shadow);
+}
+/* film grain over the hero — kills gradient banding, adds material */
+.strategy-epigraph-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 .strategy-epigraph-mark {
   position: absolute;
@@ -3327,12 +3365,14 @@ button, a, [role="button"], [role="tab"], [role="radio"] { -webkit-tap-highlight
   /* Backdrop-filter blur is expensive while scrolling on mobile GPUs;
      swap to a denser solid background with a much lighter blur. */
   .dashboard-header {
-    background: var(--bg-base);
+    background:
+      linear-gradient(90deg, transparent 0%, var(--border-subtle) 15%, var(--border-subtle) 85%, transparent 100%) bottom / 100% 1px no-repeat,
+      var(--bg-base);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     mask-image: none;
     -webkit-mask-image: none;
-    border-bottom: 1px solid var(--border-subtle);
+    border-bottom: 0;
   }
   /* Scroll-snap on the thesis scenes makes touch scrolling lurch. */
   .thesis-scenes { scroll-snap-type: none !important; }
@@ -3653,8 +3693,14 @@ button, a, [role="button"], [role="tab"], [role="radio"] { -webkit-tap-highlight
 .bottom-nav {
   position: fixed; bottom: 0; left: 0; right: 0; z-index: 50;
   display: flex; justify-content: space-around;
-  background: var(--bg-base); border-top: 1px solid var(--border-subtle);
-  padding: 4px 0 max(4px, env(safe-area-inset-bottom));
+  /* frosted bar with a hairline that dissolves at the corners */
+  background:
+    linear-gradient(90deg, transparent 0%, var(--border-strong) 18%, var(--border-strong) 82%, transparent 100%) top / 100% 1px no-repeat,
+    var(--bg-overlay);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border-top: 0;
+  padding: 5px 0 max(4px, env(safe-area-inset-bottom));
 }
 .bottom-nav-item {
   flex: 1; display: flex; flex-direction: column; align-items: center;
@@ -3800,5 +3846,48 @@ button, a, [role="button"], [role="tab"], [role="radio"] { -webkit-tap-highlight
 .holdings-table tbody tr:nth-child(even) td { background: rgba(255,255,255,0.015); }
 @media (hover: hover) {
   .holdings-table tbody tr:hover td { background: var(--bg-card-elevated); }
+}
+
+/* ─── Raised material, unified (keep last: these override the per-class
+   background/border declarations above at equal specificity). The border is
+   transparent; a top-lit gradient painted to border-box shows through it,
+   with a 1px glint across the top edge — light as structure, not hue. ─── */
+.elev-raised,
+.tier1-card,
+.lede-card,
+.strategy-investable-callout,
+.strategy-epigraph-card {
+  border: 1px solid transparent;
+  background:
+    var(--elev-glint),
+    var(--elev-raised-bg) padding-box,
+    var(--card-border-grad) border-box;
+  box-shadow: var(--elev-raised-shadow);
+}
+.strategy-epigraph-card {
+  background:
+    var(--elev-glint),
+    var(--pool-warm) padding-box,
+    var(--elev-raised-bg) padding-box,
+    var(--card-border-grad) border-box;
+}
+@media (hover: hover) {
+  .elev-raised.card-hover:hover,
+  .lede-card:hover {
+    border-color: transparent !important;
+    background:
+      var(--elev-glint),
+      var(--elev-raised-bg) padding-box,
+      var(--card-border-grad-hover) border-box;
+  }
+}
+/* film grain on tier-1 heroes, matching the epigraph's material */
+.tier1-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 

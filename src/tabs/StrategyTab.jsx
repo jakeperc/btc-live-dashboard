@@ -19,16 +19,10 @@ export const StrategyHeader = () => (
       </div>
     </Reveal>
     <Reveal delay={0.05}>
-      <div className="strategy-disclaimer-ribbon" role="note" aria-label="Disclaimer">
-        <svg className="strategy-disclaimer-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path d="M12 9v4m0 4h.01M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z" stroke="#fbbf24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-        <div>
-          <div className="strategy-disclaimer-head">Educational content only · Not financial advice</div>
-          <div className="strategy-disclaimer-body">
-            Nothing on this page is financial, tax, or legal advice. Bitcoin is volatile and can lose substantial value, including drawdowns of 50–80% or more. Consult a licensed advisor before investing.
-          </div>
-        </div>
+      <div className="disclosure-well" role="note" aria-label="Disclaimer">
+        <p className="disclosure-well-text">
+          <strong>Educational content only — not financial advice.</strong> Nothing on this page is financial, tax, or legal advice. Bitcoin is volatile and can lose substantial value, including drawdowns of 50–80% or more. Consult a licensed advisor before investing.
+        </p>
       </div>
     </Reveal>
   </section>
@@ -615,8 +609,7 @@ export const StrategyAllocationBands = () => (
     <div className="strategy-band-stack">
       {ALLOCATION_BANDS.map((b, i) => (
         <Reveal key={b.band} delay={0.08 + i * 0.05}>
-          <div className="strategy-band-row card-hover" style={{ borderLeftColor: b.stripe }}>
-            <div className="strategy-band-stripe" style={{ background: b.stripe }} aria-hidden="true" />
+          <div className="strategy-band-row card-hover">
             <div className="strategy-band-num" style={{ color: b.stripe }}>{b.band}</div>
             <div className="strategy-band-body">
               <div className="strategy-band-persona">{b.persona}</div>
