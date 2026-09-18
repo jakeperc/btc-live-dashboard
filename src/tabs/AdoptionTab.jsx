@@ -206,7 +206,7 @@ export const CompaniesTab = ({ price }) => {
       <div className="holdings-chart-card" style={{ background: "var(--bg-card)", border: "1px solid var(--border-subtle)", borderRadius: 16, padding: "16px 8px", marginBottom: 20 }}>
         <ResponsiveContainer width="100%" height={isMobile ? 360 : 300}>
           <BarChart data={top8Display} margin={{ left: 0, right: isMobile ? 12 : 20, top: 4, bottom: 4 }} layout="vertical">
-            <XAxis type="number" tick={{ fill: "var(--text-dim)", fontSize: isMobile ? 10 : 11, fontFamily: "'JetBrains Mono', monospace" }} axisLine={false} tickLine={false} tickFormatter={v => v >= 1000 ? (v/1000).toFixed(0) + "K" : v} tickCount={isMobile ? 4 : 6} />
+            <XAxis type="number" tick={{ fill: "var(--text-dim)", fontSize: 11, fontFamily: "'JetBrains Mono', monospace" }} axisLine={false} tickLine={false} tickFormatter={v => v >= 1000 ? (v/1000).toFixed(0) + "K" : v} tickCount={isMobile ? 4 : 6} />
             <YAxis type="category" dataKey="company" tick={{ fill: "var(--text-secondary)", fontSize: isMobile ? 11 : 12, fontFamily: "'Outfit', sans-serif" }} axisLine={false} tickLine={false} width={isMobile ? 108 : 100} interval={0} tickFormatter={n => isMobile && n.length > 14 ? n.slice(0, 13) + "…" : n} />
             <Tooltip
               contentStyle={{ background: "var(--bg-card-elevated)", border: "1px solid #f7931a66", borderRadius: 8, fontFamily: "'JetBrains Mono', monospace", fontSize: 13, padding: "10px 14px", maxWidth: "calc(100vw - 32px)", color: "var(--text-primary)", boxShadow: "0 8px 24px rgba(0,0,0,0.4)" }}
@@ -225,7 +225,7 @@ export const CompaniesTab = ({ price }) => {
           </BarChart>
         </ResponsiveContainer>
         {hasBreak && (
-          <div style={{ fontSize: 10, color: "var(--text-dim)", fontFamily: "'JetBrains Mono', monospace", textAlign: "center", marginTop: 6, paddingRight: 8 }}>
+          <div style={{ fontSize: 11, color: "var(--text-dim)", fontFamily: "'JetBrains Mono', monospace", textAlign: "center", marginTop: 6, paddingRight: 8 }}>
             // axis break — top holder's bar truncated so other companies remain comparable
           </div>
         )}
@@ -250,7 +250,7 @@ export const CompaniesTab = ({ price }) => {
                     <span style={{ fontSize: 18 }} aria-hidden="true">{c.country}</span>
                     <div>
                       <div style={{ fontWeight: 700, color: "var(--text-primary)", fontFamily: "var(--font-sans)", fontSize: 13 }}>{c.company}</div>
-                      <div style={{ fontSize: 10, color: "var(--accent-bitcoin)", fontWeight: 700, letterSpacing: "0.04em", marginTop: 1 }}>{c.ticker}</div>
+                      <div style={{ fontSize: 11, color: "var(--accent-bitcoin)", fontWeight: 700, letterSpacing: "0.04em", marginTop: 1 }}>{c.ticker}</div>
                     </div>
                   </div>
                 </td>
@@ -295,7 +295,7 @@ export const HoldingsTab = ({ price }) => {
       <div className="holdings-chart-card" style={{ background: "var(--bg-card)", border: "1px solid var(--border-subtle)", borderRadius: 16, padding: "16px 8px", marginBottom: 20 }}>
         <ResponsiveContainer width="100%" height={isMobile ? 320 : 280}>
           <BarChart data={COUNTRY_HOLDINGS.filter(c => c.btc > 0)} margin={{ left: 0, right: isMobile ? 12 : 20, top: 4, bottom: 4 }} layout="vertical">
-            <XAxis type="number" tick={{ fill: "var(--text-dim)", fontSize: isMobile ? 10 : 11, fontFamily: "'JetBrains Mono', monospace" }} axisLine={false} tickLine={false} tickFormatter={v => (v/1000).toFixed(0) + "K"} tickCount={isMobile ? 4 : 6} />
+            <XAxis type="number" tick={{ fill: "var(--text-dim)", fontSize: 11, fontFamily: "'JetBrains Mono', monospace" }} axisLine={false} tickLine={false} tickFormatter={v => (v/1000).toFixed(0) + "K"} tickCount={isMobile ? 4 : 6} />
             <YAxis type="category" dataKey="country" tick={{ fill: "var(--text-secondary)", fontSize: isMobile ? 11 : 12, fontFamily: "'Outfit', sans-serif" }} axisLine={false} tickLine={false} width={isMobile ? 84 : 110} interval={0} />
             <Tooltip contentStyle={{ background: "var(--bg-card)", border: "1px solid #f7931a44", borderRadius: 8, fontFamily: "'JetBrains Mono', monospace", fontSize: 13, padding: "8px 12px", maxWidth: "calc(100vw - 32px)" }} formatter={(v) => [fmt(v) + " BTC ($" + (v * safePrice / 1e9).toFixed(2) + "B)", "Holdings"]} />
             <Bar dataKey="btc" radius={[0, 8, 8, 0]} isAnimationActive={false}>

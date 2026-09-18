@@ -36,7 +36,7 @@ export const HeadlineCard = ({ item, i, forceStar = false, variant = "standard" 
         >
           <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
             <span className="lede-eyebrow">{item.tag}</span>
-            <span style={{ fontSize: 10, color: "var(--accent-bitcoin)", fontFamily: "var(--font-mono)", fontWeight: 700, letterSpacing: "var(--tracking-caps-tight)" }}>★ KEY STORY</span>
+            <span style={{ fontSize: 11, color: "var(--accent-bitcoin)", fontFamily: "var(--font-mono)", fontWeight: 700, letterSpacing: "var(--tracking-caps-tight)" }}>★ KEY STORY</span>
           </div>
           <div className="lede-title">{item.title}</div>
           <div className="lede-meta">{item.date} · {item.source}</div>
@@ -53,7 +53,7 @@ export const HeadlineCard = ({ item, i, forceStar = false, variant = "standard" 
           <div className="headline-title" style={{ fontSize: 14, color: "var(--text-secondary)", fontWeight: 600, lineHeight: 1.4, fontFamily: "var(--font-sans)" }}>{item.title}</div>
         </div>
         <div style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 6 }}>
-          <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 10, background: tc.bg, color: tc.text, fontWeight: 700, fontFamily: "var(--font-mono)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.07), inset 0 0 0 1px rgba(255,255,255,0.04)" }}>{item.tag}</span>
+          <span style={{ fontSize: 11, padding: "2px 8px", borderRadius: 10, background: tc.bg, color: tc.text, fontWeight: 700, fontFamily: "var(--font-mono)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.07), inset 0 0 0 1px rgba(255,255,255,0.04)" }}>{item.tag}</span>
           <span style={{ fontSize: 11, color: "var(--text-dim)", fontFamily: "var(--font-mono)" }}>{item.source}</span>
         </div>
       </div>

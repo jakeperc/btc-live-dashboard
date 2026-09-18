@@ -5,11 +5,14 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "npm run build:vite && node scripts/make-single-file.mjs",
+    "build": "node scripts/build.mjs",
     "build:vite": "vite build",
     "preview": "vite preview",
     "check:plain": "node scripts/check-plain.mjs",
-    "test:glossary": "node scripts/test-glossary-match.mjs"
+    "test:glossary": "node scripts/test-glossary-match.mjs",
+    "build:single": "node scripts/build.mjs --single",
+    "check:schema": "node scripts/check-schema.mjs",
+    "test": "node scripts/check-schema.mjs && node scripts/test-glossary-match.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",

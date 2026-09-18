@@ -1,16 +1,33 @@
 # Upload this file next to the deployed index.html
-# (jakepercy.com/bitcoin/).
+# (jakepercy.com/bitcoin/), alongside the assets/ folder.
 #
-# The dashboard is a single self-contained HTML file rebuilt weekly.
-# "no-cache" does NOT mean "don't cache" — it means "revalidate before
-# using the cached copy". The server already sends an ETag, so repeat
-# visits become a ~1 kB 304 Not Modified check instead of a ~216 kB
-# re-download, and every visitor still picks up the Monday rebuild
-# immediately.
+# The build is index.html plus content-hashed files in assets/
+# (index-a1b2c3d4.js, vendor-react-….js, …). Two cache rules follow from that:
+#
+#   index.html  → "no-cache". This does NOT mean "don't cache" — it means
+#                 "revalidate before using the cached copy". The server sends
+#                 an ETag, so a repeat visit is a ~1 kB 304 Not Modified check,
+#                 and every visitor picks up the Monday rebuild immediately.
+#   .js / .css  → cache for a year, immutable. Safe because the file NAME
+#                 changes whenever its content does; a stale name is never
+#                 referenced by a fresh index.html, so nothing can go stale.
+#
+# The single-file fallback build (`npm run build:single`) has no assets/, so
+# only the .html rule applies to it.
 #
 # Rollback: delete this file.
 <IfModule mod_headers.c>
   <FilesMatch "\.html$">
     Header set Cache-Control "no-cache"
   </FilesMatch>
+  <FilesMatch "\.(js|css)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+</IfModule>
+
+# Some shared hosts serve .js as text/plain, which browsers refuse to run as
+# an ES module. Pin the type.
+<IfModule mod_mime.c>
+  AddType application/javascript .js
+  AddType text/css .css
 </IfModule>

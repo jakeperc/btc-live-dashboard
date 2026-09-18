@@ -1,4 +1,165 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useLayoutEffect, useRef, useCallback } from "react";
+import { parseHash, navigateTo, tabTitle } from "../lib/routes.js";
+
+// ─── ROUTING ────────────────────────────────────────────────────
+// Scroll to an element id once it exists. Lazy tab chunks and Suspense mean
+// the target may take a moment to mount, so after a synchronous first look we
+// poll: on animation frames while the tab is visible, and on a slow timer
+// otherwise (browsers pause requestAnimationFrame in hidden tabs, so a link
+// opened in the background would never land without it). The budget is
+// `timeoutMs` of wall clock OR ANCHOR_MAX_TICKS polls, whichever lasts longer,
+// so a slow chunk download and a long-hidden tab are both covered. Returns a
+// cancel function.
+const ANCHOR_MAX_TICKS = 180;
+const ANCHOR_HIDDEN_POLL_MS = 250;
+
+export const scrollToAnchor = (id, timeoutMs = 3000, { forceAuto = false } = {}) => {
+  if (typeof document === "undefined" || !id) return () => {};
+  const deadline = Date.now() + timeoutMs;
+  let ticks = 0;
+  let raf = 0;
+  let timer = 0;
+  const cancel = () => {
+    if (raf) window.cancelAnimationFrame(raf);
+    if (timer) window.clearTimeout(timer);
+    raf = 0; timer = 0;
+  };
+  const tick = () => {
+    cancel();
+    const el = document.getElementById(id);
+    // offsetParent is null while the element sits in a display:none panel.
+    if (el && el.offsetParent !== null) {
+      // No animation for reduced motion, none when nobody is watching (a hidden
+      // tab lands on the anchor instantly instead of animating later), and none
+      // for the very first paint of a cold deep link — smooth-scrolling while
+      // layout (fonts, images, the price header) is still settling can overshoot.
+      const behavior = forceAuto || prefersReducedMotion() || document.hidden ? "auto" : "smooth";
+      el.scrollIntoView({ block: "start", behavior });
+      return;
+    }
+    ticks += 1;
+    if (Date.now() < deadline || ticks < ANCHOR_MAX_TICKS) {
+      raf = window.requestAnimationFrame(tick);
+      timer = window.setTimeout(tick, ANCHOR_HIDDEN_POLL_MS);
+    }
+  };
+  tick();
+  return cancel;
+};
+
+// The URL hash is the source of truth for which tab is open (see
+// src/lib/routes.js for the scheme). Returns [activeTab, setActiveTab] with
+// the same shape the shell used to get from useState(0), so every existing
+// setActiveTab(n) call site keeps working — it now writes the hash and the
+// hashchange listener does the switching, which is what makes the back
+// button and shared links work. setActiveTab(n, anchorId) also scrolls to an
+// element once the tab has mounted.
+export const useHashRoute = () => {
+  const [route, setRoute] = useState(() => {
+    const { tab, anchor } = parseHash();
+    return { tab: tab ?? 0, anchor: tab == null ? null : anchor, seq: 0 };
+  });
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    let lastHandled = null;
+    const onChange = (e) => {
+      const hash = window.location.hash;
+      // A real fragment navigation fires popstate AND hashchange; handle it
+      // once. navigateTo()'s synthetic re-dispatch (same hash, isTrusted false)
+      // must still pass so a second click on the same anchor re-scrolls.
+      if (e && e.isTrusted && hash === lastHandled) return;
+      lastHandled = hash;
+      const { tab, anchor } = parseHash(hash);
+      if (tab == null) return; // a plain "#some-id" or empty hash — not ours
+      setRoute((prev) => ({ tab, anchor, seq: prev.seq + 1 }));
+    };
+    window.addEventListener("hashchange", onChange);
+    window.addEventListener("popstate", onChange);
+    return () => {
+      window.removeEventListener("hashchange", onChange);
+      window.removeEventListener("popstate", onChange);
+    };
+  }, []);
+
+  // Title + scroll follow the route. On first load (seq 0) we only scroll when
+  // the URL names an anchor; the shell owns the plain scroll-to-top on mount.
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    document.title = tabTitle(route.tab);
+    if (route.anchor) return scrollToAnchor(route.anchor, 3000, { forceAuto: route.seq === 0 });
+    if (route.seq > 0) window.scrollTo({ top: 0, behavior: "auto" });
+  }, [route]);
+
+  const setActiveTab = useCallback((tabIndex, anchorId) => navigateTo(tabIndex, anchorId), []);
+
+  return [route.tab, setActiveTab];
+};
+
+// ─── POLLING ────────────────────────────────────────────────────
+// Visibility-aware polling with exponential backoff. One poller owns one
+// fetcher. It ticks every `intervalMs` while the page is visible and stops the
+// clock while the tab is hidden; on return it fires at once if the last
+// success is older than one interval. After a failure it skips 1, 2, 4… ticks
+// (never waiting longer than `backoffCapMs`), and a success resets the ladder.
+//
+// `run()` resolves to true on success, false on failure, or undefined when it
+// did nothing (already in flight, aborted) — undefined leaves the ladder alone.
+export const createPoller = ({ run, intervalMs, backoffCapMs = intervalMs }) => {
+  const maxSkip = Math.max(0, Math.floor(backoffCapMs / intervalMs) - 1);
+  let timer = null;
+  let lastSuccess = 0;
+  let failures = 0;
+  let skip = 0;
+  let stopped = false;
+  const visible = () => typeof document === "undefined" || !document.hidden;
+
+  const attempt = async (force) => {
+    if (stopped) return;
+    if (!force && skip > 0) { skip -= 1; return; }
+    let result;
+    try { result = await run(); } catch { result = false; }
+    if (stopped || result == null) return;
+    if (result === false) {
+      failures += 1;
+      skip = Math.min(2 ** Math.min(failures - 1, 20), maxSkip);
+    } else {
+      lastSuccess = Date.now();
+      failures = 0;
+      skip = 0;
+    }
+  };
+
+  const clock = (on) => {
+    if (timer) { clearInterval(timer); timer = null; }
+    if (on && !stopped) timer = setInterval(() => attempt(false), intervalMs);
+  };
+
+  const onVisibility = () => {
+    if (visible()) {
+      if (Date.now() - lastSuccess >= intervalMs) attempt(true);
+      clock(true);
+    } else {
+      clock(false);
+    }
+  };
+
+  return {
+    // Initial burst on mount, then the clock (only while visible).
+    start() {
+      attempt(true);
+      clock(visible());
+      if (typeof document !== "undefined") document.addEventListener("visibilitychange", onVisibility);
+    },
+    // Manual refresh (pull-to-refresh): runs now, ignoring any backoff.
+    now() { attempt(true); },
+    stop() {
+      stopped = true;
+      clock(false);
+      if (typeof document !== "undefined") document.removeEventListener("visibilitychange", onVisibility);
+    },
+  };
+};
 
 // Animates from previous value to target over `duration`. Uses setInterval (not rAF) so
 // it ticks reliably even when the tab is throttled (puppeteer/background tab).
@@ -184,19 +345,47 @@ export const shouldAnimate = () =>
   typeof window !== "undefined" &&
   (!window.matchMedia || !window.matchMedia("(max-width: 760px)").matches);
 
+// Fade-in on scroll. Three guarantees so nothing ever stays invisible:
+//   1. Anything already inside the viewport at mount is visible on its first
+//      paint (measured in a layout effect, transition suppressed for that
+//      paint so it does not fade in from nothing).
+//   2. Everything else is revealed by an IntersectionObserver as it scrolls in.
+//   3. A 1.5 s fallback timer forces `visible` regardless — if the observer
+//      never fires (display:none panel, odd browser, missing API) the content
+//      still shows up.
+const REVEAL_FALLBACK_MS = 1500;
+
 export const Reveal = ({ children, delay = 0, scale = false, className = "", as: Tag = "div", style }) => {
   const ref = useRef(null);
   const [visible, setVisible] = useState(() => prefersReducedMotion());
-  useEffect(() => {
+  const [instant, setInstant] = useState(false);
+  useLayoutEffect(() => {
     if (prefersReducedMotion()) { setVisible(true); return; }
     const el = ref.current;
-    if (!el) return;
+    if (!el) { setVisible(true); return; }
+    const vh = window.innerHeight || document.documentElement.clientHeight || 0;
+    const top = el.getBoundingClientRect().top;
+    if (top < vh) {
+      // Already on screen: show it now, with no transition on this first paint,
+      // then hand transitions back after the browser has painted.
+      setInstant(true);
+      setVisible(true);
+      let raf2 = 0;
+      const raf1 = window.requestAnimationFrame(() => { raf2 = window.requestAnimationFrame(() => setInstant(false)); });
+      return () => { window.cancelAnimationFrame(raf1); if (raf2) window.cancelAnimationFrame(raf2); };
+    }
+    const fallback = window.setTimeout(() => setVisible(true), REVEAL_FALLBACK_MS);
+    if (typeof IntersectionObserver === "undefined") return () => window.clearTimeout(fallback);
     const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect(); } }, { threshold: 0.1 });
     obs.observe(el);
-    return () => obs.disconnect();
+    return () => { obs.disconnect(); window.clearTimeout(fallback); };
   }, []);
   return (
-    <Tag ref={ref} className={`${scale ? "reveal-scale" : "reveal"} ${visible ? "visible" : ""} ${className}`} style={{ transitionDelay: delay + "s", ...style }}>
+    <Tag
+      ref={ref}
+      className={`${scale ? "reveal-scale" : "reveal"} ${visible ? "visible" : ""} ${instant ? "reveal-instant" : ""} ${className}`}
+      style={{ transitionDelay: delay + "s", ...style }}
+    >
       {children}
     </Tag>
   );

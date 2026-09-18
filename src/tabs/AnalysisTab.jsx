@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { DEEP_ANALYSIS } from "../data/deep-analysis.js";
+import { FORECAST_LEDGER } from "../data/forecast-ledger.js";
 import { GLOSSARY, GLOSSARY_BY_KEY } from "../data/glossary.js";
 import { buildMatcher, linkNamed, linkCard } from "../lib/glossary-match.js";
-import { Term, Prose, SectionGroup, DipExplainerCard } from "../components/shared.jsx";
+import { ANCHORS, tabHref, navigateTo } from "../lib/routes.js";
+import { useIsMobile } from "../hooks/ui.jsx";
+import { Term, Prose, SectionGroup, DipExplainerCard, StaleNotice, isPlainClick } from "../components/shared.jsx";
 import { pBadge } from "./DashboardTab.jsx";
 
 // ─── Glossary segmentation, computed ONCE at module scope ────────────────────
@@ -92,7 +95,7 @@ export const AnalysisCard = ({ eyebrow, eyebrowColor, summary, badge, accent, de
           flexShrink: 0,
         }}>
           {open ? "Less" : "Details"}
-          <span style={{ display: "inline-block", fontSize: 10, transform: open ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s ease" }}>▼</span>
+          <span aria-hidden="true" style={{ display: "inline-block", fontSize: 11, transform: open ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s ease" }}>▼</span>
         </span>
       </button>
       {open && (
@@ -136,7 +139,7 @@ export const WatchRow = ({ item, signalSegments = null }) => {
             </span>
             {item.category && (
               <span style={{
-                fontSize: 10, fontFamily: "var(--font-mono)", fontWeight: 700,
+                fontSize: 11, fontFamily: "var(--font-mono)", fontWeight: 700,
                 color: "var(--text-muted)", background: "var(--bg-card-elevated)",
                 padding: "3px 8px", borderRadius: "var(--radius-sm)",
                 letterSpacing: 0.5, textTransform: "uppercase",
@@ -155,7 +158,7 @@ export const WatchRow = ({ item, signalSegments = null }) => {
         </span>
         <span style={{ display: "inline-flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
           {pBadge(item.probability)}
-          <span style={{ display: "inline-block", fontSize: 10, color: "var(--text-muted)", transform: open ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s ease" }}>▼</span>
+          <span aria-hidden="true" style={{ display: "inline-block", fontSize: 11, color: "var(--text-muted)", transform: open ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s ease" }}>▼</span>
         </span>
       </button>
       {open && (
@@ -185,6 +188,299 @@ export const WatchRow = ({ item, signalSegments = null }) => {
   );
 };
 
+// ─── Track record — the forecast ledger, rendered ────────────────────────────
+// Letter grade for a Brier score. The one place the thresholds live; the summary
+// strip and anything else that labels a score call this.
+export const gradeFor = (b) => b == null ? null
+  : b < 0.06 ? { grade: "A+", color: "var(--status-up)",      label: "Exceptional" }
+  : b < 0.10 ? { grade: "A",  color: "var(--status-up)",      label: "Strong" }
+  : b < 0.14 ? { grade: "B+", color: "#4ade80",               label: "Good" }
+  : b < 0.18 ? { grade: "B",  color: "var(--accent-bitcoin)", label: "Adequate" }
+  : b < 0.22 ? { grade: "C+", color: "var(--status-warn)",    label: "Fair" }
+  :            { grade: "C",  color: "var(--status-down)",    label: "Recalibrating" };
+
+const CATEGORY_LABELS = {
+  macro: "Macro", corporate: "Corporate", etf: "ETF flows", regulation: "Regulation",
+  protocol: "Protocol", sovereign: "Sovereign", "market-structure": "Market structure",
+};
+const categoryLabel = (c) => CATEGORY_LABELS[c] ?? c;
+
+// hit / miss / partial → the words a newcomer reads, plus the status colour of the dot.
+const OUTCOME_META = {
+  hit:     { label: "Happened",       color: "var(--status-up)" },
+  miss:    { label: "Did not happen", color: "var(--status-down)" },
+  partial: { label: "Half happened",  color: "var(--status-warn)" },
+};
+
+const pctText = (p) => `${Math.round(p * 100)}%`;
+const oddsText = (r) => r.count > 1 && Array.isArray(r.probabilities)
+  ? `${r.count} forecasts · ${r.probabilities.map(pctText).join(", ")}`
+  : pctText(r.probability);
+// A half-happened outcome scores half a hit, so a band can read "4.5 of 11".
+const bandHits = (b) => {
+  const k = Math.round(b.hitRate * b.n * 2) / 2;
+  return Number.isInteger(k) ? String(k) : k.toFixed(1);
+};
+
+const MONO_LABEL = {
+  fontSize: "var(--fs-xs)", color: "var(--text-muted)", textTransform: "uppercase",
+  letterSpacing: 1.1, fontWeight: 700, fontFamily: "var(--font-mono)",
+};
+
+const OutcomeDot = ({ outcome }) => {
+  const m = OUTCOME_META[outcome] ?? { label: outcome, color: "var(--text-muted)" };
+  return (
+    <span style={{ display: "inline-flex", alignItems: "center", gap: 6, whiteSpace: "nowrap" }}>
+      <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: "50%", background: m.color, flexShrink: 0 }} />
+      {m.label}
+    </span>
+  );
+};
+
+const LedgerSource = ({ source }) => source?.url ? (
+  <a href={source.url} target="_blank" rel="noopener noreferrer" title={source.label} style={{
+    color: "var(--text-muted)", textDecoration: "underline",
+    textDecorationColor: "var(--border-subtle)", textUnderlineOffset: 2,
+    fontSize: "var(--fs-xs)", fontFamily: "var(--font-mono)", whiteSpace: "nowrap",
+  }}>
+    Source
+  </a>
+) : null;
+
+// The recruiter surface. The summary strip (grade, score, count, bands, where we
+// lean) is always visible; the full table of every scored forecast sits in a
+// collapsed AnalysisCard beneath it. On phones the table becomes stacked rows so
+// nothing scrolls sideways.
+export const TrackRecord = ({ ledger = FORECAST_LEDGER }) => {
+  const isMobile = useIsMobile(760);
+  if (!ledger || !ledger.summary) return null;
+  const s = ledger.summary;
+  const rows = ledger.resolved ?? [];
+  const grade = gradeFor(s.aggregateBrier);
+  const mono = { fontFamily: "var(--font-mono)", fontWeight: 700 };
+  const cell = {
+    padding: "10px 8px", verticalAlign: "top", borderBottom: "1px solid var(--border-subtle)",
+    fontSize: "var(--fs-xs)", fontFamily: "var(--font-sans)", lineHeight: 1.5,
+    color: "var(--text-primary)", overflowWrap: "anywhere",
+  };
+  const th = { ...cell, ...MONO_LABEL, textAlign: "left", borderBottom: "1px solid var(--border-strong)", whiteSpace: "nowrap" };
+
+  const table = (
+    <table style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed" }}>
+      <colgroup>
+        <col style={{ width: 96 }} />
+        <col />
+        <col style={{ width: 96 }} />
+        <col style={{ width: 118 }} />
+        <col style={{ width: 58 }} />
+        <col style={{ width: 62 }} />
+      </colgroup>
+      <thead>
+        <tr>
+          <th style={th} scope="col">Made</th>
+          <th style={th} scope="col">Forecast</th>
+          <th style={th} scope="col">Our odds</th>
+          <th style={th} scope="col">What happened</th>
+          <th style={th} scope="col">Score</th>
+          <th style={th} scope="col">Source</th>
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((r) => (
+          <tr key={r.id}>
+            <td style={{ ...cell, ...mono, color: "var(--text-muted)" }}>
+              <div style={{ whiteSpace: "nowrap" }}>{r.made}</div>
+              <div style={{ fontWeight: 500, textTransform: "uppercase", letterSpacing: 0.4 }}>{categoryLabel(r.category)}</div>
+            </td>
+            <td style={cell}>
+              <div style={{ fontWeight: 600 }}>{r.event}</div>
+              {r.lesson && <div style={{ color: "var(--text-secondary)", marginTop: 4 }}>{r.lesson}</div>}
+            </td>
+            <td style={{ ...cell, ...mono }}>{oddsText(r)}</td>
+            <td style={cell}><OutcomeDot outcome={r.outcome} /></td>
+            <td style={{ ...cell, ...mono }}>{Number(r.brier).toFixed(2)}</td>
+            <td style={cell}><LedgerSource source={r.source} /></td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+
+  const stacked = (
+    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+      {rows.map((r) => (
+        <div key={r.id} style={{
+          background: "var(--bg-card)", border: "1px solid var(--border-subtle)",
+          borderRadius: "var(--radius-lg)", padding: "12px 14px",
+          display: "flex", flexDirection: "column", gap: 6,
+        }}>
+          <div style={{ ...MONO_LABEL, letterSpacing: 0.6 }}>{r.made} · {categoryLabel(r.category)}</div>
+          <div style={{
+            fontSize: "var(--fs-sm)", fontWeight: 600, color: "var(--text-primary)",
+            fontFamily: "var(--font-sans)", lineHeight: 1.45,
+          }}>
+            {r.event}
+          </div>
+          <dl style={{
+            margin: 0, display: "grid", gridTemplateColumns: "auto 1fr", columnGap: 12, rowGap: 4,
+            fontSize: "var(--fs-xs)", fontFamily: "var(--font-sans)", color: "var(--text-primary)", alignItems: "baseline",
+          }}>
+            <dt style={MONO_LABEL}>Our odds</dt><dd style={{ margin: 0, ...mono }}>{oddsText(r)}</dd>
+            <dt style={MONO_LABEL}>What happened</dt><dd style={{ margin: 0 }}><OutcomeDot outcome={r.outcome} /></dd>
+            <dt style={MONO_LABEL}>Score</dt><dd style={{ margin: 0, ...mono }}>{Number(r.brier).toFixed(2)}</dd>
+            <dt style={MONO_LABEL}>Source</dt><dd style={{ margin: 0 }}><LedgerSource source={r.source} /></dd>
+          </dl>
+          {r.lesson && (
+            <div style={{ fontSize: "var(--fs-xs)", color: "var(--text-secondary)", fontFamily: "var(--font-sans)", lineHeight: 1.5 }}>
+              {r.lesson}
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+
+  return (
+    <section
+      id={ANCHORS.trackRecord}
+      aria-labelledby="track-record-heading"
+      style={{ scrollMarginTop: 110, display: "flex", flexDirection: "column", gap: 12 }}
+    >
+      {/* Summary strip — always visible, never collapsed */}
+      <div className="elev-raised" style={{
+        borderRadius: "var(--radius-lg)", padding: "16px 20px",
+        display: "flex", flexDirection: "column", gap: 14,
+      }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+          <h2 id="track-record-heading" className="kicker-dash" style={{ ...MONO_LABEL, color: "var(--accent-bitcoin)", letterSpacing: 1.2, margin: 0 }}>
+            Track record · every forecast, scored
+          </h2>
+          {ledger.asOf && <span style={{ ...MONO_LABEL, letterSpacing: 0.6 }}>Updated {ledger.asOf}</span>}
+        </div>
+
+        <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
+          {grade && (
+            <div
+              className="confidence-grade-badge"
+              style={{ color: grade.color, background: `color-mix(in srgb, ${grade.color} 10%, transparent)` }}
+              aria-label={`Grade ${grade.grade}, ${grade.label}`}
+            >
+              {grade.grade}
+            </div>
+          )}
+          <div style={{ display: "flex", flexDirection: "column", gap: 6, flex: 1, minWidth: 220 }}>
+            <div style={{ display: "flex", alignItems: "baseline", gap: 12, flexWrap: "wrap" }}>
+              <span style={{ fontSize: "var(--fs-xl, 22px)", fontWeight: 800, fontFamily: "var(--font-mono)", color: "var(--text-primary)", lineHeight: 1 }}>
+                {s.aggregateBrier != null ? Number(s.aggregateBrier).toFixed(2) : "—"}
+              </span>
+              <span style={{ fontSize: "var(--fs-sm)", color: "var(--text-secondary)", fontFamily: "var(--font-sans)" }}>
+                <Term k="brier">Brier score</Term>{grade ? ` · ${grade.label}` : ""}
+              </span>
+            </div>
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap", ...MONO_LABEL, letterSpacing: 0.6 }}>
+              <span>{s.nResolved} forecasts scored</span>
+              {s.rolling20Brier != null && (
+                <>
+                  <span aria-hidden="true">·</span>
+                  <span>last 20: {Number(s.rolling20Brier).toFixed(2)}</span>
+                </>
+              )}
+              {ledger.openCount != null && (
+                <>
+                  <span aria-hidden="true">·</span>
+                  <span>{ledger.openCount} still open</span>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {s.plain && (
+          <div style={{ fontSize: "var(--fs-sm)", color: "var(--text-primary)", fontFamily: "var(--font-sans)", lineHeight: 1.55, maxWidth: 920 }}>
+            {s.plain}
+          </div>
+        )}
+
+        {s.bands?.length > 0 && (
+          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+            {s.bands.map((b) => (
+              <span key={b.range} style={{
+                fontSize: "var(--fs-xs)", fontFamily: "var(--font-mono)", color: "var(--text-secondary)",
+                background: "var(--bg-card-elevated)", border: "1px solid var(--border-subtle)",
+                borderRadius: "var(--radius-sm)", padding: "4px 9px", whiteSpace: "nowrap",
+              }}>
+                Called {b.range}: {bandHits(b)} of {b.n} happened
+              </span>
+            ))}
+          </div>
+        )}
+
+        {s.byCategory?.length > 0 && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 6, paddingTop: 12, borderTop: "1px solid var(--border-subtle)" }}>
+            <div style={MONO_LABEL}>Where we lean</div>
+            {s.byCategory.map((c) => (
+              <div key={c.category} style={{ fontSize: "var(--fs-xs)", fontFamily: "var(--font-sans)", color: "var(--text-secondary)", lineHeight: 1.5 }}>
+                <span style={{ color: "var(--text-primary)", fontWeight: 700 }}>{categoryLabel(c.category)}</span>
+                <span style={{ color: "var(--text-muted)" }}> · {c.n} scored · </span>
+                {c.plain}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Every scored forecast — collapsed by default; table on desktop, stacked rows on phones */}
+      {rows.length > 0 && (
+        <AnalysisCard
+          eyebrow={`Every scored forecast · ${s.nResolved}`}
+          summary="Each call we made, the odds we gave it, what happened, and what we learned. Nothing is removed once scored."
+        >
+          {isMobile ? stacked : table}
+          <p style={{ margin: 0, fontSize: "var(--fs-xs)", color: "var(--text-muted)", fontFamily: "var(--font-sans)", lineHeight: 1.5 }}>
+            Score is the <Term k="brier">Brier score</Term>: (our odds − outcome)², lower is better; 0.25 is what coin-flipping scores. A half-happened outcome counts as 0.5.
+          </p>
+        </AnalysisCard>
+      )}
+    </section>
+  );
+};
+
+// Compact pointer to the score, shown near the header so a recruiter sees it
+// immediately without the full ledger (every scored forecast, the calibration
+// bands, the per-category lean) pushing the week's read down the page. The
+// full Track record section sits at the bottom of the tab — see TrackRecord.
+export const TrackRecordBadge = ({ ledger = FORECAST_LEDGER }) => {
+  if (!ledger?.summary) return null;
+  const s = ledger.summary;
+  const grade = gradeFor(s.aggregateBrier);
+  return (
+    <a
+      href={tabHref(5, ANCHORS.trackRecord)}
+      onClick={(e) => { if (!isPlainClick(e)) return; e.preventDefault(); navigateTo(5, ANCHORS.trackRecord); }}
+      className="card-hover"
+      style={{
+        display: "inline-flex", alignItems: "center", gap: 10, alignSelf: "flex-start",
+        textDecoration: "none", padding: "8px 14px", borderRadius: "var(--radius-md)",
+        background: "var(--bg-card-elevated)", border: "1px solid var(--border-subtle)",
+      }}
+    >
+      {grade && (
+        <span style={{
+          fontFamily: "var(--font-mono)", fontWeight: 800, fontSize: "var(--fs-sm)",
+          color: grade.color, background: `color-mix(in srgb, ${grade.color} 12%, transparent)`,
+          borderRadius: "var(--radius-sm)", padding: "2px 8px", lineHeight: 1.3,
+        }}>
+          {grade.grade}
+        </span>
+      )}
+      <span style={{ fontFamily: "var(--font-sans)", fontSize: "var(--fs-xs)", color: "var(--text-secondary)" }}>
+        Track record{s.aggregateBrier != null ? ` · ${Number(s.aggregateBrier).toFixed(2)} Brier` : ""} · {s.nResolved} scored
+      </span>
+      <span aria-hidden="true" style={{ fontFamily: "var(--font-mono)", fontSize: "var(--fs-xs)", color: "var(--text-muted)" }}>→</span>
+    </a>
+  );
+};
+
 export const DeepAnalysisTab = () => {
   const a = DEEP_ANALYSIS;
   if (!a) return null;
@@ -195,7 +491,6 @@ export const DeepAnalysisTab = () => {
     : (a.contrarianTake || null);
 
   const primary = a.primaryAnalysis || {};
-  const calibration = a.calibration || null;
 
   // Plain-English layer (owner schema, written weekly by /refresh-deep-analysis). Degrade
   // gracefully to the existing, more technical fields if a refresh ever omits a plain*.
@@ -252,6 +547,12 @@ export const DeepAnalysisTab = () => {
           </div>
         )}
       </div>
+
+      {/* Quiet freshness line — renders nothing while the briefing is under ten days old */}
+      <StaleNotice asOf={a.asOf} label="analysis" />
+
+      {/* Compact pointer to the score — the full ledger sits at the bottom of this tab */}
+      <TrackRecordBadge />
 
       {/* The main read — collapsed by default; folds in market backdrop + cross-currents */}
       {primary.themeTitle && (
@@ -461,56 +762,10 @@ export const DeepAnalysisTab = () => {
         </AnalysisCard>
       )}
 
-      {/* Forecast calibration — letter-grade confidence badge */}
-      {calibration && (() => {
-        const b = calibration.aggregateBrier;
-        const gradeInfo = b == null ? null
-          : b < 0.06 ? { grade: "A+", color: "var(--status-up)",    label: "Exceptional" }
-          : b < 0.10 ? { grade: "A",  color: "var(--status-up)",    label: "Strong" }
-          : b < 0.14 ? { grade: "B+", color: "#4ade80",             label: "Good" }
-          : b < 0.18 ? { grade: "B",  color: "var(--accent-bitcoin)", label: "Adequate" }
-          : b < 0.22 ? { grade: "C+", color: "var(--status-warn)",  label: "Fair" }
-          :             { grade: "C",  color: "var(--status-down)",  label: "Recalibrating" };
-        const prob = primary.thesisProbability;
-        const pct = prob != null ? Math.round(prob * 100) : null;
-        const probColor = pct != null
-          ? pct >= 65 ? "var(--status-up)" : pct >= 45 ? "var(--accent-bitcoin)" : "var(--status-warn)"
-          : null;
-        const brierTip = b != null
-          ? `Brier score: ${b.toFixed(3)} — measures forecast accuracy (0 = perfect, 0.25 = random). Lower is better.${calibration.nResolved ? ` Based on ${calibration.nResolved} resolved forecasts.` : ""}`
-          : "Forecast calibration score";
-        return (
-          <div className="confidence-panel">
-            {gradeInfo && (
-              <div className="confidence-grade-badge" style={{ color: gradeInfo.color, background: `color-mix(in srgb, ${gradeInfo.color} 10%, transparent)` }}>
-                {gradeInfo.grade}
-              </div>
-            )}
-            <div className="confidence-meta">
-              <div className="confidence-label-row">
-                <span className="confidence-label"><Term k="brier">Forecast Calibration</Term></span>
-                <span className="confidence-tooltip-trigger" title={brierTip} aria-label="Brier score explanation">?</span>
-                {gradeInfo && (
-                  <span style={{ fontSize: 11, fontFamily: "var(--font-mono)", fontWeight: 700, color: gradeInfo.color }}>{gradeInfo.label}</span>
-                )}
-              </div>
-              {calibration.briefSummary && (
-                <div className="confidence-summary">{calibration.briefSummary}</div>
-              )}
-              {pct != null && (
-                <div className="confidence-prob-row">
-                  <span className="confidence-prob-pill" style={{ color: probColor, background: `color-mix(in srgb, ${probColor} 12%, transparent)` }}>
-                    {pct}% confidence
-                  </span>
-                  <div className="confidence-prob-bar-wrap">
-                    <div className="confidence-prob-bar" style={{ width: `${pct}%`, background: probColor }} />
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        );
-      })()}
+      {/* Track record — the forecast ledger: every scored call, the calibration
+          bands, and where we lean by category. Anchor target for
+          #/analysis/track-record and for the compact badge above. */}
+      <TrackRecord />
     </div>
   );
 };

@@ -2,9 +2,9 @@
 // Owner: /refresh-fallbacks (quarterly).
 // Do not Read src/BitcoinDashboard.jsx to edit these — edit this file instead.
 
-export const FALLBACK_MINED = 20061706;
-export const FALLBACK_BLOCK = 959762;
-export const FALLBACK_PRICE = 63948;
+export const FALLBACK_MINED = 20083556;
+export const FALLBACK_BLOCK = 966777;
+export const FALLBACK_PRICE = 77204;
 export const FALLBACK_ATH = 126080.00;
 export const FALLBACK_ATH_DATE = "2025-10-06T18:57:42.558Z";
 
@@ -44,11 +44,11 @@ export const YARDSTICKS = [
   {
     key: "strategy-holdings",
     label: "Strategy's bitcoin holdings",
-    value: 843775,
+    value: 845050,
     unit: "BTC",
-    plain: "Strategy alone holds about 844,000 coins",
-    asOf: "2026-08-21",
-    source: "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001050446&type=8-K",
+    plain: "Strategy alone holds about 845,000 coins",
+    asOf: "2026-09-13",
+    source: "https://bitcointreasuries.net/",
   },
   // TODO(/refresh-fallbacks): add on the next monthly run, each with a primary source —
   //   avg-weekly-etf-flow   (trailing 12-week mean net flow, Farside Investors)
@@ -57,3 +57,27 @@ export const YARDSTICKS = [
   //   us-m2                 (federalreserve.gov H.6)
   // Until they exist, prose must draw its yardstick from the story itself.
 ];
+
+// ─── Dashboard stat tiles with no live API ──────────────────────
+// Two tiles in the Dashboard's "Corporate & Markets" strip have no free,
+// CORS-enabled live source, so they read these constants directly.
+// Owner: /refresh-fallbacks (monthly). Update `asOf` whenever the figure moves;
+// the tile renders exactly what is here, so a stale number is a visible one.
+
+// The eleven US spot Bitcoin ETFs combined: about 1.32 million BTC, roughly
+// $100 billion of assets. Daily flows: https://farside.co.uk/btc/
+export const ETF_COMPLEX_FALLBACK = {
+  btc: 1320000,
+  aumUsd: 100e9,
+  asOf: "2026-09-16",
+  source: "https://farside.co.uk/btc/",
+};
+
+// People worldwide who own any crypto: about 660 million, roughly 8% of the
+// world's population. Source: Triple-A's annual ownership survey.
+export const GLOBAL_CRYPTO_HOLDERS_FALLBACK = {
+  holders: 660e6,
+  pctOfWorld: 8,
+  asOf: "2026-06-01",
+  source: "https://www.triple-a.io/crypto-ownership-data",
+};

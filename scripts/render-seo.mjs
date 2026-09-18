@@ -10,6 +10,7 @@
 // Reads (never edits) the per-domain data modules — no React, plain `export const`.
 
 import { DEEP_ANALYSIS } from "../src/data/deep-analysis.js";
+import { FORECAST_LEDGER } from "../src/data/forecast-ledger.js";
 import { MARKET_THEME, CURATED_MARKET_UPDATES } from "../src/data/market-news.js";
 import { HISTORICAL_HIGHLIGHTS, SIX_MONTH_HIGHLIGHTS } from "../src/data/headlines.js";
 import {
@@ -27,6 +28,9 @@ import {
   TIME_PREFERENCE,
   THESIS_FLOW,
 } from "../src/data/thesis.js";
+// Namespace import so optional, later-landing exports (THESIS_QUICK) can be
+// feature-detected without breaking the build before they exist.
+import * as thesis from "../src/data/thesis.js";
 import {
   ALLOCATION_BANDS,
   COMMON_MISTAKES,
@@ -118,13 +122,87 @@ ${sourcesList(d.sources)}
   </section>`;
 }
 
+const CATEGORY_LABELS = {
+  macro: "Macro", corporate: "Corporate", etf: "ETF flows", regulation: "Regulation",
+  protocol: "Protocol", sovereign: "Sovereign", "market-structure": "Market structure",
+};
+const OUTCOME_WORDS = { hit: "Happened", miss: "Did not happen", partial: "Half happened" };
+
+// The forecast ledger — every scored call, the odds we gave it, and the lesson.
+function trackRecordSection() {
+  const L = FORECAST_LEDGER;
+  if (!L || !L.summary) return "";
+  const s = L.summary;
+  const odds = (r) =>
+    r.count > 1 && Array.isArray(r.probabilities)
+      ? `${r.count} forecasts: ${r.probabilities.map(pct).join(", ")}`
+      : pct(r.probability);
+  const rows = (L.resolved || [])
+    .map(
+      (r) =>
+        `        <tr><td>${esc(r.made)}</td><td><strong>${esc(r.event)}</strong>${
+          r.lesson ? ` ${esc(r.lesson)}` : ""
+        }${
+          r.source?.url
+            ? ` <a href="${esc(r.source.url)}">${esc(r.source.label || "Source")}</a>`
+            : ""
+        }</td><td>${esc(odds(r))}</td><td>${esc(
+          OUTCOME_WORDS[r.outcome] || r.outcome
+        )}</td><td>${Number(r.brier).toFixed(2)}</td></tr>`
+    )
+    .join("\n");
+  const cats = (s.byCategory || [])
+    .map(
+      (c) =>
+        `      <li><strong>${esc(CATEGORY_LABELS[c.category] || c.category)}</strong> — ${esc(
+          c.n
+        )} scored: ${esc(c.plain)}</li>`
+    )
+    .join("\n");
+  const bands = (s.bands || [])
+    .map(
+      (b) =>
+        `      <li>Called ${esc(b.range)}: ${Math.round(b.hitRate * 100)}% happened (${esc(
+          b.n
+        )} forecasts)</li>`
+    )
+    .join("\n");
+  return `  <section aria-labelledby="seo-track-record">
+    <h2 id="seo-track-record">Forecast track record — ${esc(L.asOf)}</h2>
+    <p>${esc(s.plain)}</p>
+    <p>${esc(s.nResolved)} forecasts scored; all-time Brier score ${Number(
+    s.aggregateBrier
+  ).toFixed(2)}, last twenty ${Number(s.rolling20Brier).toFixed(2)}; ${esc(
+    L.openCount
+  )} forecasts still open.</p>
+    <h3>Every scored forecast</h3>
+    <table>
+      <thead><tr><th>Made</th><th>Forecast</th><th>Odds</th><th>Outcome</th><th>Score</th></tr></thead>
+      <tbody>
+${rows}
+      </tbody>
+    </table>
+    <p>Score is the Brier score: (our odds − outcome)², lower is better; 0.25 is what coin-flipping scores. A half-happened outcome counts as 0.5.</p>
+    <h3>Where the forecasts lean, by category</h3>
+    <ul>
+${cats}
+    </ul>
+    <h3>Calibration by band</h3>
+    <ul>
+${bands}
+    </ul>
+  </section>`;
+}
+
 function marketSection() {
   const t = MARKET_THEME;
+  const wouldChange = (text) =>
+    text ? `      <p><strong>What would change our mind:</strong> ${esc(text)}</p>\n` : "";
   const cards = CURATED_MARKET_UPDATES.map(
     (u) =>
       `    <article>\n      <h4>${esc(u.title)}</h4>\n      <p><em>${esc(
         u.label
-      )}</em></p>\n      <p>${esc(u.detail)}</p>\n    </article>`
+      )}</em></p>\n      <p>${esc(u.detail)}</p>\n${wouldChange(u.wouldChange)}    </article>`
   ).join("\n");
   return `  <section aria-labelledby="seo-market">
     <h2 id="seo-market">Market Pulse — ${esc(t.asOf)}</h2>
@@ -132,7 +210,7 @@ function marketSection() {
     <p>${esc(t.narrative)}</p>
     <p><strong>Why it matters:</strong> ${esc(t.whyItMatters)}</p>
     <p><strong>${esc(t.milestoneLabel)}:</strong> ${esc(t.milestone)}</p>
-    <h3>This Week's Themes</h3>
+${wouldChange(t.wouldChange).replace(/^      /, "    ")}    <h3>This Week's Themes</h3>
 ${cards}
   </section>`;
 }
@@ -241,9 +319,36 @@ function thesisSection() {
   const hard = TIME_PREFERENCE.hard.items
     .map((i) => `${esc(i.head)} (${esc(i.tail)})`)
     .join("; ");
+  // "The short version" — rendered only once THESIS_QUICK lands in thesis.js.
+  const q = thesis.THESIS_QUICK;
+  const quickCards = q
+    ? (q.cards || [])
+        .map(
+          (c) =>
+            `    <article>\n      <h4>${esc(c.title)}</h4>\n      <p>${esc(c.plain)}</p>\n${
+              c.why ? `      <p>${esc(c.why)}</p>\n` : ""
+            }${
+              c.stat
+                ? `      <p><em>${esc(c.stat.value)} — ${esc(c.stat.label)}${
+                    c.stat.source?.url
+                      ? ` (<a href="${esc(c.stat.source.url)}">${esc(
+                          c.stat.source.label || "source"
+                        )}</a>)`
+                      : ""
+                  }</em></p>\n`
+                : ""
+            }    </article>`
+        )
+        .join("\n")
+    : "";
+  const quick = q
+    ? `    <h3>The short version</h3>\n${q.intro ? `    <p>${esc(q.intro)}</p>\n` : ""}${
+        quickCards ? `${quickCards}\n` : ""
+      }`
+    : "";
   return `  <section aria-labelledby="seo-thesis">
     <h2 id="seo-thesis">The Bitcoin Thesis — Hard Money</h2>
-    <ul>
+${quick}    <ul>
 ${metrics}
     </ul>
     <h3>The Problem: The Cost of Soft Money</h3>
@@ -320,6 +425,7 @@ export function renderSeoHtml() {
   return `<main class="seo-static" aria-label="Bitcoin Intelligence — text summary for readers without JavaScript">
 ${introSection()}
 ${analysisSection()}
+${trackRecordSection()}
 ${marketSection()}
 ${headlinesSection()}
 ${adoptionSection()}

@@ -1,8 +1,10 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { XAxis, YAxis, ResponsiveContainer, Area, ComposedChart, ReferenceLine } from "recharts";
-import { THESIS_METRICS, THESIS_EPIGRAPH, SOFT_MONEY_COSTS, MONEY_INTRO, MONEY_SCORECARD, SILENT_TAX_PIN_TOP, SILENT_TAX_M2_DATA, SILENT_TAX_CHAPTERS, SILENT_TAX_EVENTS, SILENT_TAX_GUESS, SILENT_TAX_STEPS, SILENT_TAX_CODA, PP_BY_YEAR, SILENT_TAX_CAVEAT, SILENT_TAX_INTL, BTC_ISSUANCE_DATA, MONEY_HISTORY, DIGITAL_SCARCITY, SUPPLY_CAP_GUESS, HARDNESS_DATA, PROPERTIES_MATRIX, MYTHS, TIME_PREFERENCE, TIME_PREFERENCE_STORY, THESIS_FLOW, POSITIONING_LENSES } from "../data/thesis.js";
-import { prefersReducedMotion, useIsMobile, Reveal, useActiveSection, useScrollSpy, useScrollProgress, useCountUp, parseNumericMetric } from "../hooks/ui.jsx";
-import { Term, TabNavChip } from "../components/shared.jsx";
+import { THESIS_METRICS, THESIS_EPIGRAPH, SOFT_MONEY_COSTS, MONEY_INTRO, MONEY_SCORECARD, SILENT_TAX_PIN_TOP, SILENT_TAX_M2_DATA, SILENT_TAX_CHAPTERS, SILENT_TAX_EVENTS, SILENT_TAX_GUESS, SILENT_TAX_STEPS, SILENT_TAX_CODA, PP_BY_YEAR, SILENT_TAX_CAVEAT, SILENT_TAX_INTL, BTC_ISSUANCE_DATA, MONEY_HISTORY, DIGITAL_SCARCITY, SUPPLY_CAP_GUESS, HARDNESS_DATA, PROPERTIES_MATRIX, MYTHS, TIME_PREFERENCE, TIME_PREFERENCE_STORY, THESIS_FLOW, POSITIONING_LENSES, THESIS_QUICK } from "../data/thesis.js";
+import { prefersReducedMotion, useIsMobile, Reveal, useActiveSection, useScrollSpy, useScrollProgress, useCountUp, parseNumericMetric, usePersistedState } from "../hooks/ui.jsx";
+import { Term, TabNavChip, isPlainClick } from "../components/shared.jsx";
+import { tabHref, parseHash, navigateTo, ANCHORS } from "../lib/routes.js";
+import "../styles/thesis-quick.css";
 
 // Linear interpolation through SILENT_TAX_M2_DATA. Scroll progress 0..1 → real historical state.
 // Used by the pinned scrolly's counter, year ticker, and playhead — drives the *actual* decay curve.
@@ -183,7 +185,7 @@ export const ThesisSilentTaxPinnedDesktop = () => {
                     <YAxis
                       yAxisId="m2"
                       orientation="left"
-                      tick={{ fill: "var(--text-dim)", fontSize: 10, fontFamily: "'JetBrains Mono', monospace" }}
+                      tick={{ fill: "var(--text-dim)", fontSize: 11, fontFamily: "'JetBrains Mono', monospace" }}
                       axisLine={false}
                       tickLine={false}
                       tickFormatter={(v) => "$" + v + "T"}
@@ -225,7 +227,7 @@ export const ThesisSilentTaxPinnedDesktop = () => {
                               x={evt.anchor === "start" ? viewBox.x + 6 : viewBox.x - 6}
                               y={viewBox.y + 12}
                               fill="#ef4444"
-                              fontSize={10}
+                              fontSize={11}
                               fontFamily="'JetBrains Mono', monospace"
                               fontWeight={700}
                               textAnchor={evt.anchor}
@@ -257,7 +259,7 @@ export const ThesisSilentTaxPinnedDesktop = () => {
                     tickLine={false}
                   />
                   <YAxis
-                    tick={{ fill: "#f7931a", fontSize: 10, fontFamily: "'JetBrains Mono', monospace" }}
+                    tick={{ fill: "#f7931a", fontSize: 11, fontFamily: "'JetBrains Mono', monospace" }}
                     axisLine={false}
                     tickLine={false}
                     tickFormatter={(v) => v + "%"}
@@ -594,7 +596,7 @@ export const ThesisMetricCard = ({ metric, index }) => {
           <div style={{ fontSize: 13, color: "#ffffff", fontWeight: 800, fontFamily: "'Outfit', sans-serif", marginBottom: 5 }}>
             {metric.label}
           </div>
-          <div style={{ fontSize: 10, color: "var(--text-dim)", fontFamily: "'JetBrains Mono', monospace", lineHeight: 1.45 }}>
+          <div style={{ fontSize: 11, color: "var(--text-dim)", fontFamily: "'JetBrains Mono', monospace", lineHeight: 1.45 }}>
             {metric.sub}
           </div>
         </div>
@@ -665,7 +667,7 @@ export const ThesisHero = () => {
               <Reveal key={label} delay={0.15 + i * 0.06}>
                 <span style={{
                   display: "inline-block",
-                  fontSize: 10,
+                  fontSize: 11,
                   color: "#f7931a",
                   background: "#f7931a12",
                   border: "1px solid #f7931a22",
@@ -756,7 +758,7 @@ export const ThesisProblem = () => (
             gap: 10,
             minHeight: 208,
           }}>
-            <div style={{ fontSize: 10, color: "#ef4444", fontWeight: 900, fontFamily: "'JetBrains Mono', monospace", letterSpacing: 1.2, textTransform: "uppercase" }}>
+            <div style={{ fontSize: 11, color: "#ef4444", fontWeight: 900, fontFamily: "'JetBrains Mono', monospace", letterSpacing: 1.2, textTransform: "uppercase" }}>
               {cost.label}
             </div>
             <div style={{ fontSize: 16, color: "#ffffff", fontWeight: 800, fontFamily: "'Outfit', sans-serif", lineHeight: 1.25 }}>
@@ -765,7 +767,7 @@ export const ThesisProblem = () => (
             <div style={{ fontSize: 13, color: "#8f9ab3", lineHeight: 1.65, fontFamily: "'Outfit', sans-serif", flex: 1 }}>
               {cost.text}
             </div>
-            <div style={{ fontSize: 10, color: "#ef4444", fontWeight: 900, fontFamily: "'JetBrains Mono', monospace", textTransform: "uppercase", letterSpacing: 1, paddingTop: 8, borderTop: "1px solid #3a1f2a" }}>
+            <div style={{ fontSize: 11, color: "#ef4444", fontWeight: 900, fontFamily: "'JetBrains Mono', monospace", textTransform: "uppercase", letterSpacing: 1, paddingTop: 8, borderTop: "1px solid #3a1f2a" }}>
               {cost.stat}
             </div>
           </div>
@@ -1009,7 +1011,7 @@ export const ThesisScene = ({ move, sceneRef, idAnchor }) => (
         </div>
         <div className="thesis-active-grid" style={{ display: "grid", gridTemplateColumns: "var(--thesis-active-columns, repeat(2, minmax(0, 1fr)))", gap: 22 }}>
           <div>
-            <div style={{ fontSize: 10, color: "var(--text-dim)", fontWeight: 900, letterSpacing: 1, textTransform: "uppercase", fontFamily: "'JetBrains Mono', monospace", marginBottom: 8 }}>
+            <div style={{ fontSize: 11, color: "var(--text-dim)", fontWeight: 900, letterSpacing: 1, textTransform: "uppercase", fontFamily: "'JetBrains Mono', monospace", marginBottom: 8 }}>
               What it is
             </div>
             <div style={{ fontSize: 15, color: "#aeb8cf", lineHeight: 1.75, fontFamily: "'Outfit', sans-serif" }}>
@@ -1017,7 +1019,7 @@ export const ThesisScene = ({ move, sceneRef, idAnchor }) => (
             </div>
           </div>
           <div>
-            <div style={{ fontSize: 10, color: "var(--text-dim)", fontWeight: 900, letterSpacing: 1, textTransform: "uppercase", fontFamily: "'JetBrains Mono', monospace", marginBottom: 8 }}>
+            <div style={{ fontSize: 11, color: "var(--text-dim)", fontWeight: 900, letterSpacing: 1, textTransform: "uppercase", fontFamily: "'JetBrains Mono', monospace", marginBottom: 8 }}>
               Why it matters
             </div>
             <div style={{ fontSize: 15, color: "#d3d8e8", lineHeight: 1.75, fontFamily: "'Outfit', sans-serif" }}>
@@ -1059,7 +1061,7 @@ export const ThesisScrolly = () => {
         {THESIS_FLOW.map((item, i) => (
           <a
             key={item.step}
-            href={`#thesis-move-${i}`}
+            href={tabHref(1, ANCHORS.thesisMove(i))}
             className={`thesis-pill${i === activeIndex ? " active" : ""}`}
             role="tab"
             aria-selected={i === activeIndex}
@@ -1089,7 +1091,7 @@ export const ThesisScrolly = () => {
           {THESIS_FLOW.map((item, i) => (
             <a
               key={item.step}
-              href={`#thesis-move-${i}`}
+              href={tabHref(1, ANCHORS.thesisMove(i))}
               className={`thesis-rail-item${i === activeIndex ? " active" : ""}`}
               aria-current={i === activeIndex ? "true" : undefined}
             >
@@ -1186,7 +1188,7 @@ export const ThesisProperties = () => {
 };
 
 export const ThesisMyths = () => (
-  <section className="thesis-myths-section">
+  <section className="thesis-myths-section" id={ANCHORS.thesisObjections} style={{ scrollMarginTop: 110 }}>
     <Reveal>
       <div style={{ marginBottom: 18 }}>
         <div style={{ fontSize: 11, color: "#f7931a", fontWeight: 900, letterSpacing: 1.4, textTransform: "uppercase", fontFamily: "'JetBrains Mono', monospace", marginBottom: 8 }}>
@@ -1297,7 +1299,7 @@ export const ThesisLenses = () => (
             gap: 10,
             minHeight: 178,
           }}>
-            <div style={{ fontSize: 10, color: "#f7931a", fontWeight: 900, fontFamily: "'JetBrains Mono', monospace", letterSpacing: 1.2, textTransform: "uppercase" }}>
+            <div style={{ fontSize: 11, color: "#f7931a", fontWeight: 900, fontFamily: "'JetBrains Mono', monospace", letterSpacing: 1.2, textTransform: "uppercase" }}>
               {lens.label}
             </div>
             <div style={{ fontSize: 16, color: "#ffffff", fontWeight: 800, fontFamily: "'Outfit', sans-serif", lineHeight: 1.25 }}>
@@ -1314,10 +1316,165 @@ export const ThesisLenses = () => (
 );
 
 export const THESIS_PHASES = [
-  { num: "01", label: "Basics",       anchor: "thesis-phase-basics",       accent: "#ef4444" },
-  { num: "02", label: "Intermediate", anchor: "thesis-phase-intermediate", accent: "#f7931a" },
-  { num: "03", label: "Advanced",     anchor: "thesis-phase-advanced",     accent: "#22c55e" },
+  { num: "01", label: "Basics",       anchor: ANCHORS.thesisBasics,       accent: "#ef4444" },
+  { num: "02", label: "Intermediate", anchor: ANCHORS.thesisIntermediate, accent: "#f7931a" },
+  { num: "03", label: "Advanced",     anchor: ANCHORS.thesisAdvanced,     accent: "#22c55e" },
 ];
+
+// ─── THE FIVE-MINUTE VERSION + THE LONG-READ DOOR ───────────────────────────
+// Three cards a newcomer can finish in one sitting, each ending with a single
+// checkable number and a note on where the idea breaks. The long read stays
+// intact below, behind a labelled door; it opens automatically for deep links
+// (#/thesis/<anchor>) and for readers who opened it before. Copy lives in
+// THESIS_QUICK (src/data/thesis.js) so the plain-language checker measures it.
+
+const SKIP_KEYS = new Set(["url", "key", "anchor", "color", "accent", "num", "tab", "value", "correct", "era", "year", "m2", "pp", "rate", "tone", "rating", "step"]);
+const countWords = (v) => {
+  if (typeof v === "string") return v.trim() ? v.trim().split(/\s+/).length : 0;
+  if (Array.isArray(v)) return v.reduce((s, x) => s + countWords(x), 0);
+  if (v && typeof v === "object") return Object.entries(v).reduce((s, [k, x]) => (SKIP_KEYS.has(k) ? s : s + countWords(x)), 0);
+  return 0;
+};
+const WORDS_PER_MINUTE = 200;
+const PHASE_WORDS = [
+  countWords([MONEY_INTRO, MONEY_SCORECARD, SILENT_TAX_GUESS, SILENT_TAX_STEPS, SILENT_TAX_CODA, SILENT_TAX_CAVEAT, SILENT_TAX_INTL, SOFT_MONEY_COSTS]),
+  countWords([MONEY_HISTORY, DIGITAL_SCARCITY, SUPPLY_CAP_GUESS, HARDNESS_DATA, PROPERTIES_MATRIX, MYTHS]),
+  countWords([THESIS_FLOW, TIME_PREFERENCE, TIME_PREFERENCE_STORY, POSITIONING_LENSES]),
+];
+export const PHASE_MINUTES = PHASE_WORDS.map((w) => Math.max(1, Math.round(w / WORDS_PER_MINUTE)));
+export const LONG_READ_MINUTES = Math.max(5, Math.ceil(PHASE_WORDS.reduce((a, b) => a + b, 0) / WORDS_PER_MINUTE / 5) * 5);
+export const QUICK_READ_MINUTES = Math.max(1, Math.ceil(countWords({ ...THESIS_QUICK, door: null }) / WORDS_PER_MINUTE));
+
+const LONG_FORM_KEY = "btc-dashboard.thesis.longForm";
+const LONG_FORM_ANCHORS = new Set([
+  ANCHORS.thesisFull, ANCHORS.thesisBasics, ANCHORS.thesisIntermediate, ANCHORS.thesisAdvanced, ANCHORS.thesisObjections,
+  ...[0, 1, 2, 3].map((i) => ANCHORS.thesisMove(i)),
+]);
+// A deep link into the long read (any anchor except the quick version's own) opens it.
+export const hashWantsLongForm = () => {
+  const { tab, anchor } = parseHash();
+  return tab === 1 && !!anchor && LONG_FORM_ANCHORS.has(anchor);
+};
+
+export const QuickCard = ({ card, onOpenFull }) => (
+  <article className="elev-raised tq-card">
+    <div className="tq-card-top"><span className="tq-num">{card.num}</span></div>
+    <h3 className="tq-title">{card.title}</h3>
+    <p className="tq-plain">{card.plain}</p>
+    <p className="tq-why">{card.why}</p>
+    <div className="tq-stat">
+      <span className="tq-stat-value">{card.stat.value}</span>
+      <span className="tq-stat-label">
+        {card.stat.label}
+        {card.stat.source && (
+          <>
+            {" · "}
+            <a className="tq-stat-source" href={card.stat.source.url} target="_blank" rel="noreferrer">{card.stat.source.label}</a>
+          </>
+        )}
+      </span>
+    </div>
+    {card.breaks && <p className="tq-breaks"><strong>Where it breaks:</strong> {card.breaks}</p>}
+    <a
+      className="tq-link"
+      href={tabHref(1, card.link.anchor)}
+      onClick={(e) => { if (!isPlainClick(e)) return; e.preventDefault(); onOpenFull(card.link.anchor); }}
+    >
+      {card.link.label} →
+    </a>
+  </article>
+);
+
+export const ThesisQuickPath = ({ onOpenFull, setActiveTab }) => {
+  const q = THESIS_QUICK;
+  return (
+    <section className="tq-section" id={ANCHORS.thesisQuick} aria-labelledby="tq-headline">
+      <Reveal>
+        <div className="tq-head">
+          <div className="tq-eyebrow">
+            <span>{q.eyebrow}</span>
+            <span className="tq-eyebrow-time">· {QUICK_READ_MINUTES} min read</span>
+          </div>
+          <h2 className="tq-headline" id="tq-headline">{q.headline}</h2>
+          <p className="tq-intro">{q.intro}</p>
+        </div>
+      </Reveal>
+      <Reveal delay={0.05}>
+        <div className="tq-grid">
+          {q.cards.map((card) => (
+            <QuickCard key={card.key} card={card} onOpenFull={onOpenFull} />
+          ))}
+        </div>
+      </Reveal>
+      <Reveal delay={0.05}>
+        <div className="tq-objections disclosure-well">
+          <span className="tq-objections-text">{q.objections.text}</span>
+          <a
+            className="tq-link"
+            href={tabHref(1, q.objections.link.anchor)}
+            onClick={(e) => { if (!isPlainClick(e)) return; e.preventDefault(); onOpenFull(q.objections.link.anchor); }}
+          >
+            {q.objections.link.label} →
+          </a>
+        </div>
+      </Reveal>
+      <Reveal delay={0.05}>
+        <div className="tq-closing elev-raised">
+          <p className="tq-closing-text">{q.closing.text}</p>
+          <div className="tq-actions">
+            <button type="button" className="tq-btn primary" onClick={() => onOpenFull(ANCHORS.thesisFull)}>
+              {q.door.cta} <span className="tq-btn-meta">· about {LONG_READ_MINUTES} min</span>
+            </button>
+            <a
+              className="tq-btn"
+              href={tabHref(q.closing.next.tab)}
+              onClick={(e) => { if (!isPlainClick(e)) return; e.preventDefault(); setActiveTab(q.closing.next.tab); }}
+            >
+              {q.closing.next.label}
+            </a>
+          </div>
+        </div>
+      </Reveal>
+    </section>
+  );
+};
+
+export const ThesisLongFormDoor = ({ onOpen }) => {
+  const d = THESIS_QUICK.door;
+  return (
+    <Reveal>
+      <section className="tq-door elev-raised" id={ANCHORS.thesisFull} aria-labelledby="tq-door-title">
+        <div className="tq-head">
+          <div className="tq-eyebrow">
+            <span>{d.eyebrow}</span>
+            <span className="tq-eyebrow-time">· about {LONG_READ_MINUTES} min</span>
+          </div>
+          <h2 className="tq-headline" id="tq-door-title" style={{ fontSize: "var(--fs-xl)" }}>{d.title}</h2>
+          <p className="tq-intro">{d.sub}</p>
+        </div>
+        <div className="tq-door-phases">
+          {d.phases.map((p, i) => (
+            <button
+              key={p.num}
+              type="button"
+              className="tq-door-phase"
+              onClick={() => onOpen(p.anchor)}
+              style={{ borderTopColor: THESIS_PHASES[i].accent }}
+            >
+              <span className="tq-door-phase-num" style={{ color: THESIS_PHASES[i].accent }}>{p.num} · {p.label}</span>
+              <span className="tq-door-phase-title">{p.title}</span>
+              <span className="tq-door-phase-blurb">{p.blurb}</span>
+              <span className="tq-door-phase-time">about {PHASE_MINUTES[i]} min</span>
+            </button>
+          ))}
+        </div>
+        <div className="tq-actions">
+          <button type="button" className="tq-btn primary" onClick={() => onOpen(ANCHORS.thesisBasics)}>{d.cta}</button>
+        </div>
+      </section>
+    </Reveal>
+  );
+};
 
 export const BitcoinThesisTab = ({ setActiveTab }) => {
   const phase1Ref = useRef(null);
@@ -1327,130 +1484,171 @@ export const BitcoinThesisTab = ({ setActiveTab }) => {
   const activePhase = useActiveSection(phaseRefs, { triggerRatio: 0.3 });
   const activeAccent = THESIS_PHASES[activePhase].accent;
 
+  // The long read is collapsed for first-time readers. It opens on a deep link
+  // (#/thesis/<anchor>), on any card's "read more", or for a returning reader.
+  const [storedOpen, setStoredOpen] = usePersistedState(LONG_FORM_KEY, false);
+  const [longOpen, setLongOpen] = useState(() => !!storedOpen || hashWantsLongForm());
+  useEffect(() => {
+    const onHash = () => { if (hashWantsLongForm()) setLongOpen(true); };
+    window.addEventListener("hashchange", onHash);
+    return () => window.removeEventListener("hashchange", onHash);
+  }, []);
+  // navigateTo() alone is enough to scroll: it changes the hash, the shell's
+  // useHashRoute hook picks up the new anchor, and its own effect calls
+  // scrollToAnchor once the target has mounted (polling handles the case where
+  // this section is still rendering). A second local scrollToAnchor call here
+  // used to race that one, producing two overlapping smooth-scrolls.
+  const openLongForm = (anchor) => {
+    setLongOpen(true);
+    if (!storedOpen) setStoredOpen(true);
+    if (anchor) navigateTo(1, anchor);
+  };
+  const closeLongForm = () => {
+    setLongOpen(false);
+    setStoredOpen(false);
+    navigateTo(1, ANCHORS.thesisQuick);
+  };
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
       <ThesisHero />
 
-      <a
-        href={`#${THESIS_PHASES[activePhase].anchor}`}
-        className="thesis-mobile-chip thesis-phase-chip"
-        aria-label={`Currently reading: phase ${THESIS_PHASES[activePhase].num}, ${THESIS_PHASES[activePhase].label}`}
-        style={{ borderColor: `${activeAccent}55` }}
-      >
-        <span className="thesis-mobile-chip-step" style={{ color: activeAccent }}>
-          {THESIS_PHASES[activePhase].num}
-        </span>
-        <span className="thesis-mobile-chip-label">
-          {THESIS_PHASES[activePhase].label}
-        </span>
-        <span className="thesis-mobile-chip-dots">
-          {THESIS_PHASES.map((p, i) => (
-            <span
-              key={p.num}
-              className={`thesis-chip-dot${i === activePhase ? " active" : ""}`}
-              style={i === activePhase ? { background: p.accent } : undefined}
-            />
-          ))}
-        </span>
-      </a>
+      <ThesisQuickPath onOpenFull={openLongForm} setActiveTab={setActiveTab} />
 
-      <Reveal>
-        <div className="thesis-fork">
-          <a href={`#${THESIS_PHASES[0].anchor}`} className="thesis-fork-link">New to money? Start at Phase 1.</a>
-          <a href={`#${THESIS_PHASES[2].anchor}`} className="thesis-fork-link muted">Been here before? Skip to Phase 3.</a>
+      {!longOpen && <ThesisLongFormDoor onOpen={openLongForm} />}
+
+      {longOpen && (
+        <div id={ANCHORS.thesisFull} style={{ display: "flex", flexDirection: "column", gap: 32, scrollMarginTop: 110 }}>
+          <a
+            href={tabHref(1, THESIS_PHASES[activePhase].anchor)}
+            className="thesis-mobile-chip thesis-phase-chip"
+            aria-label={`Currently reading: phase ${THESIS_PHASES[activePhase].num}, ${THESIS_PHASES[activePhase].label}`}
+            style={{ borderColor: `${activeAccent}55` }}
+          >
+            <span className="thesis-mobile-chip-step" style={{ color: activeAccent }}>
+              {THESIS_PHASES[activePhase].num}
+            </span>
+            <span className="thesis-mobile-chip-label">
+              {THESIS_PHASES[activePhase].label}
+            </span>
+            <span className="thesis-mobile-chip-dots">
+              {THESIS_PHASES.map((p, i) => (
+                <span
+                  key={p.num}
+                  className={`thesis-chip-dot${i === activePhase ? " active" : ""}`}
+                  style={i === activePhase ? { background: p.accent } : undefined}
+                />
+              ))}
+            </span>
+          </a>
+
+          <Reveal>
+            <div className="thesis-fork">
+              <span className="tq-eyebrow" style={{ alignSelf: "center" }}>
+                <span>The full thesis</span>
+                <span className="tq-eyebrow-time">· about {LONG_READ_MINUTES} min</span>
+              </span>
+              <a href={tabHref(1, THESIS_PHASES[0].anchor)} className="thesis-fork-link">New to money? Start at Phase 1.</a>
+              <a href={tabHref(1, THESIS_PHASES[2].anchor)} className="thesis-fork-link muted">Been here before? Skip to Phase 3.</a>
+            </div>
+          </Reveal>
+
+          {/* ──────── PHASE 1 — BASICS ──────── */}
+          <PhaseHeader
+            phaseRef={phase1Ref}
+            idAnchor={THESIS_PHASES[0].anchor}
+            phase="01"
+            label="Basics"
+            title="Why this matters."
+            sub="Start with the pain. Money printing is a tax most people pay without ever seeing the bill — and Bitcoin is the first money in history immune to it."
+            accent="#ef4444"
+          />
+
+          <ThesisWhatIsMoney />
+
+          <Reveal scale><div className="section-divider" /></Reveal>
+
+          <ThesisSilentTaxPinned />
+
+          <Reveal scale><div className="section-divider" /></Reveal>
+
+          <ThesisSilentTaxPersonal />
+
+          <Reveal scale><div className="section-divider" /></Reveal>
+
+          <ThesisProblem />
+
+          {/* ──────── PHASE 2 — INTERMEDIATE ──────── */}
+          <PhaseHeader
+            phaseRef={phase2Ref}
+            idAnchor={THESIS_PHASES[1].anchor}
+            phase="02"
+            label="Intermediate"
+            title="How money has actually worked."
+            sub="The pattern across 5,000 years: harder money replaces softer money — every single time. Here is the measurement system, and where Bitcoin sits in it."
+            accent="#f7931a"
+          />
+
+          <ThesisHistory />
+
+          <Reveal scale><div className="section-divider" /></Reveal>
+
+          <ThesisDigitalScarcity />
+
+          <Reveal scale><div className="section-divider" /></Reveal>
+
+          <ThesisHardness />
+
+          <Reveal scale><div className="section-divider" /></Reveal>
+
+          <ThesisProperties />
+
+          <Reveal scale><div className="section-divider" /></Reveal>
+
+          <ThesisMyths />
+
+          {/* ──────── PHASE 3 — ADVANCED ──────── */}
+          <PhaseHeader
+            phaseRef={phase3Ref}
+            idAnchor={THESIS_PHASES[2].anchor}
+            phase="03"
+            label="Advanced"
+            title="What this means for you."
+            sub="The strategic layer: how the four foundational properties build on each other, what hard money does to human behavior, and the three lenses any serious holder should use to position."
+            accent="#22c55e"
+          />
+
+          <Reveal>
+            <div className="thesis-scrolly-intro">
+              <div className="thesis-scrolly-eyebrow">The four-move case</div>
+              <div className="thesis-scrolly-sub">Scarcity → ownership → network → time horizon. Each move builds on the last.</div>
+            </div>
+          </Reveal>
+
+          <ThesisScrolly />
+
+          <Reveal scale><div className="section-divider" /></Reveal>
+
+          <ThesisTimePreference setActiveTab={setActiveTab} />
+
+          <Reveal scale><div className="section-divider" /></Reveal>
+
+          <ThesisLenses />
+
+          <Reveal>
+            <div className="thesis-footnote" style={{
+              fontSize: "var(--fs-xs)", color: "var(--text-muted)", fontFamily: "'JetBrains Mono', monospace", lineHeight: 1.65,
+              paddingTop: 14, borderTop: "1px solid var(--border-subtle)",
+              display: "flex", flexDirection: "column", gap: 12,
+            }}>
+              <span>
+                Educational framework grounded in <em>The Bitcoin Standard</em> by Saifedean Ammous. Not financial advice. Bitcoin is volatile and can lose significant value. Position size, custody method, and time horizon matter as much as the thesis itself.
+              </span>
+              <button type="button" className="tq-btn tq-collapse" onClick={closeLongForm}>Collapse the full thesis</button>
+            </div>
+          </Reveal>
         </div>
-      </Reveal>
-
-      {/* ──────── PHASE 1 — BASICS ──────── */}
-      <PhaseHeader
-        phaseRef={phase1Ref}
-        idAnchor={THESIS_PHASES[0].anchor}
-        phase="01"
-        label="Basics"
-        title="Why this matters."
-        sub="Start with the pain. Money printing is a tax most people pay without ever seeing the bill — and Bitcoin is the first money in history immune to it."
-        accent="#ef4444"
-      />
-
-      <ThesisWhatIsMoney />
-
-      <Reveal scale><div className="section-divider" /></Reveal>
-
-      <ThesisSilentTaxPinned />
-
-      <Reveal scale><div className="section-divider" /></Reveal>
-
-      <ThesisSilentTaxPersonal />
-
-      <Reveal scale><div className="section-divider" /></Reveal>
-
-      <ThesisProblem />
-
-      {/* ──────── PHASE 2 — INTERMEDIATE ──────── */}
-      <PhaseHeader
-        phaseRef={phase2Ref}
-        idAnchor={THESIS_PHASES[1].anchor}
-        phase="02"
-        label="Intermediate"
-        title="How money has actually worked."
-        sub="The pattern across 5,000 years: harder money replaces softer money — every single time. Here is the measurement system, and where Bitcoin sits in it."
-        accent="#f7931a"
-      />
-
-      <ThesisHistory />
-
-      <Reveal scale><div className="section-divider" /></Reveal>
-
-      <ThesisDigitalScarcity />
-
-      <Reveal scale><div className="section-divider" /></Reveal>
-
-      <ThesisHardness />
-
-      <Reveal scale><div className="section-divider" /></Reveal>
-
-      <ThesisProperties />
-
-      <Reveal scale><div className="section-divider" /></Reveal>
-
-      <ThesisMyths />
-
-      {/* ──────── PHASE 3 — ADVANCED ──────── */}
-      <PhaseHeader
-        phaseRef={phase3Ref}
-        idAnchor={THESIS_PHASES[2].anchor}
-        phase="03"
-        label="Advanced"
-        title="What this means for you."
-        sub="The strategic layer: how the four foundational properties build on each other, what hard money does to human behavior, and the three lenses any serious holder should use to position."
-        accent="#22c55e"
-      />
-
-      <Reveal>
-        <div className="thesis-scrolly-intro">
-          <div className="thesis-scrolly-eyebrow">The four-move case</div>
-          <div className="thesis-scrolly-sub">Scarcity → ownership → network → time horizon. Each move builds on the last.</div>
-        </div>
-      </Reveal>
-
-      <ThesisScrolly />
-
-      <Reveal scale><div className="section-divider" /></Reveal>
-
-      <ThesisTimePreference setActiveTab={setActiveTab} />
-
-      <Reveal scale><div className="section-divider" /></Reveal>
-
-      <ThesisLenses />
-
-      <Reveal>
-        <div className="thesis-footnote" style={{
-          fontSize: 11, color: "#4a5568", fontFamily: "'JetBrains Mono', monospace", lineHeight: 1.65,
-          paddingTop: 14, borderTop: "1px solid #1a1a2e",
-        }}>
-          Educational framework grounded in <em>The Bitcoin Standard</em> by Saifedean Ammous. Not financial advice. Bitcoin is volatile and can lose significant value. Position size, custody method, and time horizon matter as much as the thesis itself.
-        </div>
-      </Reveal>
+      )}
     </div>
   );
 };

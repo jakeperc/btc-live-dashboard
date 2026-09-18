@@ -16,7 +16,7 @@
   --text-secondary: #e6e6e6;
   --text-tertiary: #aab4cb;
   --text-muted: #8892b0;
-  --text-dim: #6a7490;
+  --text-dim: #79839d;
 
   /* brand — reserved for LIVE / primary data (price, status pill, active tab, primary CTA) */
   --accent-bitcoin: #f7931a;
@@ -49,6 +49,7 @@
   --tracking-caps-wide: 0.18em;
 
   /* fluid typography (clamp scales) */
+  --fs-2xs: 11px; /* floor — nothing rendered below this */
   --fs-xs: clamp(11px, 0.5vw + 9.5px, 12px);
   --fs-sm: clamp(12px, 0.6vw + 10.5px, 13px);
   --fs-md: clamp(14px, 0.7vw + 12px, 15px);
@@ -127,8 +128,8 @@
   --text-primary: #161b26;
   --text-secondary: #333b4d;
   --text-tertiary: #4f5870;
-  --text-muted: #687286;
-  --text-dim: #8b94a7;
+  --text-muted: #5b6476;
+  --text-dim: #626b81;
   /* brand */
   --accent-bitcoin-soft: rgba(247, 147, 26, 0.13);
   --accent-bitcoin-glow: rgba(247, 147, 26, 0.20);
@@ -554,6 +555,12 @@
 .reveal.visible { opacity: 1; transform: translateY(0); }
 .reveal-scale { opacity: 0; transform: scale(0.96); transition: opacity 0.5s ease, transform 0.5s var(--ease-out); }
 .reveal-scale.visible { opacity: 1; transform: scale(1); }
+/* Applied for exactly two animation frames when a Reveal is already on screen at
+   mount, so its first paint doesn't visibly fade in from nothing. A class (not an
+   inline `transition: none`) so it never fights the inline `transitionDelay` React
+   also sets — mixing the shorthand and a longhand for the same property across
+   renders is what triggers React's "conflicting property" warning. */
+.reveal.reveal-instant, .reveal-scale.reveal-instant { transition: none; }
 @keyframes meterTickIn {
   from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 0.5; transform: translateY(0); }
@@ -616,7 +623,7 @@
   min-width: 0;
 }
 .tier3-strip .tier3-label {
-  font-size: 10px;
+  font-size: var(--fs-2xs);
   color: var(--text-muted);
   letter-spacing: var(--tracking-caps);
   text-transform: uppercase;
@@ -633,7 +640,7 @@
   font-variant-numeric: tabular-nums;
 }
 .tier3-strip .tier3-sub {
-  font-size: 10.5px;
+  font-size: var(--fs-2xs);
   color: var(--text-dim);
   font-family: var(--font-mono);
   line-height: 1.45;
@@ -700,7 +707,7 @@
   position: relative;
   z-index: 1;
   padding: 5px 12px;
-  font-size: 10.5px;
+  font-size: var(--fs-2xs);
   font-weight: 600;
   font-family: var(--font-mono);
   letter-spacing: var(--tracking-caps-tight);
@@ -766,7 +773,7 @@
   }
 }
 .lede-card .lede-eyebrow {
-  font-size: 10px;
+  font-size: var(--fs-2xs);
   font-weight: 700;
   letter-spacing: var(--tracking-caps);
   text-transform: uppercase;
@@ -869,7 +876,7 @@
 }
 .adoption-meta {
   font-family: var(--font-mono);
-  font-size: 10.5px;
+  font-size: var(--fs-2xs);
   color: var(--text-dim);
   letter-spacing: 0.04em;
 }
@@ -883,7 +890,7 @@
   background: var(--accent-analytical-soft);
   color: var(--accent-analytical-bright);
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: var(--fs-2xs);
   font-weight: 600;
   letter-spacing: var(--tracking-caps-tight);
   text-transform: uppercase;
@@ -942,7 +949,7 @@ button, a, [role="button"], [role="tab"], [role="radio"] { -webkit-tap-highlight
 }
 .thesis-rail-header { margin-bottom: 14px; }
 .thesis-rail-eyebrow {
-  font-size: 10px; color: #f7931a; font-weight: 900; letter-spacing: 1.4px;
+  font-size: var(--fs-2xs); color: #f7931a; font-weight: 900; letter-spacing: 1.4px;
   text-transform: uppercase; font-family: 'JetBrains Mono', monospace; margin-bottom: 6px;
 }
 .thesis-rail-sub {
@@ -997,7 +1004,7 @@ button, a, [role="button"], [role="tab"], [role="radio"] { -webkit-tap-highlight
   font-size: 12px;
   font-weight: 900;
   font-family: 'JetBrains Mono', monospace;
-  color: #6a7490;
+  color: var(--text-dim);
   align-self: start;
   padding-top: 2px;
   transition: color 0.25s ease;
@@ -1005,7 +1012,7 @@ button, a, [role="button"], [role="tab"], [role="radio"] { -webkit-tap-highlight
 .thesis-rail-item.active .thesis-rail-step { color: #f7931a; }
 .thesis-rail-text { display: flex; flex-direction: column; gap: 3px; }
 .thesis-rail-eyebrow-sm {
-  font-size: 9px; color: #f7931a; font-weight: 900; letter-spacing: 1.1px;
+  font-size: var(--fs-2xs); color: #f7931a; font-weight: 900; letter-spacing: 1.1px;
   text-transform: uppercase; font-family: 'JetBrains Mono', monospace;
 }
 .thesis-rail-title {
@@ -1090,7 +1097,7 @@ button, a, [role="button"], [role="tab"], [role="radio"] { -webkit-tap-highlight
   opacity: 0.7;
 }
 .thesis-phase-label {
-  font-size: 10px;
+  font-size: var(--fs-2xs);
   text-transform: uppercase;
   letter-spacing: 1.4px;
 }
@@ -1127,8 +1134,8 @@ button, a, [role="button"], [role="tab"], [role="radio"] { -webkit-tap-highlight
   transform-origin: left;
 }
 .thesis-phase-dots-label {
-  font-size: 10px;
-  color: #6a7490;
+  font-size: var(--fs-2xs);
+  color: var(--text-dim);
   font-family: 'JetBrains Mono', monospace;
   font-weight: 700;
   letter-spacing: 1px;
@@ -1219,7 +1226,7 @@ button, a, [role="button"], [role="tab"], [role="radio"] { -webkit-tap-highlight
   position: absolute;
   top: 0;
   left: 12px;
-  font-size: 10px;
+  font-size: var(--fs-2xs);
   color: #f7931a;
   font-family: 'JetBrains Mono', monospace;
   font-weight: 800;
@@ -1271,7 +1278,7 @@ button, a, [role="button"], [role="tab"], [role="radio"] { -webkit-tap-highlight
 }
 .thesis-pinned-counter-label {
   font-size: 11px;
-  color: #6a7490;
+  color: var(--text-dim);
   font-family: 'JetBrains Mono', monospace;
   font-weight: 700;
   letter-spacing: 1.1px;
@@ -1468,7 +1475,7 @@ button, a, [role="button"], [role="tab"], [role="radio"] { -webkit-tap-highlight
   gap: 8px;
 }
 .thesis-pinned-fallback-chapter-eyebrow {
-  font-size: 10px;
+  font-size: var(--fs-2xs);
   font-family: 'JetBrains Mono', monospace;
   font-weight: 900;
   letter-spacing: 1.4px;
@@ -1559,7 +1566,7 @@ button, a, [role="button"], [role="tab"], [role="radio"] { -webkit-tap-highlight
   display: flex; flex-direction: column; gap: 9px;
 }
 .thesis-tax-step-eyebrow {
-  font-size: 10px; font-family: 'JetBrains Mono', monospace; font-weight: 900;
+  font-size: var(--fs-2xs); font-family: 'JetBrains Mono', monospace; font-weight: 900;
   letter-spacing: 1.4px; text-transform: uppercase;
 }
 .thesis-tax-step-headline {
@@ -1747,7 +1754,7 @@ button, a, [role="button"], [role="tab"], [role="radio"] { -webkit-tap-highlight
 }
 .thesis-hardness-note {
   font-size: 11px;
-  color: #6a7490;
+  color: var(--text-dim);
   font-family: 'Outfit', sans-serif;
   line-height: 1.45;
 }
@@ -1847,13 +1854,13 @@ button, a, [role="button"], [role="tab"], [role="radio"] { -webkit-tap-highlight
 }
 .thesis-matrix-prop-desc {
   font-size: 11px;
-  color: #6a7490;
+  color: var(--text-dim);
   font-family: 'Outfit', sans-serif;
   line-height: 1.45;
 }
 .thesis-matrix-pill {
   align-self: flex-start;
-  font-size: 10px;
+  font-size: var(--fs-2xs);
   font-family: 'JetBrains Mono', monospace;
   font-weight: 900;
   letter-spacing: 0.9px;
@@ -2050,7 +2057,7 @@ button, a, [role="button"], [role="tab"], [role="radio"] { -webkit-tap-highlight
 .thesis-tax-caveat-line {
   margin: 10px 0 0;
   font-size: 12px;
-  color: #6c7690;
+  color: var(--text-dim);
   font-family: 'Outfit', sans-serif;
   line-height: 1.6;
   font-style: italic;
@@ -2148,7 +2155,7 @@ button, a, [role="button"], [role="tab"], [role="radio"] { -webkit-tap-highlight
 .thesis-hardness-caption {
   margin-top: 8px;
   font-size: 11px;
-  color: #6c7690;
+  color: var(--text-dim);
   font-family: 'JetBrains Mono', monospace;
   letter-spacing: 0.3px;
 }
@@ -2173,7 +2180,7 @@ button, a, [role="button"], [role="tab"], [role="radio"] { -webkit-tap-highlight
   background: linear-gradient(160deg, rgba(251, 191, 36, 0.07) 0%, #0f1426 100%);
 }
 .thesis-myth-label {
-  font-size: 10px;
+  font-size: var(--fs-2xs);
   color: #ef4444;
   font-weight: 900;
   font-family: 'JetBrains Mono', monospace;
@@ -2210,8 +2217,8 @@ button, a, [role="button"], [role="tab"], [role="radio"] { -webkit-tap-highlight
   border-top: 1px solid #232944;
 }
 .thesis-myth-source {
-  font-size: 10px;
-  color: #6c7690;
+  font-size: var(--fs-2xs);
+  color: var(--text-dim);
   font-family: 'JetBrains Mono', monospace;
   letter-spacing: 0.3px;
 }
@@ -2921,7 +2928,7 @@ button, a, [role="button"], [role="tab"], [role="radio"] { -webkit-tap-highlight
   margin: 10px auto 0;
 }
 .strategy-reality-source {
-  font-size: 10px;
+  font-size: var(--fs-2xs);
   color: var(--text-dim);
   font-family: 'JetBrains Mono', monospace;
   margin-top: 10px;
@@ -2938,7 +2945,7 @@ button, a, [role="button"], [role="tab"], [role="radio"] { -webkit-tap-highlight
   padding: 16px;
 }
 .strategy-reality-inv-kills {
-  font-size: 10px;
+  font-size: var(--fs-2xs);
   color: #ef4444;
   font-weight: 900;
   font-family: 'JetBrains Mono', monospace;
@@ -3085,7 +3092,7 @@ button, a, [role="button"], [role="tab"], [role="radio"] { -webkit-tap-highlight
   }
   .thesis-pill.active { color: #f7931a; }
   .thesis-pill-step {
-    font-size: 10px;
+    font-size: var(--fs-2xs);
     font-family: 'JetBrains Mono', monospace;
     font-weight: 900;
     opacity: 0.7;
@@ -3204,7 +3211,7 @@ button, a, [role="button"], [role="tab"], [role="radio"] { -webkit-tap-highlight
   }
   .strategy-fouryear-num { font-size: 64px; }
   .strategy-drawdown-row { grid-template-columns: 64px minmax(0, 1fr); }
-  .strategy-drawdown-label { font-size: 10.5px; }
+  .strategy-drawdown-label { font-size: var(--fs-2xs); }
   .thesis-history-card {
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas: "era" "name" "note";
@@ -3264,7 +3271,7 @@ button, a, [role="button"], [role="tab"], [role="radio"] { -webkit-tap-highlight
   }
   .thesis-matrix-asset {
     display: inline-block;
-    font-size: 10px;
+    font-size: var(--fs-2xs);
     color: #aab4cb;
     font-family: 'JetBrains Mono', monospace;
     font-weight: 900;
@@ -3275,7 +3282,7 @@ button, a, [role="button"], [role="tab"], [role="radio"] { -webkit-tap-highlight
   .thesis-matrix-pill {
     align-self: center;
     justify-self: start;
-    font-size: 10px;
+    font-size: var(--fs-2xs);
     padding: 3px 8px;
     white-space: nowrap;
   }
@@ -3666,7 +3673,7 @@ button, a, [role="button"], [role="tab"], [role="radio"] { -webkit-tap-highlight
   }
   .headlines-filter-row button {
     padding: 5px 10px !important;
-    font-size: 10px !important;
+    font-size: var(--fs-2xs) !important;
   }
 }
 
@@ -3712,7 +3719,7 @@ button, a, [role="button"], [role="tab"], [role="radio"] { -webkit-tap-highlight
 .bottom-nav-icon { width: 20px; height: 20px; display: flex; }
 .bottom-nav-icon svg { width: 100%; height: 100%; }
 .bottom-nav-label {
-  font-size: 10px; font-family: var(--font-sans); font-weight: 600;
+  font-size: var(--fs-2xs); font-family: var(--font-sans); font-weight: 600;
   letter-spacing: 0.3px;
 }
 .bottom-nav-item:active { transform: scale(0.92); }
@@ -3773,14 +3780,14 @@ button, a, [role="button"], [role="tab"], [role="radio"] { -webkit-tap-highlight
   display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
 }
 .confidence-label {
-  font-size: 10px; font-family: var(--font-mono); font-weight: 700;
+  font-size: var(--fs-2xs); font-family: var(--font-mono); font-weight: 700;
   letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted);
 }
 .confidence-tooltip-trigger {
   display: inline-flex; align-items: center; justify-content: center;
   width: 16px; height: 16px; border-radius: 50%;
   border: 1px solid var(--border-strong); color: var(--text-dim);
-  font-size: 9px; font-family: var(--font-mono); font-weight: 700;
+  font-size: var(--fs-2xs); font-family: var(--font-mono); font-weight: 700;
   cursor: help; flex-shrink: 0;
 }
 .confidence-summary {
@@ -3822,7 +3829,7 @@ button, a, [role="button"], [role="tab"], [role="radio"] { -webkit-tap-highlight
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border-bottom: 1px solid var(--border-strong);
-  font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+  font-size: var(--fs-2xs); font-weight: 700; letter-spacing: 0.1em;
   text-transform: uppercase; color: var(--text-muted);
   cursor: pointer; user-select: none;
   text-align: left; white-space: nowrap;

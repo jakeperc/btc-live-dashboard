@@ -1,9 +1,83 @@
-import { useState, useEffect, useLayoutEffect, useRef, useMemo, useId } from "react";
+import { Component, useState, useEffect, useLayoutEffect, useRef, useMemo, useId } from "react";
 import { createPortal } from "react-dom";
 import { DIP_EXPLAINER } from "../data/explainer.js";
 import { GLOSSARY } from "../data/glossary.js";
 import { fmt, fmtUSD } from "../lib/format.js";
+import { ANCHORS, tabHref } from "../lib/routes.js";
 import { Pulse, prefersReducedMotion, useIsMobile, Reveal } from "../hooks/ui.jsx";
+
+// True for an unmodified left click. Tab links are real <a href="#/…">
+// elements so they can be opened in a new tab or copied; for a plain click we
+// route through setActiveTab (navigateTo) instead, which also re-scrolls when
+// the hash is already the target.
+export const isPlainClick = (e) =>
+  e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey;
+
+// Renders null while a briefing is fresh. Past `thresholdDays` it shows one
+// quiet recessed line so a reader knows the weekly refresh is late without
+// mistaking the live price or headlines for stale data.
+export const StaleNotice = ({ asOf, refreshedAt, label = "briefing", thresholdDays = 10 }) => {
+  const stamp = (() => {
+    if (refreshedAt) { const t = Date.parse(refreshedAt); if (Number.isFinite(t)) return t; }
+    if (!asOf) return NaN;
+    // "SEP 16, 2026" → "Sep 16, 2026": every engine parses the title-case form.
+    const s = String(asOf).trim();
+    return Date.parse(s.charAt(0).toUpperCase() + s.slice(1).toLowerCase());
+  })();
+  if (!Number.isFinite(stamp)) return null;
+  const days = Math.floor((Date.now() - stamp) / 86400000);
+  if (days < thresholdDays) return null;
+  return (
+    <div className="disclosure-well" role="status">
+      <p className="disclosure-well-text">
+        This {label} is {days} day{days === 1 ? "" : "s"} old — the weekly refresh may be late. Live prices and headlines are unaffected.
+      </p>
+    </div>
+  );
+};
+
+// Catches a render or lazy-chunk failure inside one tab panel so the rest of
+// the page stays up. A failed lazy import is cached by React.lazy, so the only
+// real recovery is a reload — offered as a button, never a blank screen.
+export class ErrorBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { error: null };
+  }
+  static getDerivedStateFromError(error) {
+    return { error };
+  }
+  componentDidCatch(error, info) {
+    if (typeof console !== "undefined" && console.error) {
+      console.error("Section failed to render:", error, info && info.componentStack);
+    }
+  }
+  render() {
+    if (!this.state.error) return this.props.children;
+    return (
+      <div className="elev-raised" role="alert" style={{
+        borderRadius: "var(--radius-lg)", padding: "24px 22px",
+        display: "flex", flexDirection: "column", alignItems: "flex-start", gap: 12,
+      }}>
+        <div style={{ fontSize: "var(--fs-md)", fontWeight: 700, color: "var(--text-primary)", fontFamily: "var(--font-sans)", lineHeight: 1.4 }}>
+          This section didn't load — check your connection and reload
+        </div>
+        <button
+          type="button"
+          onClick={() => { if (typeof window !== "undefined") window.location.reload(); }}
+          style={{
+            fontSize: "var(--fs-sm)", fontFamily: "var(--font-sans)", fontWeight: 700,
+            color: "#0b0b0d", background: "var(--accent-bitcoin)",
+            border: "none", borderRadius: "var(--radius-md)",
+            padding: "8px 16px", cursor: "pointer",
+          }}
+        >
+          Reload
+        </button>
+      </div>
+    );
+  }
+}
 
 export const Skeleton = ({ width = "100%", height = 16, radius = 6, style }) => (
   <span
@@ -27,7 +101,7 @@ export const DataSource = ({ source, updatedAt }) => {
   const diff = updatedAt ? Math.floor((Date.now() - updatedAt.getTime()) / 1000) : null;
   const rel = diff == null ? null : diff < 60 ? `${diff}s ago` : diff < 3600 ? `${Math.floor(diff / 60)}m ago` : `${Math.floor(diff / 3600)}h ago`;
   return (
-    <div style={{ fontSize: 10, color: "var(--text-dim)", fontFamily: "var(--font-mono)", marginTop: 10, paddingTop: 8, borderTop: "1px solid var(--border-subtle)", letterSpacing: "0.04em" }}>
+    <div style={{ fontSize: 11, color: "var(--text-dim)", fontFamily: "var(--font-mono)", marginTop: 10, paddingTop: 8, borderTop: "1px solid var(--border-subtle)", letterSpacing: "0.04em" }}>
       Source: {source}{rel ? ` · Updated ${rel}` : ""}
     </div>
   );
@@ -203,15 +277,21 @@ export const Prose = ({ segments, as: Tag = "span", style, className }) => {
   );
 };
 
-export const TabNavChip = ({ label, tab, setActiveTab }) => (
-  <button
-    type="button"
-    onClick={() => {
-      setActiveTab(tab);
+// A real link (shareable, opens in a new tab) that still routes through
+// setActiveTab on a plain click so the existing vibrate + scroll-to-top
+// behaviour is kept.
+export const TabNavChip = ({ label, tab, anchor, setActiveTab }) => (
+  <a
+    href={tabHref(tab, anchor)}
+    onClick={(e) => {
+      if (!isPlainClick(e)) return;
+      e.preventDefault();
+      if (setActiveTab) setActiveTab(tab, anchor);
       if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(10);
-      if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "auto" });
+      if (!anchor && typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "auto" });
     }}
     style={{
+      display: "inline-block", textDecoration: "none",
       fontSize: "var(--fs-xs)", fontFamily: "var(--font-sans)", fontWeight: 600,
       color: "var(--text-secondary)", background: "var(--bg-card-soft, var(--bg-base))",
       border: "1px solid var(--border-subtle)", borderRadius: 999,
@@ -219,7 +299,7 @@ export const TabNavChip = ({ label, tab, setActiveTab }) => (
     }}
   >
     {label}
-  </button>
+  </a>
 );
 
 export const StatCard = ({ label, value, sub, accent, large, loading, source, updatedAt }) => (
@@ -243,7 +323,7 @@ export const StatCard = ({ label, value, sub, accent, large, loading, source, up
     )}
     {sub && !loading && <div style={{ fontSize: "var(--fs-xs)", color: "var(--text-muted)", marginTop: 5, fontFamily: "var(--font-mono)" }}>{sub}</div>}
     {sub && loading && <div style={{ marginTop: 6 }}><Skeleton height={12} width="50%" /></div>}
-    <div style={{ fontSize: 10, color: "var(--text-dim)", letterSpacing: "0.12em", textTransform: "uppercase", fontWeight: 600, marginTop: 10, fontFamily: "var(--font-mono)" }}>{label}</div>
+    <div style={{ fontSize: 11, color: "var(--text-dim)", letterSpacing: "0.12em", textTransform: "uppercase", fontWeight: 600, marginTop: 10, fontFamily: "var(--font-mono)" }}>{label}</div>
     {source && <DataSource source={source} updatedAt={updatedAt} />}
   </div>
 );
@@ -285,7 +365,7 @@ export const SectionGroup = ({ title, children, collapsible = false, defaultExpa
         {canCollapse && (
           <span className="section-chevron" style={{
             display: "inline-flex", alignItems: "center", justifyContent: "center",
-            width: 20, height: 20, fontSize: 10, color: "var(--text-dim)",
+            width: 20, height: 20, fontSize: 11, color: "var(--text-dim)",
             transition: "transform 0.25s ease",
             transform: expanded ? "rotate(180deg)" : "rotate(0deg)",
             marginRight: 4,
@@ -483,7 +563,7 @@ export const DipExplainerCard = ({ fromATH, theme, setActiveTab }) => {
         }}
       >
         <span style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-          <span style={{ fontSize: 10, color: "var(--text-muted)", fontFamily: "var(--font-mono)", fontWeight: 700, letterSpacing: 1.2, textTransform: "uppercase" }}>
+          <span style={{ fontSize: 11, color: "var(--text-muted)", fontFamily: "var(--font-mono)", fontWeight: 700, letterSpacing: 1.2, textTransform: "uppercase" }}>
             New to Bitcoin?
           </span>
           <span style={{ fontSize: "var(--fs-md)", color: "var(--text-primary)", fontWeight: 800, fontFamily: "var(--font-sans)", lineHeight: 1.3 }}>
@@ -492,7 +572,7 @@ export const DipExplainerCard = ({ fromATH, theme, setActiveTab }) => {
         </span>
         <span style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: "var(--fs-xs)", color: "var(--text-muted)", fontFamily: "var(--font-mono)", flexShrink: 0 }}>
           {open ? "Hide" : "Explain"}
-          <span style={{ display: "inline-block", fontSize: 10, transform: open ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s ease" }}>▼</span>
+          <span style={{ display: "inline-block", fontSize: 11, transform: open ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s ease" }}>▼</span>
         </span>
       </button>
 
@@ -546,7 +626,7 @@ export const DipExplainerCard = ({ fromATH, theme, setActiveTab }) => {
             padding: "16px 18px",
             borderRadius: "var(--radius-md, 10px)",
           }}>
-            <div className="kicker-dash" style={{ fontSize: 10, color: "var(--accent-bitcoin)", fontFamily: "var(--font-mono)", fontWeight: 700, letterSpacing: 1.2, textTransform: "uppercase", marginBottom: 8 }}>
+            <div className="kicker-dash" style={{ fontSize: 11, color: "var(--accent-bitcoin)", fontFamily: "var(--font-mono)", fontWeight: 700, letterSpacing: 1.2, textTransform: "uppercase", marginBottom: 8 }}>
               {DIP_EXPLAINER.perspective.heading}
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -556,17 +636,22 @@ export const DipExplainerCard = ({ fromATH, theme, setActiveTab }) => {
             </div>
           </div>
 
-          {/* Audience chips → deeper tabs */}
+          {/* Audience chips → deeper tabs (real links; plain clicks route via setActiveTab) */}
           <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
             {[
               { label: "New here? · Start with the Thesis", tab: 1 },
               { label: "Want the deep read? · Forecast & Analysis", tab: 5 },
             ].map(chip => (
-              <button
+              <a
                 key={chip.tab}
-                type="button"
-                onClick={() => setActiveTab(chip.tab)}
+                href={tabHref(chip.tab)}
+                onClick={(e) => {
+                  if (!isPlainClick(e)) return;
+                  e.preventDefault();
+                  if (setActiveTab) setActiveTab(chip.tab);
+                }}
                 style={{
+                  display: "inline-block", textDecoration: "none",
                   fontSize: "var(--fs-xs)", fontFamily: "var(--font-sans)", fontWeight: 600,
                   color: "var(--text-secondary)", background: "var(--bg-card-soft, var(--bg-base))",
                   border: "1px solid var(--border-subtle)", borderRadius: 999,
@@ -574,7 +659,7 @@ export const DipExplainerCard = ({ fromATH, theme, setActiveTab }) => {
                 }}
               >
                 {chip.label}
-              </button>
+              </a>
             ))}
           </div>
 
@@ -785,16 +870,26 @@ export const MarketPulseCard = ({ pulse, streakDays, setActiveTab }) => {
               display: "flex", flexWrap: "wrap", gap: 8,
               paddingTop: 4,
             }}>
+              {/* Real links (shareable, open-in-new-tab); a plain click routes
+                  through setActiveTab so a repeat click still re-scrolls. */}
               {[
                 { label: "New to BTC? → Thesis", tab: 1 },
                 { label: "Following along? → Headlines", tab: 3 },
+                { label: "Evaluating the author? → Track record", tab: 5, anchor: ANCHORS.trackRecord },
               ].map(chip => (
-                <button
+                <a
                   key={chip.tab}
-                  type="button"
-                  onClick={(e) => { e.stopPropagation(); setActiveTab(chip.tab); }}
+                  href={tabHref(chip.tab, chip.anchor)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (!isPlainClick(e)) return;
+                    e.preventDefault();
+                    setActiveTab(chip.tab, chip.anchor);
+                  }}
                   className="audience-chip card-hover"
                   style={{
+                    display: "inline-block",
+                    textDecoration: "none",
                     background: "var(--bg-base)",
                     border: "1px solid var(--border-subtle)",
                     borderRadius: "var(--radius-sm)",
@@ -808,7 +903,7 @@ export const MarketPulseCard = ({ pulse, streakDays, setActiveTab }) => {
                   }}
                 >
                   {chip.label}
-                </button>
+                </a>
               ))}
             </div>
           )}
@@ -835,6 +930,24 @@ export const MarketPulseCard = ({ pulse, streakDays, setActiveTab }) => {
                     {theme.milestoneLabel || "Next Checkpoint"}
                   </span>
                   {theme.milestone}
+                </div>
+              )}
+
+              {/* The falsifier: one sentence naming what would overturn this
+                  read. Expanded body only, never the collapsed card. */}
+              {theme.wouldChange && (
+                <div style={{
+                  fontSize: "var(--fs-sm)", color: "var(--text-secondary)",
+                  fontFamily: "var(--font-sans)", lineHeight: 1.55,
+                }}>
+                  <span style={{
+                    fontWeight: 700, color: "var(--text-primary)",
+                    fontSize: "var(--fs-xs)", textTransform: "uppercase",
+                    letterSpacing: 1.1, fontFamily: "var(--font-mono)", marginRight: 8,
+                  }}>
+                    What would change our mind
+                  </span>
+                  {theme.wouldChange}
                 </div>
               )}
 
@@ -893,7 +1006,7 @@ export const MarketPulseCard = ({ pulse, streakDays, setActiveTab }) => {
               display: "inline-block",
               transform: expanded ? "rotate(180deg)" : "rotate(0deg)",
               transition: "transform 0.2s ease",
-              fontSize: 10,
+              fontSize: 11,
             }}>▼</span>
             {expanded ? "Show less" : "Read analysis"}
           </button>

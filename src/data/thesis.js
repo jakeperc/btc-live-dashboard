@@ -95,7 +95,7 @@ export const SILENT_TAX_CHAPTERS = [
   { era: "2008",  ppTarget: 0.18, eyebrow: "Oct 2008",        headline: "GFC. QE1 begins. $1.3T in 18 months.",             body: "The Fed crosses a line that hadn't been crossed before. Quantitative easing becomes a permanent tool, not an emergency one — and it shows in every paycheck since.", color: "#fb7d3c" },
   { era: "2020",  ppTarget: 0.14, eyebrow: "Mar 2020 – 2022", headline: "Covid. 40% of every USD ever — in 24 months.",     body: "The fastest M2 expansion in U.S. history. By the time the chart updated, the dollar you held had already lost ground you cannot recover.", color: "#fb7d3c" },
   { era: "Today", ppTarget: 0.13, eyebrow: "2025",            headline: "Your dollar is now worth 13 cents.",               body: "Same currency. Same paychecks. Denominated in a unit that has quietly shed 87% of its purchasing power. Nobody took it in one moment — it leaked out a little every year, exactly the way a currency without a hard cap is designed to.", color: "#ef4444" },
-  { era: "Coda",  ppTarget: null, eyebrow: "Meanwhile…",       headline: "The supply you can't print.",                       body: "Bitcoin's issuance halves every four years toward zero: 1.7% → 0.83% → 0.41% → 0.20%. Nobody, ever, on any timeline, can decide to print more. That is the difference.", color: "#f7931a", isCoda: true },
+  { era: "Coda",  ppTarget: null, eyebrow: "Meanwhile…",       headline: "The supply you can't print.",                       body: "Bitcoin's issuance halves every four years toward zero: 1.7%, then 0.83%, then 0.41%, then 0.20%. Nobody, ever, on any timeline, can decide to print more. That is the difference.", color: "#f7931a", isCoda: true },
 ];
 
 // Key crisis-response money-printing events the chart annotates.
@@ -411,7 +411,7 @@ export const MYTHS = [
   {
     myth: "It wastes energy.",
     refutation: "It spends energy on purpose — that spend is what makes the ledger expensive to rewrite. The question is the energy mix, not whether energy is used.",
-    mechanism: "Multiple industry surveys put Bitcoin mining's sustainable energy share (hydro, wind, solar, nuclear, and stranded/flared gas that would otherwise be wasted) at roughly half or more of total mining power — and miners are financially rewarded for seeking out the cheapest power, which is disproportionately surplus or renewable.",
+    mechanism: "Multiple industry surveys put Bitcoin mining's sustainable energy share (hydro, wind, solar, nuclear, and stranded or flared gas that would otherwise be wasted) at roughly half or more of total mining power. Miners are financially rewarded for seeking out the cheapest power, which is disproportionately surplus or renewable.",
     concession: "Estimates vary by methodology and it's a genuinely contested figure — this isn't settled the way the crime or ban myths are.",
   },
   {
@@ -521,3 +521,79 @@ export const POSITIONING_LENSES = [
     text: "An ETF is convenient exposure. Self-custody is sovereign ownership of the bearer asset itself. Serious holders should know the tradeoff before treating them as identical.",
   },
 ];
+
+// ─── THE FIVE-MINUTE VERSION ────────────────────────────────────────────────
+// The whole thesis in three cards for a reader who has never held Bitcoin, each
+// ending with one checkable number and a note on where the idea breaks. Rendered
+// at the top of the Thesis tab; the long read sits behind a labelled door below.
+// Tier 1 fields (intro, cards[].plain, closing.text) follow SCOPE.md's plain-
+// language standard: no undefined terms, no probability numbers, ≤45 words.
+// Anchors must match ANCHORS in src/lib/routes.js (scripts/check-schema.mjs checks).
+export const THESIS_QUICK = {
+  eyebrow: "The short version",
+  headline: "Three ideas, one number each.",
+  intro: "The whole argument fits in three cards. Each one ends with a single number you can check and a note on where it breaks. Stop after these if you like; the full thesis waits below.",
+  cards: [
+    {
+      key: "leak",
+      num: "01",
+      title: "Saved money leaks.",
+      plain: "A dollar saved in 1971 buys about 13 cents' worth today. Nothing happened to the bill. The number of dollars grew about 32 times, so each one buys less.",
+      why: "Money is how you carry today's work into the future. When whoever runs the money can make more of it, everyone holding it pays a quiet yearly fee that never appears on a bill. Most currencies leak faster than the dollar; Argentina's lost two-thirds of its value in 2023 alone.",
+      breaks: "Over months or a few years, prices and the money supply can move apart. The leak is a story about decades, not next year's grocery bill.",
+      stat: {
+        value: "13¢",
+        label: "what a 1971 dollar buys today",
+        source: { label: "BLS inflation calculator", url: "https://www.bls.gov/data/inflation_calculator.htm" },
+      },
+      link: { label: "Walk the 54 years", anchor: "thesis-phase-basics" },
+    },
+    {
+      key: "cap",
+      num: "02",
+      title: "Bitcoin can't leak.",
+      plain: "There will only ever be 21 million bitcoin, and new coins arrive on a fixed schedule that halves every four years. No company, government, or emergency can change that number.",
+      why: "Gold's supply grows about 1.5% a year and the dollar supply about 6.5%. Bitcoin's grows 0.83% and falls toward zero. Thousands of computers around the world each keep an identical copy of Bitcoin's ledger, the record of who owns what, and a copy that breaks the rules is simply thrown out.",
+      breaks: "The cap holds because almost everyone running the software agrees to it. Changing it would need near-universal agreement, which has never happened, but it is people, not physics.",
+      stat: {
+        value: "0.83%",
+        label: "new coins a year, and falling",
+        source: { label: "Bitcoin source code", url: "https://github.com/bitcoin/bitcoin" },
+      },
+      link: { label: "How the cap is enforced", anchor: "thesis-phase-intermediate" },
+    },
+    {
+      key: "patience",
+      num: "03",
+      title: "The bet: patience pays again.",
+      plain: "When saving stops losing value, people plan longer and gamble less. That is the whole idea, and it plays out over decades. It is not a promise that the price only goes up.",
+      why: "Bitcoin has fallen by more than three-quarters four times, most recently 77% in 2022, when it dropped while U.S. prices were rising fastest. Each fall so far was followed by a new high, though the survivors are the ones you hear about. This site names what would prove the idea wrong and grades its own forecasts weekly.",
+      breaks: "A better money could appear, keeping your own keys could stay too hard for most people, or every major government could ban it at once.",
+      stat: {
+        value: "−77%",
+        label: "the 2022 fall; a new high by 2024",
+        source: { label: "blockchain.com price history", url: "https://www.blockchain.com/explorer/charts/market-price" },
+      },
+      link: { label: "What would prove this wrong", anchor: "thesis-phase-advanced" },
+    },
+  ],
+  objections: {
+    text: "Not convinced? Six common objections, answered plainly, including the one where the skeptics have a real point.",
+    link: { label: "Read the objections", anchor: "thesis-objections" },
+  },
+  closing: {
+    text: "That is the short version. For anyone who might own some, the Strategy tab is about doing it without getting hurt. The full thesis below is the long road to the same place.",
+    next: { label: "Then what? → Strategy", tab: 2 },
+  },
+  door: {
+    eyebrow: "The full thesis",
+    title: "Same argument, with the receipts.",
+    sub: "Three phases. Start wherever fits, or read straight through. Your place is kept if you come back.",
+    cta: "Read the full thesis",
+    phases: [
+      { num: "01", label: "Basics", anchor: "thesis-phase-basics", title: "Why this matters", blurb: "What money is for, and the 54-year walk that shows the leak happening." },
+      { num: "02", label: "Intermediate", anchor: "thesis-phase-intermediate", title: "How money has actually worked", blurb: "Five thousand years of harder money, how the cap is enforced, and the six objections." },
+      { num: "03", label: "Advanced", anchor: "thesis-phase-advanced", title: "What this means for you", blurb: "The four-move case, why patience pays, and what would change our mind." },
+    ],
+  },
+};

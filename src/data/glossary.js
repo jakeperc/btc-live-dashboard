@@ -377,6 +377,22 @@ export const GLOSSARY = [
     plain: "An economic policy conference held each August in Jackson Hole, Wyoming, run by the Kansas City Federal Reserve. The Fed chair's speech there often signals where interest rates are heading.",
     source: "https://www.federalreserve.gov/newsevents/speech/powell20220826a.htm",
   },
+  {
+    key: "msci",
+    label: "MSCI",
+    caseSensitive: true,
+    category: "markets",
+    plain: "A company that builds and sells stock-market indexes and investment data. Many funds copy its lists automatically, so when MSCI adds or drops a company, real money has to follow.",
+    source: "https://www.msci.com/who-we-are/about-us",
+  },
+  {
+    key: "sidechain",
+    label: "sidechain",
+    aliases: ["sidechains", "side chain", "side chains"],
+    category: "protocol",
+    plain: "A separate blockchain that runs alongside Bitcoin with its own rules. Users lock real Bitcoin and get matching tokens on the side network, trusting its operators to hold the coins and give them back.",
+    source: "https://docs.liquid.net/docs/technical-overview",
+  },
 ];
 
 export const GLOSSARY_BY_KEY = Object.fromEntries(GLOSSARY.map((g) => [g.key, g]));

@@ -20,6 +20,11 @@
 //   2  hard findings in Editor-editable prose  → orchestrator re-runs the Editor once, then builds
 //   3  STRUCTURAL  → do NOT build (import failure, missing render-critical key, bad enum,
 //                    glossary integrity, numeric-invariant violation)
+//
+// Shape (key sets, enums, sort order, the forecast ledger's arithmetic) is the job of
+// scripts/check-schema.mjs; this file keeps only the shape checks that guard its own
+// field map. Every run also prints per-tab word totals against the tab budgets (rule
+// 17) and an estimated reading time (rule 18) in the report header.
 
 import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync, statSync } from "node:fs";
 import { execFileSync } from "node:child_process";
@@ -170,7 +175,16 @@ async function importWithRetry(absPath, attempts = 2) {
   throw lastErr;
 }
 
-const DATA_FILES = ["deep-analysis.js", "market-news.js", "adoption.js", "headlines.js"];
+// Every module that carries rendered prose. All are required: a missing file is a
+// structural finding (rule 1), because the tab that imports it would not build.
+const DATA_FILES = [
+  "deep-analysis.js", "market-news.js", "adoption.js", "headlines.js",
+  "thesis.js", "strategy.js", "forecast-ledger.js",
+];
+
+// Loaded for reference only (YARDSTICKS feeds the rule-20 allow-list). Optional, and
+// never a rule-1 failure — nothing in them is prose.
+const REFERENCE_FILES = ["fallbacks.js"];
 
 async function loadModules() {
   const mods = {};
@@ -194,6 +208,15 @@ async function loadModules() {
         file: `src/data/${name}`,
         message: `module failed to import: ${err.message}`,
       });
+    }
+  }
+  for (const name of REFERENCE_FILES) {
+    const abs = nodePath.join(DATA_DIR, name);
+    if (!existsSync(abs)) continue;
+    try {
+      mods[name] = await importWithRetry(abs);
+    } catch (err) {
+      notes.push(`${name}: failed to import (${err.message}) — yardstick allow-list unavailable this run.`);
     }
   }
   // Optional — does not exist until WP2 lands.
@@ -221,7 +244,15 @@ async function loadModules() {
 //   • DEEP_ANALYSIS.themeInteractions.*  — internal bookkeeping, never rendered
 //     (AnalysisTab.jsx and render-seo.mjs both ignore it), legitimately dialect.
 //   • adoption `flag` / `country`        — flag emoji are by design.
-//   • fallbacks.js                       — numeric constants, no prose.
+//   • fallbacks.js                       — numeric constants; YARDSTICKS.plain is a
+//                                          sentence fragment, never rendered alone.
+//   • thesis/strategy chart labels, stats, eyebrows, attributed quotations and the
+//     THESIS_QUICK "door" copy — fragments, not prose to be edited.
+//
+// Registered since the site upgrade: the long-form Thesis and Strategy prose (static,
+// measured against a per-tab word budget — rule 17), THESIS_QUICK (the five-minute
+// version), the forecast ledger's rendered lines, and `wouldChange` on the five
+// market cards.
 // ─────────────────────────────────────────────────────────────────────────────
 
 const CAPS = {
@@ -251,7 +282,69 @@ const CAPS = {
   cuDetail: 150,
   adoptionStatus: 12,
   archiveTitle: 35,
+  // market cards — the falsifier hint, one sentence
+  wouldChange: 30,
+  // thesis.js — the long read
+  thHeadline: 12,
+  thIntroBody: 90,
+  thScorecard: 60,
+  thSoftCost: 70,
+  thChapter: 60,
+  thStep: 60,
+  thCoda: 60,
+  thIntlCase: 50,
+  thScarcityStep: 90,
+  thMyth: 70,
+  thStoryPara: 80,
+  thFlow: 80,
+  thLens: 90,
+  // thesis.js — THESIS_QUICK, the five-minute version
+  tqHeadline: 12,
+  tqIntro: 45,
+  tqCardTitle: 8,
+  tqCardPlain: 45,
+  tqCardWhy: 60,
+  tqCardBreaks: 45,
+  tqObjections: 35,
+  tqClosing: 45,
+  // strategy.js
+  stNote: 45,
+  stRetailBody: 70,
+  stInversion: 40,
+  stRuleBullet: 45,
+  stMistake: 80,
+  stCaveat: 60,
+  stCustody: 60,
+  stBandRationale: 50,
+  // forecast-ledger.js
+  flSummaryPlain: 45,
+  flCategoryPlain: 30,
+  flLesson: 45,
+  flEvent: 35,
 };
+
+// Rule 17 — per-tab word budget over every registered field in the module. The Thesis
+// figure includes THESIS_QUICK (~350 words). Ceilings, not targets.
+const TAB_BUDGETS = {
+  "src/data/thesis.js": 4000,
+  "src/data/strategy.js": 2300,
+};
+
+// Which tab each module renders on — for the reading-time line (rule 18).
+const TAB_OF_FILE = {
+  "src/data/market-news.js": "Dashboard",
+  "src/data/thesis.js": "Thesis",
+  "src/data/strategy.js": "Strategy",
+  "src/data/headlines.js": "Headlines",
+  "src/data/adoption.js": "Adoption",
+  "src/data/deep-analysis.js": "Analysis",
+  "src/data/forecast-ledger.js": "Analysis · Track record",
+};
+
+// The long-form Thesis and Strategy prose is static content. It is registered so it
+// is measured; whether the Editor may rewrite it is this one switch. SCOPE.md's
+// out-of-scope list still names both files, so the coordinator decides.
+const STATIC_TAB_EDITABLE = false;
 
 const cap = (k) => Math.round(CAPS[k] * CAP_SCALE);
 
@@ -313,6 +406,7 @@ function collectFields(mods) {
     out.push(field({ file: F, path: "MARKET_THEME.narrative", card: "mt", tier: 2, editable: true, cap: cap("mtNarrative"), text: mt.narrative }));
     out.push(field({ file: F, path: "MARKET_THEME.whyItMatters", card: "mt", tier: 1, editable: true, cap: cap("mtWhyItMatters"), text: mt.whyItMatters }));
     out.push(field({ file: F, path: "MARKET_THEME.milestone", card: "mt", tier: 2, editable: true, cap: cap("mtMilestone"), text: mt.milestone }));
+    if (mt.wouldChange != null) out.push(field({ file: F, path: "MARKET_THEME.wouldChange", card: "mt", tier: 2, editable: true, cap: cap("wouldChange"), text: mt.wouldChange }));
   }
   (mods["market-news.js"]?.CURATED_MARKET_UPDATES ?? []).forEach((u, i) => {
     const F = "src/data/market-news.js";
@@ -320,6 +414,7 @@ function collectFields(mods) {
     out.push(field({ file: F, path: `CURATED[${i}].title`, card, tier: 2, editable: false, cap: cap("cuTitle"), text: u.title, kind: "title" }));
     if (u.plain != null) out.push(field({ file: F, path: `CURATED[${i}].plain`, card, tier: 1, editable: true, cap: cap("cuPlain"), text: u.plain, kind: "plain" }));
     out.push(field({ file: F, path: `CURATED[${i}].detail`, card, tier: 2, editable: true, cap: cap("cuDetail"), text: u.detail }));
+    if (u.wouldChange != null) out.push(field({ file: F, path: `CURATED[${i}].wouldChange`, card, tier: 2, editable: true, cap: cap("wouldChange"), text: u.wouldChange }));
   });
   (mods["market-news.js"]?.FALLBACK_NEWS ?? []).forEach((n, i) =>
     out.push(field({ file: "src/data/market-news.js", path: `FALLBACK_NEWS[${i}].title`, card: `fn[${i}]`, tier: 2, editable: false, cap: cap("archiveTitle"), text: n.title, kind: "title" }))
@@ -360,6 +455,97 @@ function collectFields(mods) {
         text: h.title,
         kind: "title",
       }));
+    });
+  }
+
+  // ── thesis.js (the static long read, plus THESIS_QUICK) ───────────────────
+  const th = mods["thesis.js"];
+  if (th) {
+    const F = "src/data/thesis.js";
+    const E = STATIC_TAB_EDITABLE;
+    const mi = th.MONEY_INTRO;
+    if (mi) {
+      out.push(field({ file: F, path: "MONEY_INTRO.headline", card: "th:intro", tier: 2, editable: E, cap: cap("thHeadline"), text: mi.headline, kind: "title" }));
+      (mi.body ?? []).forEach((p, i) => out.push(field({ file: F, path: `MONEY_INTRO.body[${i}]`, card: "th:intro", tier: 2, editable: E, cap: cap("thIntroBody"), text: p })));
+    }
+    (th.MONEY_SCORECARD ?? []).forEach((s, i) => out.push(field({ file: F, path: `MONEY_SCORECARD[${i}].body`, card: `th:scorecard[${i}]`, tier: 2, editable: E, cap: cap("thScorecard"), text: s?.body })));
+    (th.SOFT_MONEY_COSTS ?? []).forEach((c, i) => out.push(field({ file: F, path: `SOFT_MONEY_COSTS[${i}].text`, card: `th:cost[${i}]`, tier: 2, editable: E, cap: cap("thSoftCost"), text: c?.text })));
+    (th.SILENT_TAX_CHAPTERS ?? []).forEach((c, i) => out.push(field({ file: F, path: `SILENT_TAX_CHAPTERS[${i}].body`, card: `th:chapter[${i}]`, tier: 2, editable: E, cap: cap("thChapter"), text: c?.body })));
+    (th.SILENT_TAX_STEPS ?? []).forEach((s, i) => out.push(field({ file: F, path: `SILENT_TAX_STEPS[${i}].body`, card: `th:step[${i}]`, tier: 1, editable: E, cap: cap("thStep"), text: s?.body })));
+    if (th.SILENT_TAX_CODA?.body != null) out.push(field({ file: F, path: "SILENT_TAX_CODA.body", card: "th:coda", tier: 1, editable: E, cap: cap("thCoda"), text: th.SILENT_TAX_CODA.body }));
+    (th.SILENT_TAX_INTL?.cases ?? []).forEach((c, i) => out.push(field({ file: F, path: `SILENT_TAX_INTL.cases[${i}].body`, card: `th:intl[${i}]`, tier: 2, editable: E, cap: cap("thIntlCase"), text: c?.body })));
+    (th.DIGITAL_SCARCITY?.steps ?? []).forEach((s, i) => out.push(field({ file: F, path: `DIGITAL_SCARCITY.steps[${i}].body`, card: `th:scarcity[${i}]`, tier: 2, editable: E, cap: cap("thScarcityStep"), text: s?.body })));
+    (th.MYTHS ?? []).forEach((m, i) => {
+      const card = `th:myth[${i}]`;
+      out.push(field({ file: F, path: `MYTHS[${i}].refutation`, card, tier: 2, editable: E, cap: cap("thMyth"), text: m?.refutation }));
+      out.push(field({ file: F, path: `MYTHS[${i}].mechanism`, card, tier: 2, editable: E, cap: cap("thMyth"), text: m?.mechanism }));
+    });
+    (th.TIME_PREFERENCE_STORY?.paragraphs ?? []).forEach((p, i) => out.push(field({ file: F, path: `TIME_PREFERENCE_STORY.paragraphs[${i}]`, card: "th:story", tier: 1, editable: E, cap: cap("thStoryPara"), text: p })));
+    (th.THESIS_FLOW ?? []).forEach((f, i) => {
+      const card = `th:flow[${i}]`;
+      out.push(field({ file: F, path: `THESIS_FLOW[${i}].property`, card, tier: 2, editable: E, cap: cap("thFlow"), text: f?.property }));
+      out.push(field({ file: F, path: `THESIS_FLOW[${i}].implication`, card, tier: 2, editable: E, cap: cap("thFlow"), text: f?.implication }));
+    });
+    (th.POSITIONING_LENSES ?? []).forEach((l, i) => out.push(field({ file: F, path: `POSITIONING_LENSES[${i}].text`, card: `th:lens[${i}]`, tier: 2, editable: E, cap: cap("thLens"), text: l?.text })));
+
+    // THESIS_QUICK — the five-minute version at the top of the tab. Guarded: absent
+    // until the coordinator writes it (scripts/check-schema.mjs owns the shape).
+    const tq = th.THESIS_QUICK;
+    if (tq) {
+      out.push(field({ file: F, path: "THESIS_QUICK.headline", card: "tq:top", tier: 2, editable: true, cap: cap("tqHeadline"), text: tq.headline, kind: "title" }));
+      out.push(field({ file: F, path: "THESIS_QUICK.intro", card: "tq:top", tier: 1, editable: true, cap: cap("tqIntro"), text: tq.intro, kind: "plain" }));
+      (tq.cards ?? []).forEach((c, i) => {
+        const card = `tq:card[${i}]`;
+        out.push(field({ file: F, path: `THESIS_QUICK.cards[${i}].title`, card, tier: 2, editable: true, cap: cap("tqCardTitle"), text: c?.title, kind: "title" }));
+        out.push(field({ file: F, path: `THESIS_QUICK.cards[${i}].plain`, card, tier: 1, editable: true, cap: cap("tqCardPlain"), text: c?.plain, kind: "plain" }));
+        out.push(field({ file: F, path: `THESIS_QUICK.cards[${i}].why`, card, tier: 2, editable: true, cap: cap("tqCardWhy"), text: c?.why }));
+        if (c?.breaks != null) out.push(field({ file: F, path: `THESIS_QUICK.cards[${i}].breaks`, card, tier: 2, editable: true, cap: cap("tqCardBreaks"), text: c.breaks }));
+      });
+      if (tq.objections?.text != null) out.push(field({ file: F, path: "THESIS_QUICK.objections.text", card: "tq:objections", tier: 2, editable: true, cap: cap("tqObjections"), text: tq.objections.text }));
+      if (tq.closing?.text != null) out.push(field({ file: F, path: "THESIS_QUICK.closing.text", card: "tq:closing", tier: 1, editable: true, cap: cap("tqClosing"), text: tq.closing.text, kind: "plain" }));
+    }
+  }
+
+  // ── strategy.js (static) ──────────────────────────────────────────────────
+  const st = mods["strategy.js"];
+  if (st) {
+    const F = "src/data/strategy.js";
+    const E = STATIC_TAB_EDITABLE;
+    const we = st.WORKED_EXAMPLE;
+    if (we) {
+      if (we.outcome?.note != null) out.push(field({ file: F, path: "WORKED_EXAMPLE.outcome.note", card: "st:example", tier: 1, editable: E, cap: cap("stNote"), text: we.outcome.note }));
+      if (we.moral != null) out.push(field({ file: F, path: "WORKED_EXAMPLE.moral", card: "st:example", tier: 1, editable: E, cap: cap("stNote"), text: we.moral }));
+    }
+    const rr = st.RETAIL_REALITY;
+    if (rr) {
+      out.push(field({ file: F, path: "RETAIL_REALITY.body", card: "st:retail", tier: 2, editable: E, cap: cap("stRetailBody"), text: rr.body }));
+      (rr.inversion ?? []).forEach((r, i) => out.push(field({ file: F, path: `RETAIL_REALITY.inversion[${i}].body`, card: "st:retail", tier: 1, editable: E, cap: cap("stInversion"), text: r?.body })));
+    }
+    (st.STRATEGY_RULES ?? []).forEach((r, i) =>
+      (r?.bullets ?? []).forEach((b, j) => out.push(field({ file: F, path: `STRATEGY_RULES[${i}].bullets[${j}]`, card: `st:rule[${i}]`, tier: 1, editable: E, cap: cap("stRuleBullet"), text: b })))
+    );
+    (st.COMMON_MISTAKES ?? []).forEach((m, i) => out.push(field({ file: F, path: `COMMON_MISTAKES[${i}].body`, card: `st:mistake[${i}]`, tier: 2, editable: E, cap: cap("stMistake"), text: m?.body })));
+    if (st.DRAWDOWN_CAVEAT != null) out.push(field({ file: F, path: "DRAWDOWN_CAVEAT", card: "st:drawdowns", tier: 2, editable: E, cap: cap("stCaveat"), text: st.DRAWDOWN_CAVEAT }));
+    (st.CUSTODY_LADDER ?? []).forEach((r, i) => {
+      const card = `st:custody[${i}]`;
+      out.push(field({ file: F, path: `CUSTODY_LADDER[${i}].good`, card, tier: 2, editable: E, cap: cap("stCustody"), text: r?.good }));
+      out.push(field({ file: F, path: `CUSTODY_LADDER[${i}].tradeoff`, card, tier: 2, editable: E, cap: cap("stCustody"), text: r?.tradeoff }));
+    });
+    (st.ALLOCATION_BANDS ?? []).forEach((b, i) => out.push(field({ file: F, path: `ALLOCATION_BANDS[${i}].rationale`, card: `st:band[${i}]`, tier: 2, editable: E, cap: cap("stBandRationale"), text: b?.rationale })));
+  }
+
+  // ── forecast-ledger.js (Track record on the Analysis tab) ─────────────────
+  const fl = mods["forecast-ledger.js"]?.FORECAST_LEDGER;
+  if (fl) {
+    const F = "src/data/forecast-ledger.js";
+    if (fl.summary?.plain != null) out.push(field({ file: F, path: "FORECAST_LEDGER.summary.plain", card: "fl:summary", tier: 1, editable: true, cap: cap("flSummaryPlain"), text: fl.summary.plain, kind: "plain" }));
+    (fl.summary?.byCategory ?? []).forEach((c, i) => out.push(field({ file: F, path: `FORECAST_LEDGER.summary.byCategory[${i}].plain`, card: "fl:summary", tier: 2, editable: true, cap: cap("flCategoryPlain"), text: c?.plain, kind: "plain" })));
+    (fl.resolved ?? []).forEach((r, i) => {
+      const card = `fl:resolved[${i}]`;
+      // The scoring letter — read-only, like watchList[].event: the forecast was
+      // scored against this exact wording, so rewording it rewrites the test.
+      out.push(field({ file: F, path: `FORECAST_LEDGER.resolved[${i}].event`, card, tier: 3, editable: false, cap: cap("flEvent"), text: r?.event }));
+      out.push(field({ file: F, path: `FORECAST_LEDGER.resolved[${i}].lesson`, card, tier: 2, editable: true, cap: cap("flLesson"), text: r?.lesson }));
     });
   }
 
@@ -415,6 +601,18 @@ function checkRequiredKeys(mods) {
     ["src/data/adoption.js", "COMPANY_HOLDINGS", mods["adoption.js"]?.COMPANY_HOLDINGS],
     ["src/data/adoption.js", "ADOPTION_DATA", mods["adoption.js"]?.ADOPTION_DATA],
     ["src/data/adoption.js", "ADOPTION_INDEX_TOP20", mods["adoption.js"]?.ADOPTION_INDEX_TOP20],
+    ["src/data/thesis.js", "THESIS_METRICS", mods["thesis.js"]?.THESIS_METRICS],
+    ["src/data/thesis.js", "SOFT_MONEY_COSTS", mods["thesis.js"]?.SOFT_MONEY_COSTS],
+    ["src/data/thesis.js", "MONEY_HISTORY", mods["thesis.js"]?.MONEY_HISTORY],
+    ["src/data/thesis.js", "HARDNESS_DATA", mods["thesis.js"]?.HARDNESS_DATA],
+    ["src/data/thesis.js", "PROPERTIES_MATRIX", mods["thesis.js"]?.PROPERTIES_MATRIX],
+    ["src/data/thesis.js", "THESIS_FLOW", mods["thesis.js"]?.THESIS_FLOW],
+    ["src/data/thesis.js", "TIME_PREFERENCE.soft.items", mods["thesis.js"]?.TIME_PREFERENCE?.soft?.items],
+    ["src/data/thesis.js", "TIME_PREFERENCE.hard.items", mods["thesis.js"]?.TIME_PREFERENCE?.hard?.items],
+    ["src/data/strategy.js", "ALLOCATION_BANDS", mods["strategy.js"]?.ALLOCATION_BANDS],
+    ["src/data/strategy.js", "COMMON_MISTAKES", mods["strategy.js"]?.COMMON_MISTAKES],
+    ["src/data/strategy.js", "HISTORICAL_DRAWDOWNS", mods["strategy.js"]?.HISTORICAL_DRAWDOWNS],
+    ["src/data/strategy.js", "STRATEGY_SOURCES", mods["strategy.js"]?.STRATEGY_SOURCES],
   ];
   for (const [file, name, value] of requiredArrays) {
     if (!Array.isArray(value)) {
@@ -423,6 +621,9 @@ function checkRequiredKeys(mods) {
   }
   if (!mods["market-news.js"]?.MARKET_THEME) {
     report({ rule: "2-keys", severity: STRUCTURAL, file: "src/data/market-news.js", field: "MARKET_THEME", message: "required export missing" });
+  }
+  if (mods["forecast-ledger.js"] && !mods["forecast-ledger.js"].FORECAST_LEDGER) {
+    report({ rule: "2-keys", severity: STRUCTURAL, file: "src/data/forecast-ledger.js", field: "FORECAST_LEDGER", message: "required export missing — the Track record section renders it" });
   }
   (da.crossCurrents ?? []).forEach((c, i) => {
     if (!Array.isArray(c.themesConnected)) {
@@ -507,22 +708,26 @@ function checkShape(mods) {
 //                                block; banning them only false-fires on "self-reinforcing".
 // ─────────────────────────────────────────────────────────────────────────────
 
+// The rendered windows into the forecast ledger. Their Brier values are the point of
+// the field, not a leak: calibration.briefSummary on the Analysis tab, and the Track
+// record's summary line, which defines the score for a newcomer.
+const LEDGER_WINDOWS = ["calibration.briefSummary", "FORECAST_LEDGER.summary.plain"];
+
 const BOOKKEEPING = [
   { re: /THESIS-\d+/g, label: "thesis ID" },
-  { re: /\bBrier\b/g, label: "raw Brier reference", exceptField: "calibration.briefSummary" },
+  { re: /\bBrier\b/g, label: "raw Brier reference", exceptFields: LEDGER_WINDOWS },
   { re: /\bFed-INTENT\b/gi, label: "calibration category name" },
   { re: /\b(HIT|MISS|PARTIAL)\b/g, label: "scoring verdict in caps" },
   { re: /\bon its letter\b/gi, label: "ledger idiom" },
   { re: /\bhaircut(s|ted|ting)?\b/gi, label: "calibration jargon" },
   { re: /\bfalsifier\s*#?\d+/gi, label: "falsifier index" },
-  // calibration.briefSummary is the one rendered window into the forecast ledger:
-  // its Brier values are the point of the field, not a leak.
-  { re: /(?<![\d.])0\.\d{2}(?![\d])/g, label: "raw probability decimal (say “65% odds”)", exceptField: "calibration.briefSummary" },
+  // "0.83%" is a percentage and "$0.13" is a price — neither is a probability leak.
+  { re: /(?<![\d.$])0\.\d{2}(?![\d%])/g, label: "raw probability decimal (say “65% odds”)", exceptFields: LEDGER_WINDOWS },
 ];
 
 function checkBookkeeping(f) {
-  for (const { re, label, exceptField } of BOOKKEEPING) {
-    if (exceptField && f.path.endsWith(exceptField)) continue;
+  for (const { re, label, exceptFields } of BOOKKEEPING) {
+    if (exceptFields?.some((x) => f.path.endsWith(x))) continue;
     const hits = String(f.text).match(re);
     if (hits?.length) {
       report({
@@ -674,7 +879,10 @@ function checkSentences(f) {
     const worst = sents[lengths.indexOf(longest)];
     report({ rule: "9-sentence", severity: HARD, file: f.file, field: f.path, tier: f.tier, editable: f.editable, message: `longest sentence is ${longest} words (max 45)`, excerpt: worst });
   }
-  if (avg > 22) {
+  // An average needs at least two sentences: a lone 28-word sentence is a question
+  // for its own cap, not an "average" finding (one-sentence fields such as
+  // wouldChange and the ledger's scoring letters would otherwise fire every week).
+  if (sents.length >= 2 && avg > 22) {
     report({ rule: "9-sentence", severity: SOFT, file: f.file, field: f.path, tier: f.tier, editable: f.editable, message: `average sentence ${avg.toFixed(1)} words (target 22)` });
   }
 
@@ -987,6 +1195,45 @@ function checkDuplication(fields) {
         message: `"${tok}" is restated in ${where.size} rendered fields — reference the card, don't repeat the fact`,
       });
     }
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Rule 17 — per-tab word budget (soft) · Rule 18 — reading time (report only)
+//
+// A module's registered fields are, near enough, everything a reader scrolls through
+// on that tab. Rule 17 stops the static tabs growing a paragraph a month; rule 18
+// prints what the length means at 200 words per minute so the budget is a number
+// somebody can feel. Both print in the report header on every run.
+// ─────────────────────────────────────────────────────────────────────────────
+
+const READING_WPM = 200;
+
+function tabTotals(fields) {
+  const byFile = new Map();
+  for (const f of fields) byFile.set(f.file, (byFile.get(f.file) ?? 0) + wordCount(f.text));
+  return [...byFile.entries()].map(([file, total]) => ({
+    file,
+    tab: TAB_OF_FILE[file] ?? file,
+    words: total,
+    minutes: Math.max(1, Math.round(total / READING_WPM)),
+    budget: TAB_BUDGETS[file] != null ? Math.round(TAB_BUDGETS[file] * CAP_SCALE) : null,
+  }));
+}
+
+function checkTabBudgets(totals) {
+  for (const t of totals) {
+    if (t.budget != null && t.words > t.budget) {
+      report({
+        rule: "17-tab-budget",
+        severity: SOFT,
+        file: t.file,
+        field: "(all registered prose)",
+        editable: false, // a budget is met by cutting a section, not by the Editor tightening sentences
+        message: `${t.words.toLocaleString("en-US")} words vs tab budget ${t.budget.toLocaleString("en-US")} — about ${t.minutes} minutes of reading; cut a section before tightening sentences`,
+      });
+    }
+    report({ rule: "18-reading-time", severity: REPORT, file: t.file, field: t.tab, message: `${t.words.toLocaleString("en-US")} words · about ${t.minutes} min at ${READING_WPM} words per minute` });
   }
 }
 
@@ -1341,14 +1588,14 @@ const RULE_ORDER = [
   "2b-plain-missing", "4-bookkeeping", "5-glyphs", "6-length", "7-plain-ceiling",
   "8-probability", "9-sentence", "13-no-advice",
   "9b-first-sentence", "10-readability", "11-dialect", "12-nominalization",
-  "14-confidence", "17-emphasis-caps", "18-duplication",
+  "14-confidence", "17-emphasis-caps", "18-duplication", "17-tab-budget", "18-reading-time",
 ];
 
 function severityRank(s) {
   return { structural: 0, hard: 1, soft: 2, report: 3 }[s] ?? 9;
 }
 
-function buildReport(acronyms, probabilityTable) {
+function buildReport(acronyms, probabilityTable, totals = []) {
   const lines = [];
   const structural = findings.filter((f) => f.severity === STRUCTURAL);
   const hardEditable = findings.filter((f) => f.severity === HARD && f.editable === true);
@@ -1363,6 +1610,19 @@ function buildReport(acronyms, probabilityTable) {
   lines.push("");
   lines.push(`**Exit ${exitCode}** — structural ${structural.length} · hard/editable ${hardEditable.length} · hard/locked ${hardLocked.length} · soft ${soft.length}`);
   lines.push("");
+
+  if (totals.length) {
+    // Rules 17 + 18: words per tab, the budget where one exists, and reading time.
+    lines.push(`**Tab budgets & reading time** (rules 17–18; ${READING_WPM} words per minute)`);
+    lines.push("");
+    lines.push("| tab | words | budget | reading time |");
+    lines.push("|---|---|---|---|");
+    for (const t of totals) {
+      const budget = t.budget == null ? "—" : `${t.budget.toLocaleString("en-US")}${t.words > t.budget ? " — OVER" : ""}`;
+      lines.push(`| ${t.tab} | ${t.words.toLocaleString("en-US")} | ${budget} | ~${t.minutes} min |`);
+    }
+    lines.push("");
+  }
 
   const section = (title, list, blurb) => {
     if (!list.length) return;
@@ -1430,6 +1690,16 @@ function bandFor(p) {
 async function main() {
   const mods = await loadModules();
 
+  // A scoped run is a hard scope from the start: a writer checking its own file must
+  // not be stopped by a module another stream has not delivered yet.
+  const want = OPTS.file ? OPTS.file.replace(/\\/g, "/").replace(/^\.\//, "") : null;
+  const inScope = (file) => !want || file.endsWith(want) || want.endsWith(file);
+  if (want) {
+    for (let i = findings.length - 1; i >= 0; i--) {
+      if (findings[i].rule === "1-import" && !inScope(findings[i].file)) findings.splice(i, 1);
+    }
+  }
+
   // Rule 1 failures are terminal — nothing downstream can be trusted.
   if (findings.some((f) => f.rule === "1-import")) {
     const { text, exitCode } = buildReport([], []);
@@ -1442,14 +1712,12 @@ async function main() {
   const glossaryAliases = checkGlossary(mods);
 
   let fields = collectFields(mods);
-  if (OPTS.file) {
-    const want = OPTS.file.replace(/\\/g, "/").replace(/^\.\//, "");
-    const matches = (file) => file.endsWith(want) || want.endsWith(file);
-    fields = fields.filter((f) => matches(f.file));
+  if (want) {
+    fields = fields.filter((f) => inScope(f.file));
     // A scoped run is a hard scope: a writer agent must never be shown findings in
     // another agent's file — it would either loop on them or violate its own scope.
     for (let i = findings.length - 1; i >= 0; i--) {
-      if (!matches(findings[i].file)) findings.splice(i, 1);
+      if (!inScope(findings[i].file)) findings.splice(i, 1);
     }
   }
 
@@ -1481,6 +1749,8 @@ async function main() {
     checkEmphasisCaps(f, lowerCorpus);
   }
   checkBodyTotal(fields);
+  const totals = tabTotals(fields);
+  checkTabBudgets(totals);
   // Cross-file by nature — only meaningful on a full run.
   if (!OPTS.file) checkDuplication(fields);
 
@@ -1497,7 +1767,7 @@ async function main() {
   }
   if (OPTS.verify) await verifyInvariants(fields, mods);
 
-  const { text, exitCode, counts } = buildReport(acronyms, probabilityTable);
+  const { text, exitCode, counts } = buildReport(acronyms, probabilityTable, totals);
 
   // Only a full (unscoped) run owns the shared report file; per-writer --file runs
   // must not clobber it while other agents are running.
@@ -1507,7 +1777,7 @@ async function main() {
   }
 
   if (OPTS.json) {
-    process.stdout.write(JSON.stringify({ exitCode, counts, findings, acronyms, notes }, null, 2) + "\n");
+    process.stdout.write(JSON.stringify({ exitCode, counts, findings, acronyms, tabTotals: totals, notes }, null, 2) + "\n");
   } else {
     emit(text, exitCode);
     return;

@@ -1,14 +1,17 @@
-import { useState, useMemo, memo } from "react";
+import { useState, useEffect, useMemo, memo } from "react";
 import { XAxis, YAxis, Tooltip, ResponsiveContainer, AreaChart, Area, ComposedChart, Line, ReferenceLine } from "recharts";
-import { FALLBACK_MINED, FALLBACK_BLOCK, FALLBACK_ATH, FALLBACK_ATH_DATE } from "../data/fallbacks.js";
+import { FALLBACK_MINED, FALLBACK_BLOCK, FALLBACK_ATH, FALLBACK_ATH_DATE, ETF_COMPLEX_FALLBACK, GLOBAL_CRYPTO_HOLDERS_FALLBACK } from "../data/fallbacks.js";
 import { MARKET_THEME, CURATED_MARKET_UPDATES } from "../data/market-news.js";
 import { COUNTRY_HOLDINGS, COMPANY_HOLDINGS } from "../data/adoption.js";
 import { SUPPLY_HISTORY } from "../data/supply-history.js";
 import { TOTAL_SUPPLY, HALVING_BLOCK } from "../lib/constants.js";
+import { ANCHORS, parseHash } from "../lib/routes.js";
 import { fmt, fmtUSD, formatRemainingTime, formatElapsed, marketCapComparison, isImportantHeadline } from "../lib/format.js";
 import { useElapsed, Pulse, useIsMobile, Reveal, usePersistedState } from "../hooks/ui.jsx";
-import { SourceLink, Term, Prose, StatCard, StatStrip, SectionGroup, SupplyMeter, DipExplainerCard, PriceDisplay, ErrorBanner, buildMarketPulse, MarketPulseCard } from "../components/shared.jsx";
-import { AnalysisCard, WatchRow, DeepAnalysisTab } from "./AnalysisTab.jsx";
+import { SourceLink, Term, Prose, StatCard, StatStrip, SectionGroup, SupplyMeter, DipExplainerCard, PriceDisplay, ErrorBanner, buildMarketPulse, MarketPulseCard, StaleNotice } from "../components/shared.jsx";
+// Note: nothing from ./AnalysisTab.jsx is imported here on purpose — the
+// Analysis tab is a lazy chunk (src/tabs/index.js) and a static import from
+// the eager Dashboard would pull it into the first-paint bundle.
 import { GLOSSARY } from "../data/glossary.js";
 import { buildMatcher, linkCard } from "../lib/glossary-match.js";
 
@@ -50,7 +53,7 @@ export const ChartTooltipBody = ({ active, payload, prevPrice }) => {
       <div style={{
         color: "var(--text-muted)", marginBottom: 6,
         letterSpacing: "var(--tracking-caps)", textTransform: "uppercase",
-        fontSize: 10, fontWeight: 500,
+        fontSize: 11, fontWeight: 500,
       }}>{p.date}</div>
       <div style={{
         color: "var(--text-primary)", fontWeight: 800, fontSize: 15,
@@ -78,7 +81,7 @@ export const PriceChart = memo(({ sevenDay, mediumTerm, longTerm }) => {
   const sourceData = cfg.source === "seven" ? sevenDay : cfg.source === "medium" ? mediumTerm : longTerm;
   // The window/downsample/min-max pass walks the full history (~5,800 daily
   // points on ALL), so it only re-runs when the source array or range changes —
-  // not on the 12 s price polls that re-render the Dashboard around this chart.
+  // not on the 30 s price polls that re-render the Dashboard around this chart.
   const { data, min, max, pct, first } = useMemo(() => {
     const data = (() => {
       if (!Array.isArray(sourceData) || sourceData.length === 0) return [];
@@ -199,7 +202,7 @@ export const PriceChart = memo(({ sevenDay, mediumTerm, longTerm }) => {
             </defs>
             <XAxis
               dataKey="date"
-              tick={{ fill: "var(--text-dim)", fontSize: isMobile ? 11 : 9, fontFamily: "var(--font-mono)", letterSpacing: 0.5 }}
+              tick={{ fill: "var(--text-dim)", fontSize: 11, fontFamily: "var(--font-mono)", letterSpacing: 0.5 }}
               axisLine={false}
               tickLine={false}
               interval={data.length > 12 ? Math.max(0, Math.floor(data.length / 6)) : "preserveStartEnd"}
@@ -208,7 +211,7 @@ export const PriceChart = memo(({ sevenDay, mediumTerm, longTerm }) => {
             />
             <YAxis
               domain={["auto", "auto"]}
-              tick={{ fill: "var(--text-dim)", fontSize: isMobile ? 11 : 9, fontFamily: "var(--font-mono)", letterSpacing: 0.5 }}
+              tick={{ fill: "var(--text-dim)", fontSize: 11, fontFamily: "var(--font-mono)", letterSpacing: 0.5 }}
               axisLine={false}
               tickLine={false}
               tickFormatter={(v) => `$${(v / 1000).toFixed(v >= 100000 ? 0 : 1)}K`}
@@ -312,7 +315,7 @@ export const PowerLawTooltip = ({ active, payload, model }) => {
       fontFamily: "var(--font-mono)", fontSize: 13,
       boxShadow: "0 12px 32px rgba(0,0,0,0.32)", minWidth: 150,
     }}>
-      <div style={{ color: "var(--text-muted)", marginBottom: 6, letterSpacing: "var(--tracking-caps)", textTransform: "uppercase", fontSize: 10, fontWeight: 500 }}>{dateStr}</div>
+      <div style={{ color: "var(--text-muted)", marginBottom: 6, letterSpacing: "var(--tracking-caps)", textTransform: "uppercase", fontSize: 11, fontWeight: 500 }}>{dateStr}</div>
       <div style={{ color: "var(--text-primary)", fontWeight: 800, fontSize: 15 }}>{fmtUSD(d.price)}</div>
       {d.trend != null && (
         <div style={{ color: "var(--text-dim)", marginTop: 4, fontSize: 11 }}>Trend {fmtUSD(d.trend)}</div>
@@ -432,18 +435,18 @@ export const PowerLawChart = ({ longTerm }) => {
             </defs>
             <XAxis
               dataKey="t" type="number" scale="time" domain={["dataMin", "dataMax"]}
-              tick={{ fill: "var(--text-dim)", fontSize: isMobile ? 11 : 9, fontFamily: "var(--font-mono)", letterSpacing: 0.5 }}
+              tick={{ fill: "var(--text-dim)", fontSize: 11, fontFamily: "var(--font-mono)", letterSpacing: 0.5 }}
               axisLine={false} tickLine={false} tickFormatter={yearFmt} minTickGap={40}
             />
             <YAxis
               scale="log" domain={calc.domain} ticks={calc.decades} allowDataOverflow
-              tick={{ fill: "var(--text-dim)", fontSize: isMobile ? 11 : 9, fontFamily: "var(--font-mono)", letterSpacing: 0.5 }}
+              tick={{ fill: "var(--text-dim)", fontSize: 11, fontFamily: "var(--font-mono)", letterSpacing: 0.5 }}
               axisLine={false} tickLine={false} tickFormatter={fmtDecade} width={isMobile ? 48 : 46}
             />
             <Tooltip content={<PowerLawTooltip model={calc.model} />} cursor={{ stroke: "var(--border-strong)", strokeDasharray: "2 4", strokeWidth: 1 }} />
             {calc.halvings.map((h) => (
               <ReferenceLine key={h.t} x={h.t} stroke="var(--text-muted)" strokeDasharray="3 4" strokeOpacity={0.5}
-                label={{ value: `⌛${h.label}`, position: "insideTopLeft", fill: "var(--text-dim)", fontSize: 9, fontFamily: "var(--font-mono)" }} />
+                label={{ value: `⌛${h.label}`, position: "insideTopLeft", fill: "var(--text-dim)", fontSize: 11, fontFamily: "var(--font-mono)" }} />
             ))}
             {showBand && <Area type="monotone" dataKey="band2" stroke="none" fill="url(#plBand2)" isAnimationActive={false} dot={false} activeDot={false} />}
             {showBand && <Area type="monotone" dataKey="band1" stroke="none" fill="url(#plBand1)" isAnimationActive={false} dot={false} activeDot={false} />}
@@ -474,7 +477,7 @@ export const PowerLawChart = ({ longTerm }) => {
 
 export const PowerLawStat = ({ label, value, accent }) => (
   <div style={{ textAlign: "center" }}>
-    <div style={{ fontSize: 9, color: "var(--text-muted)", letterSpacing: "var(--tracking-caps)", textTransform: "uppercase", fontWeight: 600, fontFamily: "var(--font-mono)", marginBottom: 3 }}>{label}</div>
+    <div style={{ fontSize: 11, color: "var(--text-muted)", letterSpacing: "var(--tracking-caps)", textTransform: "uppercase", fontWeight: 600, fontFamily: "var(--font-mono)", marginBottom: 3 }}>{label}</div>
     <div style={{ fontSize: "var(--fs-md)", fontWeight: 800, fontFamily: "var(--font-mono)", color: accent || "var(--text-primary)" }}>{value}</div>
   </div>
 );
@@ -506,6 +509,16 @@ export const pBadge = (p, label = "p") => {
 
 export const DashboardTab = ({ btc, setActiveTab }) => {
   const [updatesExpanded, setUpdatesExpanded] = useState(false);
+  // A deep link naming this section (#/dashboard/market-updates) opens it
+  // expanded, so a shared link doesn't leave the reader looking at a
+  // collapsed summary. The Dashboard panel stays mounted once visited, so a
+  // hashchange while already here needs its own listener, not just a mount check.
+  useEffect(() => {
+    const checkHash = () => { if (parseHash().anchor === ANCHORS.marketUpdates) setUpdatesExpanded(true); };
+    checkHash();
+    window.addEventListener("hashchange", checkHash);
+    return () => window.removeEventListener("hashchange", checkHash);
+  }, []);
   const {
     price, change24h, change7d, lastUpdate,
     marketCap, circulatingSupply, ath, athDate,
@@ -576,10 +589,22 @@ export const DashboardTab = ({ btc, setActiveTab }) => {
   const sovereignNations = COUNTRY_HOLDINGS.filter(c => (c.btc || 0) > 0).length;
   const sovereignTotal = COUNTRY_HOLDINGS.reduce((s, c) => s + (c.btc || 0), 0);
 
+  // Named holders come from the same tables the Adoption tab renders, so the
+  // two never disagree after a /refresh-adoption run. The two tiles with no
+  // free live API (ETF complex, global holders) read /refresh-fallbacks
+  // constants instead — see src/data/fallbacks.js.
+  const mstr = COMPANY_HOLDINGS.find(c => c.ticker === "MSTR");
+  const usReserve = COUNTRY_HOLDINGS.find(c => c.country === "United States");
+  const bhutan = COUNTRY_HOLDINGS.find(c => c.country === "Bhutan");
+  const pctOfMined = (btcAmount) => `${((btcAmount / liveMined) * 100).toFixed(1)}%`;
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
       <Reveal>
-        <MarketPulseCard pulse={marketPulse} streakDays={streakDays} setActiveTab={setActiveTab} />
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          <StaleNotice asOf={MARKET_THEME.asOf} refreshedAt={MARKET_THEME.refreshedAt} label="market briefing" />
+          <MarketPulseCard pulse={marketPulse} streakDays={streakDays} setActiveTab={setActiveTab} />
+        </div>
       </Reveal>
       <Reveal delay={0.05}>
         <PriceDisplay
@@ -644,9 +669,14 @@ export const DashboardTab = ({ btc, setActiveTab }) => {
         <DipExplainerCard fromATH={fromATH} theme={MARKET_THEME} setActiveTab={setActiveTab} />
       </Reveal>
 
-      {/* ── CURATED MARKET UPDATES ── */}
+      {/* ── CURATED MARKET UPDATES ── (anchor target: #/dashboard/market-updates) */}
       <Reveal delay={0.05}>
-        <div className="market-updates-section" onClick={() => { if (!updatesExpanded) setUpdatesExpanded(true); }} style={{ cursor: updatesExpanded ? "default" : "pointer" }}>
+        <div
+          id={ANCHORS.marketUpdates}
+          className="market-updates-section"
+          onClick={() => { if (!updatesExpanded) setUpdatesExpanded(true); }}
+          style={{ cursor: updatesExpanded ? "default" : "pointer", scrollMarginTop: 110 }}
+        >
           <button
             onClick={(e) => { e.stopPropagation(); setUpdatesExpanded(prev => !prev); }}
             style={{
@@ -659,14 +689,14 @@ export const DashboardTab = ({ btc, setActiveTab }) => {
             <span style={{ fontSize: "var(--fs-xs)", color: "var(--text-muted)", fontFamily: "var(--font-mono)", fontWeight: 700, letterSpacing: 1.2, textTransform: "uppercase" }}>Market Updates</span>
             <span style={{ display: "flex", alignItems: "center", gap: 8, fontSize: "var(--fs-xs)", color: "var(--text-muted)", fontFamily: "var(--font-mono)" }}>
               Click to Expand
-              <span style={{ display: "inline-block", fontSize: 10, transform: updatesExpanded ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s ease" }}>▼</span>
+              <span style={{ display: "inline-block", fontSize: 11, transform: updatesExpanded ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s ease" }}>▼</span>
             </span>
           </button>
           {!updatesExpanded && (
             <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
               {CURATED_MARKET_UPDATES.map((update, i) => (
                 <div key={update.title} style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
-                  <span style={{ fontSize: 10, fontFamily: "var(--font-mono)", color: "var(--accent-bitcoin)", fontWeight: 800, minWidth: 18, flexShrink: 0 }}>0{i + 1}</span>
+                  <span style={{ fontSize: 11, fontFamily: "var(--font-mono)", color: "var(--accent-bitcoin)", fontWeight: 800, minWidth: 18, flexShrink: 0 }}>0{i + 1}</span>
                   {/* Plain text only — a <Term> here would swallow the expand click. */}
                   <span style={{ display: "flex", flexDirection: "column", gap: 2 }}>
                     <span style={{ fontSize: "var(--fs-xs)", color: "var(--text-secondary)", fontFamily: "var(--font-sans)", fontWeight: 600, lineHeight: 1.35 }}>{update.title}</span>
@@ -726,6 +756,17 @@ export const DashboardTab = ({ btc, setActiveTab }) => {
                       segments={CURATED_SEGMENTS[index]}
                       style={{ fontSize: "var(--fs-sm)", color: "var(--text-secondary)", fontFamily: "var(--font-sans)", lineHeight: 1.6 }}
                     />
+                    {/* The falsifier — expanded card only, never the collapsed list. */}
+                    {update.wouldChange && (
+                      <div style={{ marginTop: 12 }}>
+                        <div className="kicker-dash" style={{ fontSize: 11, color: "var(--text-muted)", fontFamily: "var(--font-mono)", fontWeight: 700, letterSpacing: 1.2, textTransform: "uppercase", marginBottom: 4 }}>
+                          What would change our mind
+                        </div>
+                        <div style={{ fontSize: "var(--fs-sm)", color: "var(--text-secondary)", fontFamily: "var(--font-sans)", lineHeight: 1.55 }}>
+                          {update.wouldChange}
+                        </div>
+                      </div>
+                    )}
                   </div>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                     {update.sources.map((source) => (
@@ -819,7 +860,7 @@ export const DashboardTab = ({ btc, setActiveTab }) => {
         <SectionGroup title="Sovereign Adoption" collapsible defaultExpanded={true}>
           <StatStrip
             label="US Strategic Reserve"
-            value="328,000 BTC"
+            value={usReserve ? `${fmt(usReserve.btc)} BTC` : "—"}
             sub={<>Executive Order, Mar 6 2025 · <SourceLink href="https://www.whitehouse.gov/presidential-actions/2025/03/establishment-of-the-strategic-bitcoin-reserve-and-united-states-digital-asset-stockpile/" label="whitehouse.gov" /></>}
             valueColor="var(--accent-bitcoin)"
           />
@@ -836,7 +877,7 @@ export const DashboardTab = ({ btc, setActiveTab }) => {
           />
           <StatStrip
             label="Bhutan (Druk Holding)"
-            value="3,704 BTC"
+            value={bhutan ? `${fmt(bhutan.btc)} BTC` : "—"}
             sub={<>Hydro-powered sovereign mining program · <SourceLink href="https://arkhamintelligence.com/research/bhutan-bitcoin-holdings" label="arkhamintelligence.com" /></>}
           />
         </SectionGroup>
@@ -853,19 +894,19 @@ export const DashboardTab = ({ btc, setActiveTab }) => {
           />
           <StatStrip
             label="Strategy (MSTR)"
-            value="843,775 BTC"
-            sub={<>Largest single corporate holder · ~4.2% of supply · <SourceLink href="https://www.strategy.com/" label="strategy.com" /></>}
+            value={mstr ? `${fmt(mstr.btc)} BTC` : "—"}
+            sub={<>Largest single corporate holder{mstr ? ` · ~${pctOfMined(mstr.btc)} of supply` : ""} · <SourceLink href="https://www.strategy.com/" label="strategy.com" /></>}
           />
           <StatStrip
             label="US Spot Bitcoin ETFs"
-            value="~1.30M BTC"
-            sub={<>~$84B AUM · 6.5% of supply · <SourceLink href="https://farside.co.uk/btc/" label="farside.co.uk" /></>}
+            value={`~${(ETF_COMPLEX_FALLBACK.btc / 1e6).toFixed(2)}M BTC`}
+            sub={<>~${Math.round(ETF_COMPLEX_FALLBACK.aumUsd / 1e9)}B in assets · {pctOfMined(ETF_COMPLEX_FALLBACK.btc)} of supply · <SourceLink href={ETF_COMPLEX_FALLBACK.source} label="farside.co.uk" /></>}
             valueColor="var(--status-up)"
           />
           <StatStrip
             label="Global Crypto Holders"
-            value="~660M"
-            sub={<>≈ 8% of world population owns crypto · <SourceLink href="https://www.triple-a.io/crypto-ownership-data" label="triple-a.io" /></>}
+            value={`~${Math.round(GLOBAL_CRYPTO_HOLDERS_FALLBACK.holders / 1e6)}M`}
+            sub={<>About {GLOBAL_CRYPTO_HOLDERS_FALLBACK.pctOfWorld}% of the world's population owns crypto · <SourceLink href={GLOBAL_CRYPTO_HOLDERS_FALLBACK.source} label="triple-a.io" /></>}
           />
         </SectionGroup>
       </Reveal>

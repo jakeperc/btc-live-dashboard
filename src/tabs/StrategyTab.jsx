@@ -264,14 +264,14 @@ export const StrategyDcaBlock = ({ longTermChart, currentPrice }) => {
                 </defs>
                 <XAxis
                   dataKey="date"
-                  tick={{ fill: "var(--text-dim)", fontSize: isMobile ? 11 : 10, fontFamily: "'JetBrains Mono', monospace" }}
+                  tick={{ fill: "var(--text-dim)", fontSize: 11, fontFamily: "'JetBrains Mono', monospace" }}
                   axisLine={false}
                   tickLine={false}
                   interval="preserveStartEnd"
                   minTickGap={isMobile ? 36 : 42}
                 />
                 <YAxis
-                  tick={{ fill: "var(--text-dim)", fontSize: isMobile ? 11 : 10, fontFamily: "'JetBrains Mono', monospace" }}
+                  tick={{ fill: "var(--text-dim)", fontSize: 11, fontFamily: "'JetBrains Mono', monospace" }}
                   axisLine={false}
                   tickLine={false}
                   tickFormatter={(v) => "$" + (v >= 1000 ? (v / 1000).toFixed(0) + "k" : v)}
@@ -290,7 +290,7 @@ export const StrategyDcaBlock = ({ longTermChart, currentPrice }) => {
                     fillOpacity={0.07}
                     stroke="#ef444433"
                     strokeDasharray="3 3"
-                    label={{ value: "2021–22 crash", position: "insideTop", fill: "#ef4444", fontSize: 10, fontFamily: "'JetBrains Mono', monospace" }}
+                    label={{ value: "2021–22 crash", position: "insideTop", fill: "#ef4444", fontSize: 11, fontFamily: "'JetBrains Mono', monospace" }}
                   />
                 )}
                 <Area
@@ -513,14 +513,14 @@ export const StrategyCheckCadence = ({ longTermChart }) => {
               </defs>
               <XAxis
                 dataKey="date"
-                tick={{ fill: "var(--text-dim)", fontSize: isMobile ? 11 : 10, fontFamily: "'JetBrains Mono', monospace" }}
+                tick={{ fill: "var(--text-dim)", fontSize: 11, fontFamily: "'JetBrains Mono', monospace" }}
                 axisLine={false}
                 tickLine={false}
                 interval="preserveStartEnd"
                 minTickGap={isMobile ? 36 : 42}
               />
               <YAxis
-                tick={{ fill: "var(--text-dim)", fontSize: isMobile ? 11 : 10, fontFamily: "'JetBrains Mono', monospace" }}
+                tick={{ fill: "var(--text-dim)", fontSize: 11, fontFamily: "'JetBrains Mono', monospace" }}
                 axisLine={false}
                 tickLine={false}
                 tickFormatter={(v) => "$" + (v >= 1000 ? (v / 1000).toFixed(0) + "k" : v)}

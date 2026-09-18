@@ -1,8 +1,12 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { COINBASE_TICKER_URL, COINGECKO_MARKET_URL, MEMPOOL_BLOCK_URL, MEMPOOL_HASHRATE_URL, MEMPOOL_FEES_URL, MEMPOOL_MEMPOOL_URL, MEMPOOL_BLOCKS_URL, MEMPOOL_DIFFICULTY_URL, MEMPOOL_LIGHTNING_URL, COINGECKO_GLOBAL_URL, LONG_TERM_CHART_URL, MEDIUM_TERM_CHART_URL, FEAR_GREED_URL, LIVE_PRICE_POLL_MS, MARKET_DATA_POLL_MS, SLOW_DATA_POLL_MS, LAST_BLOCK_POLL_MS, LONG_TERM_POLL_MS, MEDIUM_TERM_POLL_MS } from "../lib/constants.js";
+import { COINBASE_TICKER_URL, COINGECKO_MARKET_URL, MEMPOOL_BLOCK_URL, MEMPOOL_HASHRATE_URL, MEMPOOL_FEES_URL, MEMPOOL_MEMPOOL_URL, MEMPOOL_BLOCKS_URL, MEMPOOL_DIFFICULTY_URL, MEMPOOL_LIGHTNING_URL, COINGECKO_GLOBAL_URL, LONG_TERM_CHART_URL, MEDIUM_TERM_CHART_URL, FEAR_GREED_URL, LIVE_PRICE_POLL_MS, MARKET_DATA_POLL_MS, SLOW_DATA_POLL_MS, LAST_BLOCK_POLL_MS, LONG_TERM_POLL_MS, MEDIUM_TERM_POLL_MS, LIVE_PRICE_BACKOFF_CAP_MS, POLL_BACKOFF_CAP_MS } from "../lib/constants.js";
 import { toFiniteNumber, BTC_CACHE_KEY, readPriceCache } from "../lib/format.js";
-import { useElapsed } from "./ui.jsx";
+import { createPoller } from "./ui.jsx";
 
+// Every fetcher below resolves to true (success), false (failure) or
+// undefined (did nothing: already in flight, or aborted on unmount). The
+// pollers use that to pause while the tab is hidden and to back off after
+// failures — see createPoller in ./ui.jsx. State shapes are unchanged.
 export const useBitcoinData = () => {
   const cached = readPriceCache();
   const [data, setData] = useState({
@@ -40,10 +44,6 @@ export const useBitcoinData = () => {
 
   useEffect(() => {
     const ac = new AbortController();
-    let liveTimer;
-    let marketTimer;
-    let slowTimer;
-    let lastBlockTimer;
     let cancelled = false;
     let liveInFlight = false;
     let marketInFlight = false;
@@ -145,6 +145,7 @@ export const useBitcoinData = () => {
             error: null,
           };
         });
+        return true;
       } catch (e) {
         if (e.name === "AbortError" || cancelled) return;
         setData((prev) => ({
@@ -152,6 +153,7 @@ export const useBitcoinData = () => {
           loading: false,
           error: e.message || "Live price update failed",
         }));
+        return false;
       } finally {
         liveInFlight = false;
       }
@@ -250,6 +252,7 @@ export const useBitcoinData = () => {
             error: prev.error?.startsWith("Coinbase") ? prev.error : null,
           };
         });
+        return true;
       } catch (e) {
         if (e.name === "AbortError" || cancelled) return;
         setData((prev) => ({
@@ -257,6 +260,7 @@ export const useBitcoinData = () => {
           loading: false,
           error: prev.price == null ? e.message || "Network error" : prev.error,
         }));
+        return false;
       } finally {
         marketInFlight = false;
       }
@@ -327,39 +331,45 @@ export const useBitcoinData = () => {
             difficultyAdjust: difficultyAdjust ?? prev.difficultyAdjust,
             lightning: lightning ?? prev.lightning,
           }));
+          return true;
         }
+        return false;
       } catch (e) {
         if (e.name === "AbortError" || cancelled) return;
         // swallow — non-essential data, page still works without it
+        return false;
       } finally {
         slowInFlight = false;
       }
     };
 
     // Last block — fetches the most recent block's timestamp + miner pool.
-    // Display ticks every 1s client-side via useElapsed; we only re-fetch every 30s.
+    // Display ticks every 1s client-side via useElapsed; we only re-fetch every 60s.
     const fetchLastBlock = async () => {
       if (lastBlockInFlight) return;
       lastBlockInFlight = true;
 
       try {
         const res = await fetch(MEMPOOL_BLOCKS_URL, { signal: ac.signal });
-        if (!res.ok) return;
+        if (!res.ok) return false;
         const blocks = await res.json().catch(() => null);
         const b = Array.isArray(blocks) && blocks.length > 0 ? blocks[0] : null;
-        if (!b) return;
+        if (!b) return false;
 
         const timestamp = toFiniteNumber(b.timestamp);
         const height = toFiniteNumber(b.height);
         const poolName = b.extras?.pool?.name || null;
 
-        if (cancelled || timestamp == null) return;
+        if (cancelled) return;
+        if (timestamp == null) return false;
         setData((prev) => ({
           ...prev,
           lastBlock: { timestamp, height, poolName },
         }));
+        return true;
       } catch (e) {
         if (e.name === "AbortError" || cancelled) return;
+        return false;
       } finally {
         lastBlockInFlight = false;
       }
@@ -373,11 +383,14 @@ export const useBitcoinData = () => {
         if (!res.ok) throw new Error(`blockchain.info market-price HTTP ${res.status}`);
         const json = await res.json();
         const downsampled = downsampleLongTerm(json?.values);
-        if (cancelled || downsampled.length === 0) return;
+        if (cancelled) return;
+        if (downsampled.length === 0) return false;
         setData((prev) => ({ ...prev, longTermChart: downsampled }));
+        return true;
       } catch (e) {
         if (e.name === "AbortError" || cancelled) return;
         // Silent failure — the 7-day chart owns the top-level error UI
+        return false;
       } finally {
         longTermInFlight = false;
       }
@@ -391,48 +404,46 @@ export const useBitcoinData = () => {
         if (!res.ok) throw new Error(`CoinGecko market_chart HTTP ${res.status}`);
         const json = await res.json();
         const processed = downsampleMediumTerm(json?.prices);
-        if (cancelled || processed.length === 0) return;
+        if (cancelled) return;
+        if (processed.length === 0) return false;
         setData((prev) => ({ ...prev, mediumTermChart: processed }));
+        return true;
       } catch (e) {
         if (e.name === "AbortError" || cancelled) return;
+        return false;
       } finally {
         mediumTermInFlight = false;
       }
     };
 
-    fetchersRef.current = { fetchLivePrice, fetchMarketData, fetchSlowData, fetchLastBlock, fetchLongTermChart, fetchMediumTermChart };
-    fetchMarketData();
-    fetchLivePrice();
-    fetchSlowData();
-    fetchLastBlock();
-    fetchLongTermChart();
-    fetchMediumTermChart();
-    liveTimer = setInterval(fetchLivePrice, LIVE_PRICE_POLL_MS);
-    marketTimer = setInterval(fetchMarketData, MARKET_DATA_POLL_MS);
-    slowTimer = setInterval(fetchSlowData, SLOW_DATA_POLL_MS);
-    lastBlockTimer = setInterval(fetchLastBlock, LAST_BLOCK_POLL_MS);
-    const longTermTimer = setInterval(fetchLongTermChart, LONG_TERM_POLL_MS);
-    const mediumTermTimer = setInterval(fetchMediumTermChart, MEDIUM_TERM_POLL_MS);
+    // One poller per fetcher. start() fires the initial burst (same order as
+    // before), then ticks only while the tab is visible, backing off on failure.
+    const pollers = {
+      market: createPoller({ run: fetchMarketData, intervalMs: MARKET_DATA_POLL_MS, backoffCapMs: POLL_BACKOFF_CAP_MS }),
+      live: createPoller({ run: fetchLivePrice, intervalMs: LIVE_PRICE_POLL_MS, backoffCapMs: LIVE_PRICE_BACKOFF_CAP_MS }),
+      slow: createPoller({ run: fetchSlowData, intervalMs: SLOW_DATA_POLL_MS, backoffCapMs: POLL_BACKOFF_CAP_MS }),
+      lastBlock: createPoller({ run: fetchLastBlock, intervalMs: LAST_BLOCK_POLL_MS, backoffCapMs: POLL_BACKOFF_CAP_MS }),
+      longTerm: createPoller({ run: fetchLongTermChart, intervalMs: LONG_TERM_POLL_MS, backoffCapMs: POLL_BACKOFF_CAP_MS }),
+      mediumTerm: createPoller({ run: fetchMediumTermChart, intervalMs: MEDIUM_TERM_POLL_MS, backoffCapMs: POLL_BACKOFF_CAP_MS }),
+    };
+    fetchersRef.current = pollers;
+    Object.values(pollers).forEach((p) => p.start());
 
     return () => {
       cancelled = true;
       ac.abort();
-      clearInterval(liveTimer);
-      clearInterval(marketTimer);
-      clearInterval(slowTimer);
-      clearInterval(lastBlockTimer);
-      clearInterval(longTermTimer);
-      clearInterval(mediumTermTimer);
+      Object.values(pollers).forEach((p) => p.stop());
     };
   }, []);
 
+  // Pull-to-refresh: the user asked, so run now regardless of any backoff.
   const refresh = useCallback(() => {
-    const f = fetchersRef.current;
-    if (!f) return;
-    f.fetchLivePrice();
-    f.fetchMarketData();
-    f.fetchSlowData();
-    f.fetchLastBlock();
+    const p = fetchersRef.current;
+    if (!p) return;
+    p.live.now();
+    p.market.now();
+    p.slow.now();
+    p.lastBlock.now();
   }, []);
 
   return { ...data, refresh };

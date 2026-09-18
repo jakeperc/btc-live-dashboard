@@ -3,31 +3,22 @@
 // hooks in src/hooks/, and plain utilities in src/lib/.
 // Refresh-skill-owned data lives in src/data/, imported by whichever tab
 // renders it — never by this shell.
-import { useState, useEffect } from "react";
+//
+// Routing: the URL hash is the source of truth for the open tab
+// (src/lib/routes.js). useHashRoute() reads it, listens for changes, and
+// hands back a setActiveTab that writes the hash — so the back button, a
+// shared "#/analysis/track-record" link, and every existing setActiveTab(n)
+// call all go through the same door.
+import { Suspense, useState, useEffect } from "react";
 import "./styles.css";
-import { DashboardTab } from "./tabs/DashboardTab.jsx";
-import { BitcoinThesisTab } from "./tabs/ThesisTab.jsx";
-import { StrategyTab } from "./tabs/StrategyTab.jsx";
-import { HeadlinesTab } from "./tabs/HeadlinesTab.jsx";
-import { AdoptionTab } from "./tabs/AdoptionTab.jsx";
-import { DeepAnalysisTab } from "./tabs/AnalysisTab.jsx";
-import { Skeleton, DataStatus, ThemeToggle } from "./components/shared.jsx";
+import { DashboardTab, BitcoinThesisTab, StrategyTab, HeadlinesTab, AdoptionTab, DeepAnalysisTab } from "./tabs/index.js";
+import { Skeleton, DataStatus, ThemeToggle, ErrorBoundary, isPlainClick } from "./components/shared.jsx";
 import { TABS } from "./lib/constants.js";
+import { tabHref, parseHash } from "./lib/routes.js";
 import { fmtUSD } from "./lib/format.js";
 import { useBitcoinData } from "./hooks/useBitcoinData.js";
 import { useBitcoinNews } from "./hooks/useBitcoinNews.js";
-import { useScrolled, useIsMobile, useOnlineStatus, usePullToRefresh, useSwipeNavigation, Pulse, PageScrollProgressBar } from "./hooks/ui.jsx";
-
-
-
-
-
-
-
-
-
-
-
+import { useHashRoute, useScrolled, useIsMobile, useOnlineStatus, usePullToRefresh, useSwipeNavigation, Pulse, PageScrollProgressBar } from "./hooks/ui.jsx";
 
 const TAB_ICONS = [
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M3 12h4l3-9 4 18 3-9h4"/></svg>,
@@ -38,22 +29,26 @@ const TAB_ICONS = [
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 3"/></svg>,
 ];
 
-const BottomNav = ({ activeTab, setActiveTab }) => (
+// Mobile tab bar. Each item is a real link to the tab's route; the click
+// handler only adds haptics and the scroll-to-top, then lets the hash change.
+const BottomNav = ({ activeTab }) => (
   <nav className="bottom-nav" aria-label="Tab navigation">
     {TABS.map((tab, i) => (
-      <button
+      <a
         key={tab}
+        href={tabHref(i)}
         className={`bottom-nav-item${activeTab === i ? " active" : ""}`}
+        aria-label={tab}
+        aria-current={activeTab === i ? "page" : undefined}
+        style={{ textDecoration: "none" }}
         onClick={() => {
-          setActiveTab(i);
           if (navigator.vibrate) navigator.vibrate(10);
           window.scrollTo({ top: 0, behavior: "auto" });
         }}
-        aria-label={tab}
       >
         <span className="bottom-nav-icon">{TAB_ICONS[i]}</span>
-        <span className="bottom-nav-label">{tab}</span>
-      </button>
+        <span className="bottom-nav-label" style={{ fontSize: 11 }}>{tab}</span>
+      </a>
     ))}
   </nav>
 );
@@ -75,8 +70,20 @@ const OfflineBanner = ({ online, lastUpdate }) => {
   );
 };
 
+// Suspense fallback while a tab's chunk downloads: a card-shaped shimmer plus
+// a few lines, so the page keeps its shape instead of collapsing to nothing.
+const TabSkeleton = () => (
+  <div aria-busy="true" aria-label="Loading section" style={{ display: "flex", flexDirection: "column", gap: 14, paddingTop: 4 }}>
+    <Skeleton height={120} radius={14} />
+    <Skeleton height={18} width="55%" />
+    <Skeleton height={14} width="80%" />
+    <Skeleton height={14} width="70%" />
+    <Skeleton height={220} radius={14} />
+  </div>
+);
+
 export default function BitcoinDashboard() {
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useHashRoute();
   const btc = useBitcoinData();
   const news = useBitcoinNews();
   const scrolled = useScrolled(24);
@@ -85,7 +92,7 @@ export default function BitcoinDashboard() {
   const online = useOnlineStatus();
   const { pullDistance, refreshing } = usePullToRefresh(btc.refresh, isMobileNav);
   useSwipeNavigation(activeTab, setActiveTab, TABS.length, isMobileNav);
-  const [visitedTabs, setVisitedTabs] = useState(() => new Set([0]));
+  const [visitedTabs, setVisitedTabs] = useState(() => new Set([0, activeTab]));
 
   useEffect(() => {
     setVisitedTabs(prev => { if (prev.has(activeTab)) return prev; const next = new Set(prev); next.add(activeTab); return next; });
@@ -105,8 +112,21 @@ export default function BitcoinDashboard() {
 
   useEffect(() => {
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
-    window.scrollTo(0, 0);
+    // A deep link with an anchor (#/analysis/track-record) is scrolled to by
+    // the router once the target mounts; only a plain load starts at the top.
+    if (!parseHash().anchor) window.scrollTo(0, 0);
   }, []);
+
+  // Panels stay mounted once visited (display:none when inactive) so chart
+  // ranges, open cards and scroll positions inside a tab survive a switch.
+  const panels = [
+    <DashboardTab btc={btc} setActiveTab={setActiveTab} />,
+    <BitcoinThesisTab setActiveTab={setActiveTab} />,
+    <StrategyTab btc={btc} setActiveTab={setActiveTab} />,
+    <HeadlinesTab news={news} />,
+    <AdoptionTab price={btc.price} />,
+    <DeepAnalysisTab />,
+  ];
 
   return (
     <div className="app-shell" style={{
@@ -159,18 +179,27 @@ export default function BitcoinDashboard() {
                   margin: "0 auto",
                   width: "max-content",
                 }}>
+                  {/* Real links styled as before. A plain click lets the anchor
+                      change the hash and the router switch the tab; the handler
+                      only keeps the haptic + centring + scroll-to-top extras.
+                      Space activates like the old <button> did. */}
                   {TABS.map((tab, i) => (
-                    <button
+                    <a
                       key={tab}
                       role="tab"
+                      href={tabHref(i)}
                       aria-selected={activeTab === i}
                       onClick={(e) => {
-                        setActiveTab(i);
+                        if (!isPlainClick(e)) return;
                         if (navigator.vibrate) navigator.vibrate(10);
                         e.currentTarget.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
                         window.scrollTo({ top: 0, behavior: "auto" });
                       }}
+                      onKeyDown={(e) => {
+                        if (e.key === " " || e.key === "Spacebar") { e.preventDefault(); setActiveTab(i); }
+                      }}
                       style={{
+                        display: "inline-flex", alignItems: "center", textDecoration: "none", lineHeight: "normal",
                         padding: "10px 16px", border: "none", cursor: "pointer",
                         fontSize: 13, fontWeight: activeTab === i ? 700 : 500,
                         fontFamily: "var(--font-sans)",
@@ -181,7 +210,7 @@ export default function BitcoinDashboard() {
                         whiteSpace: "nowrap",
                         flexShrink: 0,
                       }}
-                    >{tab}</button>
+                    >{tab}</a>
                   ))}
                 </div>
               </div>
@@ -230,12 +259,15 @@ export default function BitcoinDashboard() {
 
       <div className={`page-content${isMobileNav ? " page-content-with-bottom-nav" : ""}`} style={{ padding: "20px 24px 40px", maxWidth: 1180, margin: "0 auto" }}>
         <OfflineBanner online={online} lastUpdate={btc.lastUpdate} />
-        <div style={{ display: activeTab === 0 ? "block" : "none" }} className={activeTab === 0 ? "tab-panel-enter" : ""}><DashboardTab btc={btc} setActiveTab={setActiveTab} /></div>
-        {visitedTabs.has(1) && <div style={{ display: activeTab === 1 ? "block" : "none" }} className={activeTab === 1 ? "tab-panel-enter" : ""}><BitcoinThesisTab setActiveTab={setActiveTab} /></div>}
-        {visitedTabs.has(2) && <div style={{ display: activeTab === 2 ? "block" : "none" }} className={activeTab === 2 ? "tab-panel-enter" : ""}><StrategyTab btc={btc} setActiveTab={setActiveTab} /></div>}
-        {visitedTabs.has(3) && <div style={{ display: activeTab === 3 ? "block" : "none" }} className={activeTab === 3 ? "tab-panel-enter" : ""}><HeadlinesTab news={news} /></div>}
-        {visitedTabs.has(4) && <div style={{ display: activeTab === 4 ? "block" : "none" }} className={activeTab === 4 ? "tab-panel-enter" : ""}><AdoptionTab price={btc.price} /></div>}
-        {visitedTabs.has(5) && <div style={{ display: activeTab === 5 ? "block" : "none" }} className={activeTab === 5 ? "tab-panel-enter" : ""}><DeepAnalysisTab /></div>}
+        {panels.map((panel, i) => (i === 0 || visitedTabs.has(i)) && (
+          <div key={TABS[i]} style={{ display: activeTab === i ? "block" : "none" }} className={activeTab === i ? "tab-panel-enter" : ""}>
+            {/* ErrorBoundary outside Suspense: a chunk that fails to download
+                rejects inside lazy(), which Suspense re-throws as an error. */}
+            <ErrorBoundary>
+              <Suspense fallback={<TabSkeleton />}>{panel}</Suspense>
+            </ErrorBoundary>
+          </div>
+        ))}
       </div>
 
       {showBackToTop && (
@@ -261,7 +293,7 @@ export default function BitcoinDashboard() {
         >↑</button>
       )}
 
-      {isMobileNav && <BottomNav activeTab={activeTab} setActiveTab={setActiveTab} />}
+      {isMobileNav && <BottomNav activeTab={activeTab} />}
     </div>
   );
 }

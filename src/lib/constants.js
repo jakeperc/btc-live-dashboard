@@ -22,12 +22,22 @@ export const LONG_TERM_CHART_URL = "https://api.blockchain.info/charts/market-pr
 // CoinGecko market_chart for last 90 days — free-tier, auto-hourly granularity (≤90 days), covers 1M + 3M ranges.
 export const MEDIUM_TERM_CHART_URL = "https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=90";
 export const FEAR_GREED_URL = "https://api.alternative.me/fng/?limit=2";
-export const LIVE_PRICE_POLL_MS = 12 * 1000;
-export const MARKET_DATA_POLL_MS = 5 * 60 * 1000;
-export const SLOW_DATA_POLL_MS = 15 * 60 * 1000;     // Fear & Greed updates daily; difficulty + lightning hourly-ish
-export const LAST_BLOCK_POLL_MS = 30 * 1000;         // re-fetch block list every 30s; display ticks every 1s client-side
-export const LONG_TERM_POLL_MS = 20 * 60 * 1000;     // blockchain.info daily data; 20-min poll keeps it fresh without hammering
-export const MEDIUM_TERM_POLL_MS = 15 * 60 * 1000;   // CoinGecko hourly data; 15-min poll is well within free-tier rate limits
+
+// Polling cadence. Every timer pauses while the tab is hidden and each fetcher
+// backs off (skips 1, 2, 4… ticks) after a failure — see createPoller in
+// src/hooks/ui.jsx. The page is a weekly briefing with a live price on top, not
+// a trading terminal, so these are deliberately calm.
+export const LIVE_PRICE_POLL_MS = 30 * 1000;         // Coinbase ticker; the header price and the hero card
+export const MARKET_DATA_POLL_MS = 10 * 60 * 1000;   // CoinGecko market data + mempool basics; the 7-day sparkline only moves hourly
+export const SLOW_DATA_POLL_MS = 30 * 60 * 1000;     // Fear & Greed updates daily; difficulty + lightning hourly-ish
+export const LAST_BLOCK_POLL_MS = 60 * 1000;         // re-fetch the block list every 60s; the "time since" display ticks every 1s client-side
+export const LONG_TERM_POLL_MS = 60 * 60 * 1000;     // blockchain.info daily closes; one new point a day, so hourly is plenty
+export const MEDIUM_TERM_POLL_MS = 30 * 60 * 1000;   // CoinGecko hourly data; a new point every hour, well within free-tier limits
+export const NEWS_POLL_MS = 10 * 60 * 1000;          // RSS via rss2json; headlines rarely change faster than this
+// Backoff ceilings: after repeated failures a fetcher never waits longer than
+// this between attempts. Live price recovers fastest; everything else can wait.
+export const LIVE_PRICE_BACKOFF_CAP_MS = 10 * 60 * 1000;
+export const POLL_BACKOFF_CAP_MS = 60 * 60 * 1000;
 export const RSS2JSON_URL = "https://api.rss2json.com/v1/api.json?rss_url=";
 
 // Headlines / deep-analysis / adoption data live in src/data/*.js — see imports above.
