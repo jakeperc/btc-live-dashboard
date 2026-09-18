@@ -32,7 +32,7 @@ Data is split across two per-domain modules — do NOT Read `src/BitcoinDashboar
 - Preserve JS shapes exactly (keys, types, `statusTone` enum, date formats).
 - Primary sources only — `.gov`, SEC EDGAR, official IR, bitcointreasuries.net, Farside Investors, then major BTC press.
 - **Skip the `index.html` edit** unless the primary narrative *category* changed (e.g. REGULATION → MACRO) — routine theme updates within the same category do not need it.
-- After edits, rebuild so `dist/index.html` matches source (`npm run build`, or the codex node + vite + make-single-file fallback).
+- After edits, rebuild so `dist/index.html` matches source (`npm run build`, or the codex node scripts/build.mjs fallback).
 
 ## Now do it
 

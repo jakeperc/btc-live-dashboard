@@ -43,6 +43,7 @@ The **editorial rules** for the top-5 themes live in `SCOPE.md` § "Editorial ru
 
 7b. **Plain pass.** Before writing, do the pass the Editor cannot do for you — it may not add facts, and you have the sources open.
    - Write `plain` for all four cards and `whyItMatters` for the theme. These are Tier 1: a newcomer reads them alone, with no context.
+   - Write `wouldChange` for the theme and all four cards — ONE sentence, ≤30 words, naming the observable thing that would change our read (a date, a filing, a flow number). It is the falsifier hint the cold-read test asks for ("what would change the author's mind?"), Tier 2, rendered only in the expanded views.
    - Define every term and every person at first use, in the field where it first appears — "cloture — the Senate vote that ends debate", "Strategy (the software company, formerly MicroStrategy, that holds more Bitcoin than any other)".
    - Give every number a yardstick, from the story or from `YARDSTICKS` in `src/data/fallbacks.js`.
    - Keep the longest sentence under 45 words. `CURATED[0].detail` in the Aug 19 build had a 67-word sentence.
@@ -74,7 +75,7 @@ The **editorial rules** for the top-5 themes live in `SCOPE.md` § "Editorial ru
 
 19a. **Handoff (if running inside `/refresh-all` or before a chained `/refresh-deep-analysis`):** write `automations/refresh-market-news/last-run-artifacts.md` containing the primary-source URLs you validated this run and 5–10 key facts (dated). `/refresh-deep-analysis` reads this file to avoid re-fetching the same sources.
 
-20. **Rebuild.** `npm run build`. If npm isn't on PATH, use the codex `node` + `vite` + `make-single-file` fallback (see auto-memory). `dist/index.html` must match source.
+20. **Rebuild.** `npm run build`. If npm isn't on PATH, use the codex `node scripts/build.mjs` fallback (see auto-memory). `dist/index.html` must match source.
 21. **Report.** Summarize:
     - Which slots changed (and which were intentionally kept).
     - Materiality argument for each Market Pulse replacement.
@@ -96,6 +97,7 @@ const MARKET_THEME = {
   statusTone: "active",              // one of: advancing | active | stalled | passed
   narrative: "...",                  // what is happening. <=90 words, every term defined at first use
   whyItMatters: "...",               // the stakes for a non-expert. <=60 words. TIER 1 — this is what the card shows while COLLAPSED, so it must stand alone with zero jargon
+  wouldChange: "...",                // ONE sentence, <=30 words: the observable thing that would change our read — the falsifier hint the cold-read test asked for. TIER 2, rendered only in the expanded view ("What would change this read")
   milestoneLabel: "Next checkpoint", // usually keep as "Next checkpoint"
   milestone: "...",                  // next concrete dated event to watch. <=60 words. Lives behind the expand
   sources: [
@@ -113,11 +115,16 @@ const MARKET_THEME = {
   title: "...",                // names the theme. <=15 words
   plain: "...",                // NEW, REQUIRED — ONE sentence, <=30 words: what happened + why it matters to someone who owns Bitcoin. TIER 1: this is the collapsed card view, and the only line most readers see
   detail: "...",               // <=150 words. Define every term and every person at first use; give every number a yardstick
+  wouldChange: "...",          // ONE sentence, <=30 words: the observable thing that would change our read — the falsifier hint the cold-read test asked for. TIER 2, rendered only in the expanded card ("What would change our mind")
+  statusTone: "stalled",       // optional — same enum as MARKET_THEME.statusTone
+  asOf: "SEP 15, 2026",        // optional — "MMM D, YYYY" uppercase, the dated development the card rests on
   sources: [
     { label: "Source name", url: "https://..." },
   ],
 }
 ```
+
+`scripts/check-schema.mjs` (`npm run check:schema`) enforces these shapes at build time: exactly four cards, the `label` format, `asOf` uppercase, `statusTone` in its enum, https sources, and `wouldChange` at 30 words or fewer.
 
 ### `HISTORICAL_HIGHLIGHTS[i]` — rolling 4-week window
 

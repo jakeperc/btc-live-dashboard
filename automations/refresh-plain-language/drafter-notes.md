@@ -1,17 +1,13 @@
-# Drafter notes — from the Editor, 2026-08-24
+# Drafter notes — from the Editor, 2026-09-13
 
-Locked fields I may not touch — hard findings for you:
-- `CURATED[2].title` — 20 words vs 15 cap. Suggest dropping the clause after the dash.
-- `falsificationConditions[1]` — 47 words (caps: 35 field / 45 sentence). Needs a drafter rewrite that stays scorable.
-- `falsificationConditions[4]` — 52 words, Fog 26.4. Same.
-- SHOUT-CAPS in locked fields: "AND" in `falsificationConditions[3]`; "CLEARS" in `watchList[3].event` ("CLARITY" is fine, it is the bill's name).
-- `watchList[0].event` (28w) and `watchList[4].event` (30w) over the 25-word event cap.
-- `FALLBACK_NEWS[0-3].title` and many `HISTORICAL_HIGHLIGHTS[].title` run 36-58 words vs 35; `FALLBACK_NEWS[1]` uses "safe harbor" and "preemption" unglossed.
+Locked fields I may not touch — no hard findings this week, soft only:
+- `falsificationConditions[0-4]` run 24–33 words per sentence (target 22); [3] joins three conditions with commas in one 33-word sentence — a colon-separated list would read aloud better and stay scorable.
+- `watchList[0-2].event` sit at 23–24 words (cap 25): compliant, but the next letters you draft have no room for an inline gloss.
+- `CURATED[0].plain` says the Senate votes "on whether to debate" the bill; `CURATED[0].detail` and `body[4]` call cloture "the step that ends debate". Both are defensible for cloture on a motion to proceed, but a careful newcomer reads them as contradicting each other — pick one framing.
+Dialect I rewrote this week and would rather not meet again in Tier 1/2: bare "priced" / "unpriced" (six uses), "base case", "the bear's …", "non-macro catalyst", "institutional wrapper" (first used four sentences before its definition), "Governor Waller" without "Fed", "Adoption is …" for a rule adoption on a site with an Adoption tab.
+Duplication left alone because removing it deletes numbers: "4,000" appears in 8 rendered fields, "4,603" in 3 — state each once and reference the card.
+Glossary proposals (need a sourced entry from you): **priced in** — now glossed in the headline, but it recurs weekly and deserves an entry; **L-BTC** — flagged as an unknown acronym four times, glossed only inside `CURATED[3].detail`. Other flagged acronyms (APAC, USBTC, ASIC, ARMA, MW) live in adoption.js / headlines.js, not your files.
+House-dialect proposals (`house-dialect.txt` is user-owned; I cannot edit it): priced, priced in, unpriced, base case, bear, bear case, catalyst, macro, wrapper.
 
-Duplication I left alone (removing means deleting numbers): "September 15–16" appears in 7 rendered fields; "840,447" in 3; "1,690" in 3. Consider stating each once and referencing the card.
-
-Glossary proposals (need a sourced entry from you): **Satoshi Nakamoto** — named in `CURATED[3].detail` with no identification for a newcomer; **MSCI** — used 10 times, acronym never expanded.
-
-## Appended after cold-read test, 2026-08-24
-- Cold-read FAILs in read-only scoring letters: `watchList[3].event` ("cloture … CLEARS") and `watchList[4].event` ("deep reorg", "at-scale replay losses"). Only you can reword these — keep them scorable, but the next letters you draft should carry their own gloss.
-- Cold-read flagged missing "what would change our mind" in Curated 1/3/4, marketContext, and the contrarian / cross-current-2 probability sentences. The falsifiers exist but live in Tier 3 fields the cold reader was not shown — likely fine, but consider surfacing one falsifier hint in Tier 1/2 where it fits naturally.
+Cold-read bounce-back (a context-free reader saw Tier 1/2 only): every card passed "what happened" and "why it matters"; six failed "what would change the author's mind" — `CURATED[0]` CLARITY, `[1]` ETF flows, `[2]` Strategy, `[3]` Liquid, `crossCurrents[2]` and `watchList[3]` — because market-news cards carry no forecast and a watch row's if-yes/if-no lives in Tier 3 `signal`. I made `crossCurrents[2]`'s falsifier explicit from its own sentence; the others need a one-clause falsifier hint from you where it fits naturally, or they will fail again next week.
+Phrases the reader guessed at even though it answered: "priced in" (now glossed), "kill switch", "forced buying", "spot Bitcoin ETFs", "core inflation", "real rates", "cloture", "bipartisan ethics compromise", "non-operating-company screen", "sidechain". Most ARE defined inline — read this as a note on where the definition sits relative to first use: define at or before the first use, never after it.

@@ -54,7 +54,7 @@ The intent: a daily/weekly poll is fine; the writes only happen when the fallbac
    - `FALLBACK_PRICE` and `FALLBACK_ATH` positive integers. `FALLBACK_ATH` >= `FALLBACK_PRICE` (ATH is the all-time high — if today's price exceeds it, the API was momentarily ahead; in that case set `FALLBACK_ATH` = `FALLBACK_PRICE` and `FALLBACK_ATH_DATE` to today at `T00:00:00.000Z`).
    - `FALLBACK_ATH_DATE` is a valid ISO 8601 string.
 5. **Edit** `src/data/fallbacks.js` — replace ONLY the constants that passed the Phase 0 significance gate, via anchored `Edit` calls. Constants within their threshold are left alone.
-6. **Rebuild.** `npm run build`, or the codex `node` + `vite` + `make-single-file` fallback. Skip if no constants were edited.
+6. **Rebuild.** `npm run build`, or the codex `node scripts/build.mjs` fallback. Skip if no constants were edited.
 7. **Report.** For each of the five constants: `unchanged (within threshold)` OR `old → new` (with the delta that triggered the edit). Flag any sanity-check overrides.
 
 ## JS shape spec

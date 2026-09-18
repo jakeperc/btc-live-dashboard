@@ -38,7 +38,7 @@ All hard-scope rules from every sub-command apply. Specifically:
    - **Skip `index.html` edits** unless the dashboard's *primary identity* changed (e.g. dominant narrative category shifts category). Routine theme/data refreshes do not need it.
    - If a sub-workflow fails or hits a sanity-check it cannot resolve, **stop and report** rather than proceeding.
 
-3. **Single rebuild at the end.** Once all sub-workflows have completed their edits, run `npm run build` (or the codex `node` + `vite` + `make-single-file` fallback). `dist/index.html` must match source.
+3. **Single rebuild at the end.** Once all sub-workflows have completed their edits, run `npm run build` (or the codex `node scripts/build.mjs` fallback). `dist/index.html` must match source.
 
 4. **Unified report.** One summary covering:
    - Per sub-command: skipped / updated, key changes.

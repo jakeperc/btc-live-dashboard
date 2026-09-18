@@ -31,7 +31,7 @@ Monthly refresh of the **deep archive** on the Headlines tab. Covers `SIX_MONTH_
 9. **Sort by `date` descending** (most recent first within the window).
 10. **Cap at 10 items.** Trim the lowest-impact entries if you have more.
 11. **Edit** `src/data/headlines.js` — replace `SIX_MONTH_HIGHLIGHTS` only via a narrow anchored `Edit`.
-12. **Rebuild.** `npm run build`, or the codex fallback. `dist/index.html` must match.
+12. **Rebuild.** `npm run build`, or the codex `node scripts/build.mjs` fallback. `dist/index.html` must match.
 13. **Report.** Summarize: which items were promoted from `HISTORICAL_HIGHLIGHTS`, which dropped off the 6-month boundary, what was added fresh, what the highest-impact story in the new window is.
 
 ## JS shape spec

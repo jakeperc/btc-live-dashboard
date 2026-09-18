@@ -91,7 +91,7 @@ If a table is polled but every candidate change fails the gate, skip the `Edit` 
 
 ### Phase 5 — Rebuild + report
 
-20. **Rebuild.** `npm run build`, or the codex `node` + `vite` + `make-single-file` fallback. `dist/index.html` must match.
+20. **Rebuild.** `npm run build`, or the codex `node scripts/build.mjs` fallback. `dist/index.html` must match.
 21. **Report.** Per table: skipped / updated, row count delta, top-3 most material changes, sort-order verification.
 
 ## JS shape spec

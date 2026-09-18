@@ -41,7 +41,7 @@ Out of scope for every command: Thesis tab, Strategy tab, live-API code, URL con
 - **Do NOT Read `src/BitcoinDashboard.jsx` or any other app code under `src/` outside `src/data/`** (`src/tabs/`, `src/components/`, `src/hooks/`, `src/lib/`, `src/styles.css`) to mutate refresh-owned data — reading app code just to find a constant burns tokens. Read your `src/data/<owner>.js` file directly.
 - Use narrow `Edit` calls anchored on the constant name. Do not rewrite data files wholesale.
 - `index.html` is edited only when the dashboard's *scope, title, meta description, or theme colors* change — NOT for routine data refreshes. **Never edit `dist/index.html` directly** — it is regenerated.
-- After any source edit, rebuild so `dist/index.html` matches: `npm run build`, or the codex `node` + `vite` + `make-single-file` fallback if npm isn't on PATH (see auto-memory).
+- After any source edit, rebuild so `dist/index.html` matches: `npm run build`, or the codex `node scripts/build.mjs` fallback if npm isn't on PATH (see auto-memory).
 - Re-sort `COMPANY_HOLDINGS` and `COUNTRY_HOLDINGS` by `btc` descending after any row change.
 - Headline `date` format: `MMM D` (e.g. `May 14`).
 - `MARKET_THEME.asOf` format: `MMM D, YYYY` uppercase.

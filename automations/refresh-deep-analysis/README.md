@@ -9,6 +9,7 @@ Runs Fable 5 with **extended thinking** through a 5-phase pass and maintains a *
 | Constant | File | UI location | Treatment |
 |---|---|---|---|
 | `DEEP_ANALYSIS` | `src/data/deep-analysis.js` | Analysis tab → all sections | One object — replaced in full each run |
+| `FORECAST_LEDGER` | `src/data/forecast-ledger.js` | Analysis tab → "Track record" (top of tab; anchor `#/analysis/track-record`) + the crawler rendition | One object — regenerated in full from `memory/watch-list-outcomes.md` + `memory/calibration.md` in every run in which a row resolves (step 21b) |
 
 Plus optionally `index.html:13` `<meta name="description">` — only if the primary narrative materially shifted (same rule as `/refresh-market-news`).
 
@@ -16,7 +17,7 @@ The **editorial rules** live in `SCOPE.md` § "Editorial rules for Deep AI Analy
 
 ## Hard scope (do not violate)
 
-- Edit ONLY `DEEP_ANALYSIS` in `src/data/deep-analysis.js` and the auto-mutable files inside `automations/refresh-deep-analysis/memory/`. Plus optionally `index.html:13`.
+- Edit ONLY `DEEP_ANALYSIS` in `src/data/deep-analysis.js`, `FORECAST_LEDGER` in `src/data/forecast-ledger.js` (regenerated, never hand-patched — step 21b), and the auto-mutable files inside `automations/refresh-deep-analysis/memory/`. Plus optionally `index.html:13`.
 - **Do NOT Read `src/BitcoinDashboard.jsx`.** Theme inputs live in `src/data/market-news.js` (MARKET_THEME, CURATED_MARKET_UPDATES) and `src/data/headlines.js` (HISTORICAL_HIGHLIGHTS).
 - Use a narrow anchored `Edit` to replace the `DEEP_ANALYSIS` object — never rewrite the data file wholesale.
 - **NEVER auto-mutate `memory/editorial-lessons.md`** — user-owned.
@@ -133,6 +134,7 @@ Follow the load order in `memory/INDEX.md`. Briefly:
    If the gate closes, **do not write `DEEP_ANALYSIS`** — but still complete the memory writes in step 22 (memory updates are part of every polled run, per the v2 design). Report `DEEP_ANALYSIS unchanged (significance gate)`.
 
 21. **Write `DEEP_ANALYSIS`** into `src/data/deep-analysis.js` via a narrow anchored `Edit` ONLY if step 20a opened the gate. Preserve shape exactly.
+21b. **Write `src/data/forecast-ledger.js`.** Regenerate `FORECAST_LEDGER` in full from `memory/watch-list-outcomes.md` (the Resolved table) + `memory/calibration.md` (aggregate, rolling-20, per-category residuals for categories with N ≥ 3, the decile curve) in **every run in which a row resolves** — this write is NOT gated by step 20a, because a scored forecast is material on its own. Rules: newest first by `resolvedOn`; one row per resolved forecast; a series scored as one block (the June dot-plot seven) stays ONE grouped row that keeps `count` and lists `probabilities`; `sum(resolved[].count)` must equal `calibration.nResolved` (and `summary.nResolved`); `event` is the scoring letter rewritten for a newcomer (≤35 words, comparators spelled out, no thesis IDs or bookkeeping), `lesson` ≤45 words in plain English ("we gave this 15% odds and it happened"), `source` is the primary link the outcome was scored against; `made` = the asOf of the run that published the forecast, `resolvedOn` = the run that scored it. Never hand-edit an outcome, probability or Brier here — fix the memory ledger and regenerate. Then run `npm run check:plain -- --file src/data/forecast-ledger.js` and the import check `node --input-type=module -e "const m = await import('./src/data/forecast-ledger.js'); const L=m.FORECAST_LEDGER; console.log(L.resolved.reduce((s,r)=>s+r.count,0), L.summary.nResolved)"` (the two numbers must match).
 22. **Update memory** (skip `editorial-lessons.md` — user-owned):
     - **`theme-history.jsonl`** — append `{"asOf","slot1Category","slot1Title","headline","framingShift","thesisProbability"}`.
     - **`watch-list-outcomes.md`** — write the Phase-1 resolutions (outcome, Brier, lesson) to the Resolved section; append new `watchList` items (with probabilities) to the Active section.
@@ -146,7 +148,7 @@ Follow the load order in `memory/INDEX.md`. Briefly:
     - **`actors/<slug>.md`** — same for materially-mentioned actors. Create new files if a major actor first appears this week (e.g., `actors/metaplanet.md` if Metaplanet becomes a recurring driver).
     - **REPLACE `next-run-briefing.md`** — prioritized TODOs for the next run.
 23. **Apply decay rules** per `memory/INDEX.md`. Confirm total memory directory size <300 KB.
-24. **Rebuild.** `npm run build`, or codex `node` + `vite` + `make-single-file` fallback. **Skip the rebuild if step 20a closed the gate AND no other agent in this orchestrated run wrote to a `src/data/*.js` file** — `dist/index.html` is already in sync. Memory-only writes do not change the bundled dashboard.
+24. **Rebuild.** `npm run build`, or the codex `node scripts/build.mjs` fallback. **Skip the rebuild if step 20a closed the gate AND no other agent in this orchestrated run wrote to a `src/data/*.js` file** — `dist/index.html` is already in sync. Memory-only writes do not change the bundled dashboard.
 25. **Report.** Summarize:
     - Significance gate outcome: opened (and which trigger fired) or closed (and why).
     - `DEEP_ANALYSIS` changes vs. prior version (skip if gate closed).
@@ -224,6 +226,45 @@ const DEEP_ANALYSIS = {
 ```
 
 **Category enum for `watchList[].category`:** `regulation` / `macro` / `protocol` / `corporate` / `sovereign` / `etf` / `market-structure`.
+
+### `FORECAST_LEDGER` shape (`src/data/forecast-ledger.js`, step 21b)
+
+```js
+export const FORECAST_LEDGER = {
+  asOf: "SEP 16, 2026",                         // the run that last wrote this file
+  summary: {
+    nResolved: 32,                              // === sum(resolved[].count) === calibration.nResolved
+    aggregateBrier: 0.19,                       // all-time mean, 2 decimals (calibration.md "All-time")
+    rolling20Brier: 0.17,                       // calibration.md "Last 20 items"
+    plain: "…",                                 // ≤45 words, Tier 1 — defines "Brier score" inline in plain words + the headline read
+    byCategory: [                               // ONLY categories with N ≥ 3, from the per-category bias table
+      { category: "macro", n: 14, meanResidual: 0.26, plain: "…≤30 words: what the sign means (\"we have leaned too optimistic about…\")" },
+    ],
+    bands: [                                    // the decile calibration curve; partial = half a hit
+      { range: "0–10%", n: 5, hitRate: 0.00 },
+    ],
+  },
+  resolved: [                                   // newest first by resolvedOn
+    {
+      id: "2026-09-16-fomc-one-and-done",       // stable slug: <resolvedOn ISO>-<topic>
+      made: "SEP 13, 2026",                     // asOf of the run that published the forecast
+      window: "Sep 16, 2026",
+      resolvedOn: "SEP 16, 2026",               // asOf of the run that scored it
+      category: "macro",                        // same enum as watchList[].category
+      event: "…",                               // the scoring letter for a newcomer, ≤35 words, comparators in words, no bookkeeping
+      probability: 0.40,                        // rounded to 0.05; grouped rows: the mean of `probabilities` rounded to 0.05
+      outcome: "miss",                          // hit | miss | partial
+      brier: 0.16,                              // (p − outcome)²; grouped rows: mean per-forecast Brier
+      count: 1,                                 // N for a grouped row, then also probabilities: [..N values..]
+      lesson: "…",                              // ≤45 words, plain English — "we gave this 15% odds and it happened"
+      source: { label: "…", url: "https://…" }, // the primary source the outcome was scored against
+    },
+  ],
+  openCount: 13,                                // rendered watchList rows + memory-only open rows
+};
+```
+
+Plain-language tiers for the checker: `summary.plain` Tier 1 (cap 45), `byCategory[].plain` Tier 2 (cap 30), `resolved[].lesson` Tier 2 (cap 45, Editor-editable), `resolved[].event` Tier 3 (cap 35, read-only to the Editor — the drafter fixes it).
 
 ## Source priority
 
