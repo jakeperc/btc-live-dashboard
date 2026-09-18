@@ -26,8 +26,9 @@ Each refresh skill owns its own per-domain file under `src/data/`. Skills should
 | `HISTORICAL_HIGHLIGHTS` | `src/data/headlines.js` | Headlines → past 4 weeks | Same |
 | `SIX_MONTH_HIGHLIGHTS` | `src/data/headlines.js` | Headlines → past 6 months | Same |
 | `DEEP_ANALYSIS` | `src/data/deep-analysis.js` | Analysis tab → all sections | Macro + the 5 themes above + `automations/refresh-deep-analysis/memory/` (v2: probabilities + Brier calibration) |
+| `FORECAST_LEDGER` | `src/data/forecast-ledger.js` | Analysis tab → Track record (every scored forecast with its Brier score; the recruiter's page) | Regenerated in full by `/refresh-deep-analysis` from `memory/watch-list-outcomes.md` + `memory/calibration.md` whenever a row resolves; `sum(resolved[].count)` must equal `calibration.nResolved` |
 | `COMPANY_HOLDINGS` | `src/data/adoption.js` | Adoption → public-co treasuries | bitcointreasuries.net + SEC + mstr-tracker |
-| `FALLBACK_PRICE` / `FALLBACK_ATH` / `FALLBACK_ATH_DATE` / `FALLBACK_MINED` / `FALLBACK_BLOCK` | `src/data/fallbacks.js` | Live price card (only if APIs fail) | CoinGecko + mempool snapshot |
+| `FALLBACK_PRICE` / `FALLBACK_ATH` / `FALLBACK_ATH_DATE` / `FALLBACK_MINED` / `FALLBACK_BLOCK` / `ETF_COMPLEX_FALLBACK` / `GLOBAL_CRYPTO_HOLDERS_FALLBACK` | `src/data/fallbacks.js` | Live price card (only if APIs fail); Dashboard stat tiles for the ETF complex and global holders | CoinGecko + mempool snapshot; Farside / issuer totals; Triple-A |
 
 ### Tier 2 — Monthly / event-driven
 | Constant | File | Section in UI | Source of truth |
@@ -47,7 +48,8 @@ Each refresh skill owns its own per-domain file under `src/data/`. Skills should
 - **All app code under `src/` outside `src/data/`** — the shell (`src/BitcoinDashboard.jsx`), `src/main.jsx`, `src/styles.css`, and everything under `src/tabs/`, `src/components/`, `src/hooks/`, and `src/lib/`. Refresh skills must never Read or Edit these files; their owned data lives in `src/data/`.
 - **Live-API code** — anything inside `useEffect`, `fetch(...)`, or `setInterval` (in `src/hooks/`).
 - **URL constants** in `src/lib/constants.js` (live endpoints — these auto-refresh themselves).
-- `PRICE_CHART_RANGES` (`src/tabs/DashboardTab.jsx`) and `TABS` (`src/lib/constants.js`) — config, not data.
+- `PRICE_CHART_RANGES` (`src/tabs/DashboardTab.jsx`), `TABS` (`src/lib/constants.js`) and `TAB_SLUGS` / `ANCHORS` (`src/lib/routes.js`, the `#/tab/anchor` URL scheme) — config, not data.
+- **Thesis short path** (`THESIS_QUICK` in `src/data/thesis.js`) — user-authored like the rest of the Thesis tab. `npm run check:plain` measures it; no automation edits it.
 - **`automations/refresh-plain-language/reader-feedback.md`** and **`house-dialect.txt`** — **user-owned**. Every writer and the Editor reads them; no automation may edit them. (`drafter-notes.md` in the same directory is the Editor's to replace each run.)
 - **`automations/refresh-deep-analysis/memory/`** — owned exclusively by `/refresh-deep-analysis`. No other automation reads or writes here. The file `editorial-lessons.md` inside that directory is **user-owned** and must never be auto-mutated by any automation (including `/refresh-deep-analysis`).
 
@@ -155,6 +157,7 @@ These two constants are managed as **one ranked set of 5 themes**. `MARKET_THEME
 4. **Voice: short-form analysis for newbies.** Translate jargon ("spot ETF inflows" → "people putting money into Bitcoin funds on the stock market"). Plain English. No `BREAKING:`, no clickbait, no emojis. **The full standard, including the word budget these fields are measured against, is § "Audience & plain-language standard" above — read it.**
    - `MARKET_THEME` must include: `narrative` (what is happening, ≤90 words), `whyItMatters` (the plain-English stakes, ≤60 words — this is the Tier 1 line the card shows while collapsed), `milestone` (the next concrete dated event, ≤60 words).
    - Each `CURATED_MARKET_UPDATES` item must include: `title` (names the theme, ≤15 words), **`plain`** (ONE sentence, ≤30 words: what happened and why it matters to someone who owns Bitcoin — this is the collapsed card view), `detail` (≤150 words, every term defined at first use), `sources[]`.
+   - **`wouldChange`** on `MARKET_THEME` and on every `CURATED_MARKET_UPDATES` item: ONE sentence, ≤30 words, naming the observable thing that would change our read — the "what would change the author's mind" line the cold-read test asked for. Tier 2; rendered only in the expanded views, never in the collapsed card.
 5. **De-dup pass mandatory.** Before writing, list the 5 chosen themes side by side and confirm no overlap.
 6. **Primary sources only.** `sources[]` must point at originating outlets: .gov, SEC EDGAR, official IR, bitcointreasuries.net, Farside Investors, then major BTC press. Never re-blogs or aggregators.
 7. **Preserve JS shape exactly.** Same keys. `statusTone` must be one of `advancing` / `active` / `stalled` / `passed`. `asOf` format: `MMM D, YYYY` uppercase (e.g. `MAY 12, 2026`).
@@ -172,6 +175,7 @@ The `DEEP_ANALYSIS` object is the weekly synthesis layer rendered on the Analysi
 8. **Primary sources only.** Same priority order as `/refresh-market-news` — `.gov`, SEC EDGAR, official IR, bitcointreasuries.net, Farside Investors, BIPs, then major BTC press as supporting context only.
 
 9. **The plain layer is part of the deliverable, not a garnish.** Every `plain*` field is written by this skill, from the sources it already fetched — the Editor cannot add facts and will not invent them. Honour the tier map, the word budget and the probability bands in § "Audience & plain-language standard". Analyst bookkeeping (thesis IDs, raw Brier decimals, calibration category names, HIT/MISS verdicts) stays in the memory files; `calibration.briefSummary` is the one rendered window. Run `npm run check:plain -- --file src/data/deep-analysis.js` before the significance gate.
+10. **The Track record is part of the deliverable.** Whenever a watch row resolves, regenerate `FORECAST_LEDGER` in `src/data/forecast-ledger.js` in full: newest first; grouped rows carry `count`; every `lesson` in plain English (≤45 words, "we gave this 15% odds and it happened"); every `event` is the scoring letter (≤35 words, comparators spelled out). It is the recruiter's page — a forecast we scored wrong stays on it forever. Run `npm run check:plain -- --file src/data/forecast-ledger.js` after writing it.
 
 The `/refresh-deep-analysis` automation also maintains a **project-scoped analyst memory** at `automations/refresh-deep-analysis/memory/` — read at the start of each run, written to at the end, time-decayed, with relevance-routed loading of theme + actor knowledge files. The quarterly companion command `/consolidate-deep-analysis` distills the journals into heuristics + re-bins calibration. See `memory/INDEX.md` for the full design.
 
@@ -182,4 +186,5 @@ The `/refresh-deep-analysis` automation also maintains a **project-scoped analys
 - Re-sort `COMPANY_HOLDINGS` and `COUNTRY_HOLDINGS` by `btc` descending after any row change.
 - Headline `date` format: `MMM D` (e.g. `May 14`).
 - **After any prose edit, run `npm run check:plain -- --file src/data/<your-file>`.** Fix hard findings once, re-run once, then proceed and list anything left in your report — never loop on it. The Editor is the backstop, and the weekly publish is never blocked on style.
-- **One exception to "edit only your own file":** `/refresh-plain-language` (the Editor) rewrites prose values across `market-news.js`, `deep-analysis.js` and `adoption.js`, and appends to `glossary.js`. It may not touch any other key, and it never reads `automations/refresh-deep-analysis/memory/`.
+- **One exception to "edit only your own file":** `/refresh-plain-language` (the Editor) rewrites prose values across `market-news.js` (including each card's `wouldChange`), `deep-analysis.js`, `adoption.js` and `forecast-ledger.js` (only `summary.plain`, `summary.byCategory[].plain` and `resolved[].lesson` — `resolved[].event` is the scoring letter and read-only), and appends to `glossary.js`. It may not touch any other key, it never edits `thesis.js` or `strategy.js` (measured by the checker, authored by the user), and it never reads `automations/refresh-deep-analysis/memory/`.
+- **Build gate:** `npm run build` runs `scripts/check-schema.mjs` first; a shape violation in any `src/data/*.js` module fails the build before Vite runs. `npm run check:schema` runs it alone.

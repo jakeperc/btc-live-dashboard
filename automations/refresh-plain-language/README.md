@@ -14,22 +14,32 @@ This prohibition lives in the agent definition (`.claude/agents/plain-language-e
 
 ## Refreshes
 
-Prose values only, in three files, plus proposals:
+Prose values only, in five files, plus proposals:
 
 | File | Fields the Editor may rewrite |
 |---|---|
 | `src/data/deep-analysis.js` | `headline`, `plainSummary`, `marketContext`, `primaryAnalysis.body[]`, `crossCurrents[].{title,plain,body}`, `watchList[].{plain,signal}`, `contrarianTake.{plain,body}`, `calibration.briefSummary` |
-| `src/data/market-news.js` | `MARKET_THEME.{narrative,whyItMatters,milestone}`, `CURATED[].{plain,detail}` |
+| `src/data/market-news.js` | `MARKET_THEME.{narrative,whyItMatters,milestone,wouldChange}`, `CURATED[].{plain,detail,wouldChange}` |
+| `src/data/thesis.js` | `THESIS_QUICK` only — `headline`, `intro`, `cards[].{title,plain,why,breaks}`, `objections.text`, `closing.text`. See "Tab budgets" for the long read below it. |
+| `src/data/forecast-ledger.js` | `summary.plain`, `summary.byCategory[].plain`, `resolved[].lesson` |
 | `src/data/adoption.js` | `method`, `status` — **only** on an explicit hint |
 | `automations/refresh-plain-language/drafter-notes.md` | replaced in full |
+
+Three of those fields are new with the site upgrade and carry their own rules:
+
+- **`wouldChange`** (Tier 2, one sentence, ≤30 words) sits on each of the five market cards — `MARKET_THEME` and every `CURATED[i]`. It names the *observable* thing that would change the read: a date, a filing, a flow number. It renders only in the expanded views, under "What would change this read" / "What would change our mind". Keep it one sentence and keep it observable; a mood is not a falsifier.
+- **`THESIS_QUICK`** is the five-minute version at the top of the Thesis tab. Tier 1 — `intro`, `cards[].plain`, `closing.text` (≤45 words each) — gets the dinner-table test. Tier 2 — `cards[].why` (≤60), `cards[].breaks` (≤45), `objections.text` (≤35) — defines at first use. `cards[].title` is ≤8 words and `headline` ≤12. Every card's `stat` and `link` are data, not prose: read-only.
+- **`FORECAST_LEDGER`** is the Track record. `summary.plain` (Tier 1, ≤45) must define "Brier score" in plain words — it is one of only two rendered fields allowed to say the word (the other is `calibration.briefSummary`). `summary.byCategory[].plain` (Tier 2, ≤30) says what a bias *means*; `resolved[].lesson` (Tier 2, ≤45) says what we learned, in words, never as a decimal.
 
 ## Hard constraints
 
 **Read-only — never rewrite these:**
 
 - `watchList[].event` and `falsificationConditions[]` — these are the **scoring letter**. Next week's Brier resolution reads them; a reworded condition is a condition that can no longer be scored honestly. Jargon here is the drafter's to fix, and it goes in `drafter-notes.md`.
+- `FORECAST_LEDGER.resolved[].event` — the scoring letter of a forecast that has *already* been scored. It was graded against this exact wording; rewording it afterwards rewrites the test. The checker registers it as Tier 3, read-only; anything unclear in it goes to `drafter-notes.md`.
 - `primaryAnalysis.themeTitle` and `CURATED[].title` — the significance gate compares theme sets. Renaming one opens next week's gate for no reason.
-- Every `probability`, `thesisProbability`, `window`, `category`, `asOf`, `refreshedAt`, `statusTone`, `label`, `sources`, `themesConnected`, `themeInteractions`, `calibration.aggregateBrier`, `calibration.nResolved`.
+- Every `probability`, `thesisProbability`, `window`, `category`, `asOf`, `refreshedAt`, `statusTone`, `label`, `sources`, `themesConnected`, `themeInteractions`, `calibration.aggregateBrier`, `calibration.nResolved` — and in the ledger, every `id`, `made`, `resolvedOn`, `outcome`, `brier`, `count`, `probabilities`, `source`, and the whole of `summary` other than its two `plain` fields.
+- `THESIS_QUICK.cards[].stat`, every `link`, and the `door` block — navigation and data, not prose. (Reading time is computed from word count at render time, not a data field.)
 
 **One exception, and only this one:** a *lossless glyph substitution* in a read-only field — `≥` → "at least", `≤` → "at most", `→` → "then". It is cosmetic, preserves the condition exactly, and the Brier ledger resolves from the copy in `memory/watch-list-outcomes.md`, not from this file. Nothing else in a read-only field may change.
 
@@ -42,6 +52,19 @@ Prose values only, in three files, plus proposals:
 - Rebuild. The orchestrator builds once at the end.
 
 **The fixed-point rule.** A field that passes every hard check, sits under its cap and reads plainly is left **byte-identical**. Caps are ceilings, not targets. This is what makes the Editor idempotent: a second pass over compliant prose is a no-op, and market-news slots that survive several weeks do not erode a little more each Monday.
+
+## Tab budgets
+
+`check:plain` totals every registered field per module and prints the result in the report header, with an estimated reading time at 200 words per minute (rules 17 and 18). Two tabs carry a budget:
+
+| Tab | Budget | Includes |
+|---|---|---|
+| Thesis (`src/data/thesis.js`) | 4,000 words | the long read plus the ~350-word `THESIS_QUICK` |
+| Strategy (`src/data/strategy.js`) | 2,300 words | every prose field on the tab |
+
+A total over budget is a **soft** finding (rule 17). A budget is met by cutting a section, never by the Editor tightening sentences across a tab — route it to `drafter-notes.md` with the section you would cut.
+
+The long-form Thesis and Strategy prose (`MONEY_INTRO`, `MYTHS`, `THESIS_FLOW`, `STRATEGY_RULES`, `COMMON_MISTAKES`, and the rest) is registered so it is *measured*. Whether a hard finding there counts as yours to fix is the `STATIC_TAB_EDITABLE` switch at the top of `scripts/check-plain.mjs`. `SCOPE.md` § "Out of scope" still names both files, so until that changes: treat findings in the long read as drafter notes, and rewrite only `THESIS_QUICK`.
 
 ## Read first
 
