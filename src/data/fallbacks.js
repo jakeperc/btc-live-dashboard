@@ -44,11 +44,11 @@ export const YARDSTICKS = [
   {
     key: "strategy-holdings",
     label: "Strategy's bitcoin holdings",
-    value: 845050,
+    value: 846000,
     unit: "BTC",
-    plain: "Strategy alone holds about 845,000 coins",
-    asOf: "2026-09-13",
-    source: "https://bitcointreasuries.net/",
+    plain: "Strategy alone holds about 846,000 coins",
+    asOf: "2026-09-26",
+    source: "https://www.sec.gov/Archives/edgar/data/1050446/000119312526396093/mstr-20260914.htm", // 8-K filed Sep 21: holdings as of Sep 20
   },
   // TODO(/refresh-fallbacks): add on the next monthly run, each with a primary source —
   //   avg-weekly-etf-flow   (trailing 12-week mean net flow, Farside Investors)

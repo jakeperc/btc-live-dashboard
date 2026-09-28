@@ -4,9 +4,11 @@
 - **Category:** Regulator
 - **Role:** Pre-CLARITY: primary federal regulator for crypto via securities-law enforcement. Post-CLARITY: jurisdiction limited to securities-classified tokens; Bitcoin moves to CFTC.
 - **First tracked:** MAY 18, 2026
-- **Last updated:** SEP 16, 2026
+- **Last updated:** SEP 26, 2026
 
 ## Snapshot
+
+- **SEP 17–26, 2026 — THE PLEDGE BECAME AN ORDER: press release 2026-90 (Sep 17), the "Innovation Exemption."** A five-year conditional exemption (to Sep 17, 2031) for on-chain trading of tokenized U.S.-listed (NMS) stocks on qualifying venues via automated market makers — venues exempt from the "exchange" definition, liquidity providers from "dealer"; conditions: a U.S.-person venue, cleared participants, no synthetics, issuer opt-out, identical holder rights, auditable public smart contracts on permissionless ledgers, halts aligned with the primary exchange; request for comment. Atkins: "a significant step forward … to bring America's capital markets into the digital age." Not Bitcoin-specific; the regime signal is the point — an exemptive order two days after the Senate vote, the administrative track's momentum leg made concrete. Regulation Crypto Assets comments still close Oct 20 (the durability read). [SEC 2026-90](https://www.sec.gov/newsroom/press-releases/2026-90-sec-issues-innovation-exemption-facilitate-trading-tokenized-nms-stock-request-comment)
 
 - **SEP 16, 2026 — ATKINS CLAIMED THE FIELD THE DAY AFTER THE SENATE VOTE:** "with or without legislation, we will act decisively within the SEC's statutory authority to deliver certainty for American investors" (via The Block; a Sep 14 CoinDesk piece had him backing CLARITY while promising to keep pushing rules without it). The administrative track's momentum leg fired; the Regulation Crypto Assets comment window (to Oct 20) is now the SEC's live vehicle, with the "innovation exemption" the item JPMorgan flags. Watch: any accelerated adoption timeline; the Oct 20 comment tone (state-regulator preemption threats = the durability read). [The Block — go time](https://www.theblock.co/news/regulation/2026-09-16-go-time-sec-cftc-prepare-push-crypto-rules-clarity-act-stalls-senate-415281)
 

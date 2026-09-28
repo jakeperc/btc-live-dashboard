@@ -40,12 +40,12 @@
 // Check: npm run check:plain -- --file src/data/forecast-ledger.js
 
 export const FORECAST_LEDGER = {
-  asOf: "SEP 16, 2026",
+  asOf: "SEP 26, 2026",
   summary: {
-    nResolved: 32,
+    nResolved: 34,
     aggregateBrier: 0.19,
-    rolling20Brier: 0.17,
-    plain: "A Brier score grades forecasts from 0 to 1: 0 is perfect and 0.25 is what coin-flipping scores. Across 32 scored calls ours is 0.19, fair and improving, with the biggest errors from trusting a softer Fed than we got.",
+    rolling20Brier: 0.18,
+    plain: "A Brier score grades forecasts from 0 (perfect) to 1; coin-flipping scores 0.25. Across 34 scored calls ours is 0.19, fair and steady; our biggest errors were expecting a gentler central bank than we got and doubting the biggest Bitcoin-holding company's buying.",
     byCategory: [
       {
         category: "macro",
@@ -55,9 +55,9 @@ export const FORECAST_LEDGER = {
       },
       {
         category: "corporate",
-        n: 6,
-        meanResidual: -0.24,
-        plain: "We keep expecting the biggest corporate Bitcoin holder, Strategy, to repeat its last move. Its buying and selling follow Bitcoin's price against its average cost, not habit.",
+        n: 7,
+        meanResidual: -0.30,
+        plain: "We keep doubting Strategy, the biggest Bitcoin-holding company: in five of seven calls it did more than we expected. It acts on Bitcoin's price against its average cost.",
       },
       {
         category: "etf",
@@ -79,14 +79,42 @@ export const FORECAST_LEDGER = {
       },
     ],
     bands: [
-      { range: "0–10%", n: 5, hitRate: 0.00 },
+      { range: "0–10%", n: 6, hitRate: 0.00 },
       { range: "10–30%", n: 8, hitRate: 0.38 },
-      { range: "30–50%", n: 7, hitRate: 0.14 },
+      { range: "30–50%", n: 8, hitRate: 0.25 },
       { range: "50–70%", n: 11, hitRate: 0.41 },
       { range: "70–90%", n: 1, hitRate: 1.00 },
     ],
   },
   resolved: [
+    {
+      id: "2026-09-26-strategy-further-buy",
+      made: "SEP 13, 2026",
+      window: "by Oct 12, 2026",
+      resolvedOn: "SEP 26, 2026",
+      category: "corporate",
+      event: "Strategy (the software company that holds more Bitcoin than any other) discloses at least one further Bitcoin purchase in a weekly filing on or before October 12.",
+      probability: 0.35,
+      outcome: "hit",
+      brier: 0.4225,
+      count: 1,
+      lesson: "It bought 950 coins the next week, paying cash while its share sales stayed shut. We gave another purchase 35% odds because we thought it also needed its shares worth more than the Bitcoin behind them; with Bitcoin above its average cost, it buys anyway.",
+      source: { label: "SEC EDGAR — Strategy Form 8-K, September 21, 2026 (950 BTC bought Sep 14–20 at $79,670 with USD Cash; no share sales)", url: "https://www.sec.gov/Archives/edgar/data/1050446/000119312526396093/mstr-20260914.htm" },
+    },
+    {
+      id: "2026-09-26-btc-below-50k",
+      made: "AUG 19, 2026",
+      window: "Sep 30, 2026",
+      resolvedOn: "SEP 26, 2026",
+      category: "market-structure",
+      event: "Bitcoin posts a weekly close (Friday's finishing price) below $50,000 by September 30.",
+      probability: 0.05,
+      outcome: "miss",
+      brier: 0.0025,
+      count: 1,
+      lesson: "Bitcoin's last Friday close before the deadline was about $84,000, so this could no longer happen and we scored it early. We had put a fall below $50,000 at 5%, our lowest band, and it behaved like one again.",
+      source: { label: "The Block — Sep 22: Bitcoin peaked at $87,300 on Sep 21 as the U.S. spot Bitcoin ETFs took in $999 million", url: "https://www.theblock.co/news/markets/2026-09-22-spot-bitcoin-etfs-1-billion-daily-inflow-416005" },
+    },
     {
       id: "2026-09-16-fomc-one-and-done",
       made: "SEP 13, 2026",
@@ -453,5 +481,5 @@ export const FORECAST_LEDGER = {
       source: { label: "CoinDesk — Clarity Act clears the U.S. Senate committee (May 14)", url: "https://www.coindesk.com/policy/2026/05/14/clarity-act-clears-u-s-senate-committee-on-its-way-to-a-final-test-in-congress" },
     },
   ],
-  openCount: 13,
+  openCount: 16,
 };

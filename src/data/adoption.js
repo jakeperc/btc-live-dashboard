@@ -66,13 +66,13 @@ export const COUNTRY_HOLDINGS = [
 ];
 
 export const COMPANY_HOLDINGS = [
-  { company: "Strategy",          ticker: "MSTR", country: "🇺🇸", btc: 845050, method: "Treasury reserve (funded by stock and debt sales)", status: "Bought again in late August after selling coins three times" },
+  { company: "Strategy",          ticker: "MSTR", country: "🇺🇸", btc: 846000, method: "Treasury reserve (funded by stock and debt sales)", status: "Bought again in late August after selling coins three times" },
   { company: "Twenty One Capital", ticker: "XXI", country: "🇺🇸", btc: 43514,  method: "Bitcoin-only treasury (Tether / SoftBank / Bitfinex)", status: "Cantor-backed Bitcoin holding company" },
   { company: "Metaplanet",        ticker: "3350", country: "🇯🇵", btc: 43000,  method: "Treasury — equity / bond financed",            status: "Top 3 corporate holder — aggressive APAC accumulation" },
   { company: "MARA Holdings",     ticker: "MARA", country: "🇺🇸", btc: 35577,  method: "Self-mined + open-market purchases",            status: "Partial BTC sale Mar 2026 — pivoting toward AI infrastructure" },
   { company: "Bitcoin Standard Treasury", ticker: "BSTR", country: "🇺🇸", btc: 30021, method: "Bitcoin-only treasury company",   status: "Active accumulation" },
+  { company: "Strive",            ticker: "ASST", country: "🇺🇸", btc: 26355,  method: "Treasury (Asset Entities merger)",             status: "Aggressive accumulation — fast scaling" },
   { company: "Bullish",           ticker: "BLSH", country: "🇺🇸", btc: 24300,  method: "Exchange treasury (post-IPO)",                 status: "Active treasury" },
-  { company: "Strive",            ticker: "ASST", country: "🇺🇸", btc: 20246,  method: "Treasury (Asset Entities merger)",             status: "Aggressive accumulation — fast scaling" },
   { company: "SpaceX",            ticker: "SPCX", country: "🇺🇸", btc: 18712,  method: "Treasury reserve (pre-IPO accumulation)",      status: "Public via June 12 IPO disclosure — long-term hold" },
   { company: "Coinbase",          ticker: "COIN", country: "🇺🇸", btc: 17311,  method: "Corporate treasury",                           status: "Operational + investment" },
   { company: "CleanSpark",        ticker: "CLSK", country: "🇺🇸", btc: 13703,  method: "Self-mined",                                   status: "Keeps most of the BTC it mines" },
@@ -90,7 +90,6 @@ export const COMPANY_HOLDINGS = [
   { company: "GameStop",          ticker: "GME",  country: "🇺🇸", btc: 4710,   method: "Treasury — earns income selling options against its BTC", status: "Held long-term, with options income" },
   { company: "Gemini Space Station", ticker: "GEMI", country: "🇺🇸", btc: 4619, method: "Exchange treasury (post-IPO)",                status: "Active treasury" },
   { company: "Boyaa Interactive", ticker: "0434", country: "🇭🇰", btc: 4091,   method: "Treasury reserve (2023–24 purchases)",         status: "Long-term hold" },
-  { company: "Semler Scientific", ticker: "SMLR", country: "🇺🇸", btc: 3808,   method: "Treasury reserve (copying Strategy's approach)", status: "Active accumulation" },
   { company: "OranjeBTC",         ticker: "OBTC3",country: "🇧🇷", btc: 3737,   method: "Bitcoin-only treasury (LatAm)",                status: "Active accumulation" },
   { company: "Bitcoin Group SE",  ticker: "ADE",  country: "🇩🇪", btc: 3605,   method: "Bitcoin services + treasury",                  status: "Long-term reserve" },
   { company: "Capital B",         ticker: "ALCPB",country: "🇫🇷", btc: 3135,   method: "Bitcoin-only holding company (Europe)",        status: "Active accumulation" },
@@ -108,7 +107,6 @@ export const COMPANY_HOLDINGS = [
   { company: "Remixpoint",        ticker: "3825", country: "🇯🇵", btc: 1491,   method: "Treasury reserve",                             status: "Active accumulation" },
   { company: "Anap Holdings",     ticker: "3189", country: "🇯🇵", btc: 1423,   method: "Treasury reserve",                             status: "Active accumulation" },
   { company: "Treasury B.V.",     ticker: "TRSR", country: "🇳🇱", btc: 1111,   method: "Bitcoin-only treasury",                        status: "Active accumulation" },
-  { company: "KULR Technology",   ticker: "KULR", country: "🇺🇸", btc: 1083,   method: "Treasury reserve (Bitcoin-first policy)",      status: "Active accumulation" },
   { company: "Cango",             ticker: "CANG", country: "🇨🇳", btc: 1065,   method: "Mining + treasury",                            status: "Active accumulation" },
   { company: "H100 Group",        ticker: "H100", country: "🇸🇪", btc: 1051,   method: "Treasury reserve",                             status: "Active accumulation" },
   { company: "ZOOZ Power",        ticker: "ZOOZ", country: "🇮🇱", btc: 1046,   method: "Treasury reserve",                             status: "Active accumulation" },

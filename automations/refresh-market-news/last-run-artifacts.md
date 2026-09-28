@@ -1,122 +1,158 @@
 # refresh-market-news Last-Run Artifacts
-**Run Date:** September 16, 2026 (~20:30 UTC; Wednesday afternoon US) — mid-week force-run, hint: "fed hiked rates"
-**Research Window:** Sep 13 – Sep 16, 2026 (last run: Sep 13 Monday-anchor; this run covers the two scheduled binary events of the week)
-**Previous asOf:** SEP 11, 2026
-**Current asOf:** SEP 16, 2026 (FOMC decision)
+**Run Date:** September 26, 2026 (~09:00 UTC; Saturday) — regular cadence run inside `/refresh-all` (the Monday Sep 21 run was missed)
+**Research Window:** Sep 12 – Sep 26, 2026, weighted to dated primary-source developments after Sep 16 (last write: Sep 16 mid-week force-run, "fed hiked rates")
+**Previous asOf:** SEP 16, 2026 (FOMC decision)
+**Current asOf:** SEP 25, 2026 (the best ETF inflow week of 2026 closes; seventh straight inflow day)
+**Shared 4-week cutoff (orchestrator):** Aug 29, 2026
 
 ## Day-of-week anchor
-Sep 14 Mon (ETF +$160M; Strategy 8-K), Sep 15 Tue (CLARITY cloture fails 2:18 p.m. ET; ETF −$450M), **Sep 16 Wed (FOMC +25bp 2 p.m. ET; SEC/CFTC "go time"; House FSC markup of H.R. 8957 at 10 a.m. — outcome not reported as of this run)**, Sep 18 Fri (IBIT options expiry, ~$6.3B gross-underlying, reported), Oct 1 (Senate expected to leave for campaign), Oct 27–28 FOMC, Dec 8–9 FOMC.
+Sep 16 Wed (FOMC +25bp; HFSC orders H.R. 8957 reported 28–21; Ways & Means approves H.R. 10357 38–5; ETF −$296M) · **Sep 17 Thu (SEC Innovation Exemption; House takes its final votes and leaves until Nov 9; ETF inflow streak begins +$159M)** · Sep 18 Fri (ETF +$433M; CME FedWatch Oct hike 57.6%) · **Sep 21 Mon (ETF +$999M, largest since Oct 6 2025; BTC peaks $87,300; Strategy 8-K: 950 BTC with cash; Strive 8-K: 1,355 BTC; ~$844M shorts liquidated)** · Sep 22 Tue (ETF +$715M; 2026 flows turn positive; BTC close $86,198) · Sep 23 Wed (ETF +$347M; Blockstream post-mortem; BTC −2.1% to $84,383; CoinDesk: first three-month streak since 2012) · **Sep 24 Thu (ETF +$191M; 10y 5.21%, highest since 2007; 30y ~5.5%; Senate rejects Iran war-powers 50–49)** · Sep 25 Fri (ETF +$134.5M, week $2.39B; Strategy 8-K daily-dividend proposal; Oct hike odds 61.6%; Brent ~$105.70; DXY 101.03) · Sep 26 Sat (BTC ~$84,035; Polymarket 7%).
 
 ## The five themes and the materiality argument for each
 
-1. **Slot 1 — MACRO (KEPT, REWRITTEN; looming hike → delivered hike; asOf SEP 11 → SEP 16; tone active; category unchanged, so no index.html edit).** FOMC raised the target range 25bp to 3.75%–4.00%, 12–0, first hike since July 2023 (July 29 hold was 9–3 with three hike dissents). Statement: "Inflation remains elevated. Today's policy action will support a timelier return to the Committee's 2 percent goal." SEP median end-2026 4.1% (June: 3.8%) = one more hike this year; dots: 4 at 4.375%, 12 at 4.125%, 2 at 3.875% → 16 of 18 see at least one more. Core PCE 2026 3.4%, 2027 2.5%; unemployment 4.1%; GDP 2.3%. Warsh: "The plain fact is that inflation is too high and has been for too long."; "This summer's inflation readings do not tell me that underlying trends have meaningfully improved."; "we removed a dose of accommodation"; "I don't believe that we need to do harm to the labor markets to achieve our objective."; on Trump: "I've got nothing for you on a discussion with the president." Bitcoin ~$75,400–$75,700 through the decision (little changed); S&P −1% after the presser; gold −1% to ~$4,290; 10y ~4.96%. Pre-decision futures (CentralBank.watch, Sep 15): Oct 28 hike 43.5%, Dec 9 cumulative 88.4%.
-2. **Slot 2 — REGULATION / CLARITY (KEPT, REWRITTEN; label SEP 10 → SEP 15; stays stalled).** Cloture on the motion to proceed to H.R. 3633 failed 49–50 at 2:18 p.m. ET Sep 15 (60 needed). Republicans Collins, Hawley, Moran, Tillis voted no; Coons did not vote → every Democrat present voted no (49 = 53 R − 4). Tillis switched to no to file a motion to reconsider (filed 3:01 p.m.); Thune also entered one. Democrats rejected the weekend "last, best, and final" 630-page GOP text because its ethics section "does not effectively apply to the president and first family." Tillis: "This is not the end for the Clarity Act." Republican Senate aide (The Block): the bill is dead. JPMorgan: "not fully dead," window "extremely narrow and only getting narrower." Polymarket 7% (Sep 16; $21.4M traded), from 23% Sep 13. Sep 16: SEC Chair Atkins — "with or without legislation, we will act decisively within the SEC's statutory authority to deliver certainty for American investors"; CFTC Chair Selig — "locked in and ready to ship its rules for the new frontier of finance"; Coinbase CEO Armstrong: "The CFTC and SEC are stepping up. Go time." Bitcoin −4.2% on the day to ~$75,850 (high ~$79,530 overnight, low ~$75,000); ~$288M long liquidations in four hours; >$665M crypto-wide in 24h (reported).
-3. **Slot 3 — ETFs (KEPT, REFINED; label SEP 11 → SEP 15).** Sep 14 +$159.9M (IBIT +$134.3M, FBTC +$53.3M, ARKB −$42.0M, EZBC +$4.6M, MSBT +$9.7M) ended the four-day outflow streak. Sep 15 −$450.4M, largest outflow since June 25 (IBIT −$161.7M; FBTC among the largest sources). Six sessions since Sep 8: net −$753M. Sep 16 flows not yet published at run time. Total ETF assets ≈ $100–103B.
-4. **Slot 4 — CORPORATE TREASURY / Strategy (KEPT, REFINED; label SEP 8 → SEP 14).** 8-K filed Sep 14 (period Sep 8–13): no BTC bought or sold; zero ATM sales; STRC repurchase 1,420,467 shares for $139.3M from USD Cash; holdings 845,050 BTC, aggregate cost $63.73B, average $75,412; USD Reserve $5.10B; USD Cash $1.30B; preferred repurchase authority $1.05B remaining (of $2.0B); MSTR common repurchase $1.0B available. Saylor after the Senate vote (reported by CoinDesk): "The only clarity you need is Bitcoin."
-5. **Slot 5 — SECURITY / Liquid (KEPT UNCHANGED).** Blockstream status page's latest update is still Sep 10 10:00 UTC (block production resumed, pegs suspended, reserve restoration in progress). SideSwap peg-ins reopened Sep 11; peg-outs remain closed. No dated primary-source development since the slot's asOf, so no refinement — the significance gate closed for this slot.
+1. **Slot 1 — MARKETS (REPLACED: MACRO/Fed hike → Bitcoin breakout on record fund buying; asOf SEP 16 → SEP 25; tone advancing; category changed MACRO → MARKETS — flagged to the orchestrator for the index.html decision, my view: no change).** Since the Sep 16 asOf Bitcoin rose ~14% from ~$75,500 to $87,300 (Sep 21), its highest since late January, and ended the week near $84,000. U.S. spot ETFs took in money seven straight sessions (Sep 17–25, ≈$2.98B) including $998.95M on Sep 21, the largest day since Oct 6, 2025 (the ATH day, $1.2B); the week of Sep 21–25 (+$2.39B) is the best of 2026 and the largest since Oct 2025; 2026 net flows turned positive Sep 22 for the first time since May 26; Bloomberg Intelligence's average ETF-holder cost basis ($81,722) was crossed, putting the average fund holder back in profit for the first time since January; July/August/September are Bitcoin's first three-month winning run since 2012. ~$844M of shorts were liquidated on Sep 21 as the price broke $82,000. The old slot-3 ETF card shared this driver (fund demand) and was merged upward. The Fed hike, the old slot 1, produced no further Fed action and was fully absorbed.
+2. **Slot 2 — MACRO / Fed (DEMOTED from slot 1, REFINED; label SEP 25; tone active).** Dated developments since Sep 16: 10-year Treasury 5.21% on Sep 24 (highest since 2007; 4.96% on decision day), 30-year just shy of 5.5% (highest since 2004); fed funds futures (centralbank.watch, Sep 25) put an Oct 28 quarter-point rise at 61.6% (43.5% on Sep 15) and a rise by Dec 9 at 91.7%; Brent ~$106 with Hormuz still closed; federal debt above $40T cited by bond investors; gold −2% on the week; dollar at a two-month high. Bands used: Oct = "slightly more likely than not", Dec = "very likely", pre-decision Oct = "close to a coin flip, leaning no".
+3. **Slot 3 — REGULATION / CLARITY (KEPT, REFINED; label SEP 15 → SEP 17; stays stalled).** No floor action on H.R. 3633 on any Senate session day Sep 22–24 (Senate Daily Press fetched); Senate leaves Oct 2, state work period Oct 5–Nov 6, back Nov 9 → the only 2026 window is the post-election session. Polymarket 7% ($23.1M traded). Dated primary development: **SEC press release 2026-90 (Sep 17)** — five-year conditional "Innovation Exemption" letting tokenized U.S.-listed (NMS) stocks trade on-chain on qualifying venues via automated market makers; venues exempt from the "exchange" definition and liquidity providers from "dealer" through Sep 17, 2031; conditions: U.S.-person venue, cleared participants, no synthetics, issuer opt-out, identical holder rights, auditable public smart contracts on permissionless ledgers, halts aligned with the primary exchange; request for comment. Atkins: "significant step forward ... to bring America's capital markets into the digital age." This is the first concrete act of the Sep 16 "with or without legislation" pledge (and the "innovation exemption" JPMorgan told clients to watch).
+4. **Slot 4 — CORPORATE TREASURY / Strategy (KEPT, REFINED; label SEP 14 → SEP 25). The card's falsifier fired.** Sep 21 8-K (period Sep 14–20): 950 BTC for $75.7M at $79,670, **paid from USD Cash**; zero ATM sales for a third straight week (Aug 31–Sep 20); holdings 846,000 BTC, aggregate cost $63.80B, average $75,416; STRC repurchase 1,771,238 shares for $174.0M; USD Reserve $5.04B; USD Cash $1.05B. Sep 25 8-K (Item 8.01): board proposes daily dividend record dates for STRF/STRC/STRK/STRD; special meeting Oct 28. Strive (rival treasury company) 8-K Sep 21: 1,355 BTC at $79,475 → 26,355 BTC.
+5. **Slot 5 — SOVEREIGN / H.R. 8957 (REPLACED: SECURITY/Liquid → Strategic Bitcoin Reserve bill; label SEP 16; tone advancing).** The Sep 16 run pre-flagged this as the next SOVEREIGN candidate "if it was ordered reported" — it was: House Financial Services Committee ordered H.R. 8957 reported (amended) 28–21, Steil substitute adopted by voice vote; the same morning Ways & Means approved the Digital Asset Tax Certainty Act 38–5; the House then took its final pre-election votes on Sep 17 and does not vote again until Nov 9. Materiality: the first committee approval of a statute making the Strategic Bitcoin Reserve permanent (20-year no-sale, annual audited proof of reserve) in a category the dashboard tracks, versus a three-week-old sidechain incident whose only new facts are a post-mortem (Sep 23) and "peg-outs still paused, no date". Liquid's headline stays in HISTORICAL_HIGHLIGHTS (Sep 6) and its post-mortem is in FALLBACK_NEWS.
 
 ### De-dup check (final five)
-1. Fed/rates regime (driver: FOMC reaction function + dot plot) — 2. CLARITY (driver: Senate vote math / ethics stand-off → agency rulemaking) — 3. ETF flows (driver: fund demand; the Senate vote and the hike appear only as the reason flows reversed) — 4. Strategy (driver: corporate treasury behaviour + MSCI) — 5. Liquid (driver: sidechain software security). No two slots share an underlying driver.
+1. Fund demand / positioning (ETF flows, short squeeze, breakout above $82,000) — 2. Fed reaction function / bond market (yields, hike odds, oil, debt) — 3. Senate vote math + agency rulemaking (CLARITY, SEC exemption) — 4. One company's capital allocation (Strategy: cash-funded buy, STRC repurchases, dividend mechanics, MSCI) — 5. House legislation on the government's own coins (SBR bill; tax bill as adjacency; lame-duck floor time). Slots 3 and 5 share the post-election calendar as a scarce resource; that is stated as the adjacency point, not a shared driver. Slot 1 cites higher yields as the backdrop the rally defied, not as its driver.
+
+### Adjacency sweep (congressional calendar)
+- **No Oct 1 shutdown risk:** the Continuing Appropriations and Extensions Act, 2027 (funding to Dec 11) passed the Senate 90–6 in August and the House 370–48 on Sep 1; signed Sep 2. Oct 1 is not a floor-time threat.
+- **House:** final votes Sep 17 (Russia sanctions bill); Speaker Johnson cancelled the Sep 21 and Sep 28 weeks (announced Sep 3) and Thursday Sep 18; 48-day district work period; next votes Nov 9.
+- **Senate:** in session through Oct 2 (S.4668 Protect College Sports Act passage vote Mon Sep 28 5:30 p.m.; Colmenero confirmed 50–47 Sep 23; Iran war-powers resolution rejected 50–49 Sep 24); tentative schedule: state work period Oct 5–Nov 6, back Nov 9; Nov 11–13 and Nov 23–27 off; Dec 21–31 off. The lame duck (Nov 9 → mid-Dec, CR expires Dec 11) is the single window for CLARITY, H.R. 8957 and H.R. 10357.
 
 ### Considered and not slotted
-- **H.R. 8957 American Reserve Modernization Act (Strategic Bitcoin Reserve codification; 20-year no-sale rule; Begich R-AK / Golden D-ME; 23 cosponsors; Steil substitute amendment).** House Financial Services Committee markup held Sep 16 10 a.m. ET. **Outcome not reported by any reachable source at run time** (govtrack 403; committee site returned no releases). Not ready under Phase 1 step 4. If it was ordered reported, it is a candidate for the next Monday run (SOVEREIGN category).
-- Oil: Sep 11 drone attack on Saudi Arabia's East-West pipeline pumping station; Brent $108–109 peak, settled $105.83 on Sep 16 (−2.7%) after Energy Secretary Wright said the outage "will be measured in days"; Brent +16% in September. Macro backdrop for slot 1, not a separate driver.
-- IBIT options expiry Sep 18 (~$6.3B gross-underlying, cryptoslate) — positioning note only.
+- **Digital Asset Tax Certainty Act (H.R. 10357), Ways & Means 38–5, Sep 16** — folded into slot 5 as one sentence and into the Sep 16 headline. Provisions (W&M release + The Block/CoinDesk): wash-sale and constructive-sale rules extended to digital assets (30-day window); mining/staking income taxed as ordinary income (the earlier deferral option is not in this bill); de minimis: no gain/loss on qualifying network/transaction fees of $10 or less, from 2028 (excludes anyone with more than 5,000 transfers a year); qualifying lending transfers not treated as sales; charitable-donation parity with listed securities; expanded broker reporting. Doggett (D-TX) opposed. Distinct driver from CLARITY (tax vs. market structure) but no slot to spare; candidate for its own card if it gets floor time.
+- **Liquid (demoted).** Status page unchanged since Sep 10; X update Sep 17 21:05 UTC: blocks and L-BTC transfers normal since Sep 10, peg-outs paused until full 1:1 backing is confirmed plus updates/testing/independent reviews, no date. Blockstream post-mortem Sep 23: two Elements rangeproof-cache bugs (a 2018 cache key omitted the asset commitment and scriptPubKey; the fix's un-length-prefixed concatenation allowed byte-alignment collisions); ~4,000 L-BTC minted; 3,400 BTC returned; ~602 BTC outstanding; reserve fell from ~4,205 to 197 BTC; no statement on who bears the loss.
+- Block joins the x402 Foundation and adds Lightning for AI-agent payments (Sep 24; search-verified only — no primary fetched, so not used).
+- eCash beta live ~Sep 19–20 at block 967,680; permanent split Oct 31 at block 973,728. Bitcoin Core 32.0 release candidate Sep 14, final ~Oct 10. Both footnotes.
+- Mining: difficulty +1.31% to 127.45T on Sep 5–6; ~+4% to ~132.76T at the ~Sep 19–20 adjustment (CoinWarz snippet, unverified); hashrate ~934–1,001 EH/s. Not news this week.
+- Circle's Arc L1, Strive's $86M raise (Sep 25), Czech central bank test purchase (old): not Bitcoin-material or unverified.
 
 ## Primary-source URLs validated this run
 
+### Markets / ETFs
+- Farside Investors — daily flows (canonical; **403 again**, sixth run running). https://farside.co.uk/btc/
+- The Block — nearly $1B daily inflow, Sep 22 (FETCHED): $998.95M on Sep 21; IBIT $381.4M, ARKB $289.1M, FBTC $238.8M; largest since Oct 6, 2025 ($1.2B); BTC $85,400 at 3 a.m. ET Tue, peak $87,300 Mon; ~$844M short liquidations/24h; breakout above $82,000. https://www.theblock.co/news/markets/2026-09-22-spot-bitcoin-etfs-1-billion-daily-inflow-416005
+- CoinDesk — three-month streak, Sep 23 (FETCHED): Jul +4.8%, Aug +25.2%, Sep +10.9%; BTC $86,140; only prior instance 2012 (+41.0/+6.4/+24.4, then Oct −9.7%); "Spot ETFs have pulled in over $5.5 billion since August." https://www.coindesk.com/markets/2026/09/23/bitcoin-s-on-a-streak-it-hasn-t-hit-since-2012
+- CoinMarketCap — YTD turns positive (FETCHED): YTD +$886.8M as of Sep 22 from a −$5.69B low on Jul 13; six-day streak $2.84B; IBIT YTD +$3.09B; GBTC −$2.59B; 2025 total +$21.35B; Bloomberg Intelligence average holder cost basis $81,722 (Sep 21). https://coinmarketcap.com/academy/article/bitcoin-etf-inflows-turn-positive-2026
+- Yahoo Finance — BTC tops $86,000 despite CLARITY failure, Sep 21 (FETCHED): highest since late January; $454M BTC shorts and $928M crypto-wide liquidated in 24h. https://finance.yahoo.com/markets/crypto/articles/bitcoin-hits-8-month-high-162444671.html
+- Search-verified dailies: Sep 16 −$295.9M (cryptotimes/SoSoValue); Sep 17 +$159.45M (KuCoin: IBIT +$183.66M, FBTC −$16.64M, HODL −$7.57M); Sep 18 +$433.0M (HedgeCo: FBTC +$310.7M, IBIT +$108.4M); Sep 22 +$714.7M; Sep 23 +$346.9M; Sep 24 +$190.7M; Sep 25 +$134.5M (IBIT $97M, FBTC $49.3M); week Sep 21–25 +$2.39B, IBIT $1.16B, FBTC $701.6M (crypto.news). Decrypt: average holder back in profit for the first time since January.
+- Prices (search-verified): Sep 22 close $86,198 and Sep 23 close $84,383 (Rio Times); Sep 24 10 a.m. $83,943 and Sep 25 9 a.m. $84,413 (Fortune); Sep 26 $84,035 (Rio Times).
+
 ### Macro / Fed
-- Federal Reserve — FOMC statement, Sep 16 (FETCHED): +25bp to 3.75%–4.00%; 12–0; "Inflation remains elevated. Today's policy action will support a timelier return to the Committee's 2 percent goal."; "Job gains have kept pace with the workforce, and the unemployment rate has changed little."; "The Committee will deliver price stability." https://www.federalreserve.gov/newsevents/pressreleases/monetary20260916a.htm
-- Federal Reserve — Summary of Economic Projections, Sep 16 (FETCHED): median fed funds end-2026 4.1% / 2027 4.1% / 2028 3.9%; June end-2026 median 3.8%; core PCE 3.4% (2026), 2.5% (2027); unemployment 4.1%; GDP 2.3%; end-2026 dots 4 × 4.375%, 12 × 4.125%, 2 × 3.875%. https://www.federalreserve.gov/monetarypolicy/fomcprojtabl20260916.htm
-- Federal Reserve — press conference page, Sep 16 (FETCHED; video only, no transcript yet). https://www.federalreserve.gov/monetarypolicy/fomcpresconf20260916.htm
-- CentralBank.watch — fed funds futures (FETCHED; last updated Sep 15, pre-decision): Oct 28 hike 43.5% (implied 3.96%); Dec 9 hike 88.4% cumulative (implied 4.18%); "56 bp of tightening in total — about 2.2 hikes" over three meetings. https://centralbank.watch/federal-reserve/
-- Yahoo Finance — Fed live blog, Sep 16 (FETCHED): Warsh quotes above; dot plot 12 of 18 at 4.125%; S&P +0.3% then lower during presser; 10y −4bp. https://finance.yahoo.com/economy/policy/live/federal-reserve-meeting-live-updates-chairman-kevin-warsh-143452661.html
-- CNBC — Fed recap, Sep 16 (search-verified; fetch 403): first hike since 2023; unanimous after three July hike dissents; 16 of 18 see another hike; "This summer's inflation readings do not tell me that underlying trends have meaningfully improved." https://www.cnbc.com/2026/09/16/fed-meeting-today-live-updates.html
-- CoinDesk — live updates, Sep 16 (FETCHED): BTC $75,400–$75,500 pre-decision (−1.6% 24h); "little changed … at $75,700" after the statement; $75,400 after the presser ("we removed a dose of accommodation"); intraday high ~$76,300; S&P −1%, Nasdaq −0.55%, XLF −2.4%; gold −1% to $4,290; 10y 4.964%; **Sep 15 ETF −$450.4M (largest since June 25), IBIT −$161.7M.** https://www.coindesk.com/business/2026/09/16/live-updates-zcash-climbs-6-as-majors-slide-ahead-of-fed-rate-decision
-- CNBC — oil, Sep 16 (search-verified): Brent settled $105.83 (−2.7%); Saudi East-West pipeline pumping station hit Sep 11; Wright: "brief and temporary interruption"; Brent +16% in September. https://www.cnbc.com/2026/09/16/oil-prices-today-brent-wti-hormuz-iran-war.html
+- CentralBank.watch — fed funds futures (FETCHED; last updated Sep 25): Oct 28 hike 61.6% / hold 38.4% (implied 4.03%); Dec 9 cumulative hike 91.7% (implied 4.22%); "89 bp of tightening in total — about 3.6 hikes — across the next 9 meetings." https://centralbank.watch/federal-reserve/
+- Motley Fool — Oct 28 odds, Sep 23 (FETCHED): CME FedWatch 57.6% on Sep 18 (6.6% on Aug 19); inflation drivers: tariffs of 10–12.5% on 80+ countries, the Iran war (Hormuz shut since Feb 28, a fifth of global crude), federal debt past $40T. https://www.fool.com/investing/2026/09/23/odds-of-oct-28-fed-rate-hike-soaring-president-donald-trump-is-in-part-to-blame/
+- Bloomberg — 30-year highest since 2004, Sep 24 (search-verified): 10y +10bp to 5.21%, highest since 2007; 30y just shy of 5.5%; oil jump Thursday; inflation fears and debt burdens; ~67% Oct hike priced. https://www.bloomberg.com/news/articles/2026-09-24/us-30-year-yield-hits-highest-since-2004-as-bond-selloff-deepens
+- CNBC — yields Sep 25 (search-verified; fetch 403): 10y 5.163%, little changed to end a volatile week; three-session selloff Sep 22–24. https://www.cnbc.com/2026/09/25/treasury-yields-bonds-debt.html
+- Oil — CNBC Sep 24 and Oil & Gas Middle East Sep 25 (search-verified): Brent ~$105.70 (−0.85%) Sep 25, below $106, after reports of US–Iran talks on a phased Hormuz reopening and lifting the U.S. blockade (New York, UNGA sidelines, Qatari mediation). https://www.cnbc.com/2026/09/24/oil-iran-crude-kepler-trump-us-un-.html
+- Gold (search-verified): ~$4,270–4,280 Sep 25, down more than 2% on the week; dollar index 101.03 (+0.22%), two-month high; $4,272.46 Thu (−0.34%).
+- Senate — Iran war-powers resolution rejected 50–49, Sep 24 (search-verified: NPR/WaPo/CNBC): Collins, Paul, Tillis, Murkowski yes; Fetterman no. https://www.npr.org/2026/09/24/nx-s1-5980318/senate-iran-war-powers-vote
+- Federal Reserve — speeches Sep 17–26 (FETCHED index): Bowman Sep 18 (stress testing; SVB review), Jefferson Sep 22 (discount window and Treasury market functioning), Barr Sep 23 (shelter costs). No Warsh remarks in the window. https://www.federalreserve.gov/newsevents/2026-speeches.htm
+- BEA — August PCE due Wed Sep 30, 8:30 a.m. ET (search-verified); July PCE 3.7% y/y headline, 3.3% core. FOMC statement and SEP of Sep 16 unchanged from the last run (not re-fetched). https://www.federalreserve.gov/newsevents/pressreleases/monetary20260916a.htm · https://www.federalreserve.gov/monetarypolicy/fomcprojtabl20260916.htm
 
 ### Regulation / CLARITY
-- U.S. Senate Daily Press — Tuesday, Sep 15 (FETCHED): 2:18 p.m. cloture on the motion to proceed to H.R. 3633 "Failed, 49-50"; "Senator Coons did not vote. Senators Collins, Hawley, Moran, and Tillis voted no."; Tillis voted no "in order to make a motion to reconsider," filed 3:01 p.m. Also S. 4668 cloture 74–24 at 4:59 p.m.; Byrne confirmed 52–45. https://www.dailypress.senate.gov/tuesday-september-15-2026/
-- Congress.gov — H.R. 3633 (canonical; not re-fetched). https://www.congress.gov/bill/119th-congress/house-bill/3633
-- The Block — "'Go time': SEC, CFTC prepare to push crypto rules," Sep 16 (FETCHED): Atkins and Selig quotes above; Tillis says the bill still has life; a Republican Senate aide says it is dead; Armstrong "Go time." https://www.theblock.co/news/regulation/2026-09-16-go-time-sec-cftc-prepare-push-crypto-rules-clarity-act-stalls-senate-415281
-- The Block — JPMorgan: "not fully dead," window "extremely narrow and only getting narrower," Sep 16 (FETCHED): two windows (≈2.5 weeks pre-midterm, lame duck); agency rules "less durable than legislative statutes"; watch the SEC "innovation exemption." https://www.theblock.co/news/regulation/2026-09-16-jpmorgan-clarity-act-crypto-bill-415280
-- Polymarket — "Clarity Act (H.R.3633) signed into law in 2026?" (FETCHED Sep 16): Yes 7%, $21.36M traded. https://polymarket.com/event/clarity-act-signed-into-law-in-2026
-- CNBC — cloture fails, Sep 15 (search-verified; fetch 403): Democrats who had negotiated for months voted no — Gillibrand, Warner, Booker, Warnock, Gallego, Alsobrooks, Cortez Masto. https://www.cnbc.com/2026/09/15/senate-cloture-vote-on-clarity-act-fails-dealing-regulatory-setback-to-crypto-industry.html
-- CoinGape — Tillis statement, Sep 15 (FETCHED): "This is not the end for the Clarity Act. We've made substantial bipartisan progress in large part because of the White House. This procedural motion allows us to continue working towards a positive outcome." Senate leaves ~Oct 1. https://coingape.com/clarity-act-eyes-second-chance-at-senate-cloture-vote-as-surprising-details-unfold/
-- financefeeds — weekend GOP "last, best, and final" 630-page text; Democrats: ethics section "does not effectively apply to the president and first family"; Thune entered a motion to reconsider (search-verified). https://financefeeds.com/us-senate-fails-advance-clarity-act-cloture-vote/
-- CoinDesk — live updates, Sep 15 (FETCHED): BTC ~$77,400 European morning → $75,850 after the vote (−4.2% 24h); high ~$79,530, low ~$76,300 at time of writing; Saylor: "The only clarity you need is Bitcoin"; Strive's Matt Cole: "Clarity not passing is bad for the United States and bad for crypto." https://www.coindesk.com/business/2026/09/15/live-updates-bitcoin-slides-from-nearly-usd80-000-as-senate-votes-on-clarity-act
-- CoinDesk — Atkins backs CLARITY but will push rules without it, Sep 14 (search-verified). https://www.coindesk.com/policy/2026/09/14/sec-s-atkins-backs-clarity-act-but-says-agency-will-keep-pushing-crypto-rules-without-it
-- CFTC — Selig Aug 20 IAC remarks (prior run; canonical fallback pledge). https://www.cftc.gov/PressRoom/SpeechesTestimony/opaselig10
+- SEC — press release 2026-90, Sep 17 (FETCHED): Innovation Exemption details as in slot 3; no mention of Bitcoin or CLARITY. https://www.sec.gov/newsroom/press-releases/2026-90-sec-issues-innovation-exemption-facilitate-trading-tokenized-nms-stock-request-comment
+- U.S. Senate Daily Press — Sep 22 (FETCHED: Colmenero cloture 52–43; S.4668 substitute cloture 70–21), Sep 23 (FETCHED: Colmenero confirmed 50–47), Sep 24 (FETCHED via front page: war-powers vote; adjourned to Mon Sep 28 3 p.m.; S.4668 passage vote 5:30 p.m.). No H.R. 3633 action. https://www.dailypress.senate.gov/tuesday-september-22-2026/ · https://www.dailypress.senate.gov/wednesday-september-23-2026/ · https://www.dailypress.senate.gov/
+- Senate Democrats floor schedule (FETCHED): only S.4668 on the week-of-Sep-28 schedule. https://www.democrats.senate.gov/floor/senate-schedule
+- U.S. Senate — Tentative 2026 Legislative Schedule (FETCHED): state work period Oct 5–Nov 6; Nov 11–13; Nov 23–27; Dec 21–31. https://www.senate.gov/legislative/2026_schedule.htm
+- Polymarket — Clarity Act signed in 2026 (FETCHED Sep 26): Yes 7%, $23.1M traded. https://polymarket.com/event/clarity-act-signed-into-law-in-2026
+- The Block — "Go time" (prior run; canonical for the Atkins/Selig pledges). https://www.theblock.co/news/regulation/2026-09-16-go-time-sec-cftc-prepare-push-crypto-rules-clarity-act-stalls-senate-415281
+- Search-verified: Sen. Kennedy — the work "will have to wait until the lame-duck session"; no second vote scheduled; the ethics complaint is that the bill bars new issuance but does not clearly require the president to divest existing revenue-sharing arrangements.
 
-### ETFs / price
-- Farside Investors — https://farside.co.uk/btc/ (not re-fetched; 403 on the last five runs). Dailies via CoinDesk (above), cryptoslate, KuCoin.
-- cryptoslate — Sep 14 rebound (search-verified): +$159.9M; IBIT +$134.3M, FBTC +$53.3M, ARKB −$42.0M, EZBC +$4.6M, MSBT +$9.7M; IBIT +$1.08B over 20 days. https://cryptoslate.com/bitcoin-etf-inflows-are-back-but-blackrock-is-carrying-the-market-into-the-fed-meeting/
-- cryptoslate — Sep 15 exits (search-verified): −$450M; six sessions since Sep 8 net −$753M. https://cryptoslate.com/bitcoin-etf-exits-erase-mondays-rebound-as-spot-selling-deepens-before-the-fed/
-- Yahoo Finance — prices Sep 16 (search-verified): open $75,586.51 (−3.3% vs Tuesday's open); $75,961 at 6:01 a.m. EDT; >$525M long liquidations in 24h. Rio Times: Sep 14 close $78,163 (+1.72%). https://finance.yahoo.com/personal-finance/investing/article/bitcoin-and-ethereum-prices-today-wednesday-september-16-2026-crypto-prices-tank-after-clarity-act-fails-and-ahead-of-fed-decision-112517152.html
+### Sovereign / House
+- govinfo — BILLSTATUS-119hr8957.xml (FETCHED): introduced May 21, 2026 by Begich (R-AK); 23 cosponsors (22 R, 1 D — Golden); Sep 16 "Ordered to be Reported (Amended) by the Yeas and Nays: 28 - 21". https://www.govinfo.gov/bulkdata/BILLSTATUS/119/hr/BILLSTATUS-119hr8957.xml (congress.gov 403 to fetch; canonical https://www.congress.gov/bill/119th-congress/house-bill/8957/all-actions)
+- House Financial Services Committee — Sep 16 markup event page (FETCHED): nine measures; H.R. 8957 agreed 28–21; Steil ANS agreed by voice vote; H.R. 10184 agreed 28–21; H.R. 10325 not agreed 21–28 (note: a press claim of a "Waters amendment rejected 21–28" is not in the committee record — do not repeat it). https://financialservices.house.gov/calendar/eventsingle.aspx?EventID=411219
+- docs.house.gov — Steil amendment in the nature of a substitute to H.R. 8957 (PDF READ in full via pypdf): Treasury to establish the Strategic Bitcoin Reserve and a Digital Asset Stockpile within 180 days; qualifying Bitcoin = all federally owned BTC not required by law for other purposes; Sec. 5 minimum holding period 20 years from enactment, no sale/swap/auction/encumbrance "for any purpose", thereafter the Secretary may recommend selling up to 10% per two-year period; a study within one year on conditions to sell early; Sec. 6 Proof of Reserve: annual report on holdings, transactions and key control, verified by an independent third-party auditor, GAO oversight; Sec. 7 agencies account for holdings within 60 days and transfer custody to Treasury, interim no-sale except national security/law/court/victim restitution; Sec. 8 voluntary state segregated accounts; Sec. 9 Treasury–Commerce 180-day study of budget-neutral acquisition, "nothing ... shall be construed to authorize any borrowing ... new taxation, or deficit spending for the purpose of acquiring Bitcoin"; Sec. 10 no seizure of private Bitcoin, sense of Congress on self-custody; forks/airdrops locked one year, then keep the dominant asset; title amended to drop the Federal Reserve offset language. https://docs.house.gov/meetings/BA/BA00/20260916/119565/BILLS-119-HR8957-S001213-Amdt-6.pdf
+- govinfo — introduced text (FETCHED, for the delta): quarterly reports, five-year fork lock, Fed-remittance study — all changed by the substitute. https://www.govinfo.gov/content/pkg/BILLS-119hr8957ih/html/BILLS-119hr8957ih.htm
+- House Ways and Means — Sep 16 release (FETCHED): H.R. 10357 approved 38–5; provisions above. https://waysandmeans.house.gov/2026/09/16/historic-digital-asset-tax-legislation-advances-to-keep-america-the-crypto-capital-of-the-world/
+- The Block — tax bill text, Sep 15 (FETCHED): $10 fee de minimis from 2028; wash-sale 30 days; mining/staking ordinary income, no deferral; lending transfers not sales. https://www.theblock.co/news/regulation/2026-09-15-house-committee-crypto-tax-bill-414824
+- CoinDesk — Ways & Means advances the bill, Sep 16 (FETCHED): Smith's "absurd maze of compliance"; Doggett opposition. https://www.coindesk.com/policy/2026/09/16/u-s-house-s-tax-committee-advances-crypto-tax-bill-in-wake-of-clarity-act-loss
+- House departure (search-verified: CBS, CNN, ABC, Washington Times Sep 3): final votes Sep 17; 48-day district work period; next votes Nov 9. https://www.cbsnews.com/news/house-cancels-votes-adjourning-midterms/
+- **U.S. government holdings yardstick:** 328,372 BTC per the dashboard's own `adoption.js` sovereign row (≈$27.6B at $84,035, ≈1.6% of supply); Wikipedia's lead cites the same figure "as of February 2026", while an Aug 2025 estimate cited ~198,000 BTC. I used the dashboard figure ("about 328,000") for cross-tab consistency — flag for the adoption agent that public estimates diverge.
 
-### Corporate — Strategy
-- SEC EDGAR — filing index (FETCHED): 8-K filed Sep 14, accession 0001193125-26-389858. https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001050446&type=8-K
-- SEC EDGAR — 8-K Sep 14 (FETCHED; period Sep 8–13): figures in slot 4 above. https://www.sec.gov/Archives/edgar/data/1050446/000119312526389858/mstr-20260914.htm
-- The Block — Strategy repurchases $139M of STRC, holdings unchanged, Sep 14 (search-verified). https://www.theblock.co/news/business/2026-09-14-strategy-strc-bitcoin-mstr-414603
+### Corporate — Strategy (and Strive)
+- SEC EDGAR — 8-K filing index (FETCHED): Sep 25 (0001193125-26-401636), Sep 21 (0001193125-26-396093), Sep 14, Sep 8, Sep 1, Aug 31 … https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001050446&type=8-K&dateb=&owner=include&count=20
+- SEC EDGAR — 8-K filed Sep 21 (FETCHED; period Sep 14–20): 950 BTC, $75.7M, $79,670 avg, "The bitcoin purchases were made using USD Cash"; holdings 846,000; aggregate cost $63.80B; average $75,416; no ATM sales; STRC repurchase 1,771,238 shares for $174.0M; no STRF/STRK/STRD/MSTR repurchases; preferred repurchase authority $875.1M remaining; MSTR buyback $1.0B available; USD Reserve $5.04B ($57.4M used for dividends/interest); USD Cash $1.05B. https://www.sec.gov/Archives/edgar/data/1050446/000119312526396093/mstr-20260914.htm
+- SEC EDGAR — 8-K filed Sep 25 (FETCHED; Item 8.01; board action Sep 24): proposed amendments to STRF, STRC, STRK and STRD for a dividend record date on each calendar day, payable the next business day; record date for the special meeting Sep 25; special meeting Oct 28; STRC first daily payment expected Nov 2; STRF/STRK/STRD Jan 4, 2027; "do not increase or decrease the total amount of regular dividends payable" or change rates. https://www.sec.gov/Archives/edgar/data/1050446/000119312526401636/mstr-20260924.htm
+- **Strategy figure for cross-tab reconciliation: latest 8-K filed Sep 25, 2026 (no holdings change); latest holdings 846,000 BTC as of Sep 20 (Sep 21 8-K).** `YARDSTICKS.strategy-holdings` still says 845,050 (asOf 2026-09-13) → the orchestrator/fallbacks owner should move it to 846,000.
+- bitcointreasuries.net (FETCHED Sep 26): Strategy 846,000 BTC (~$71.07B); 196 public companies hold 1,272,886 BTC (~$106.9B). https://bitcointreasuries.net/
+- SEC EDGAR — Strive 8-K Sep 21 (FETCHED): 1,355 BTC bought Sep 14–18 at $79,475 (~$107.6M) → 26,355 BTC; cash and equivalents $229.6M. https://www.sec.gov/Archives/edgar/data/0001920406/000162828026062806/asst-20260921.htm
+- MSCI (search-verified): consultation feedback closes Sep 30; results Oct 16; any change effective at the November 2026 index review. Strategy's Sep 1 response: https://www.strategy.com/msci
 
-### Protocol / security
-- Blockstream — Liquid incident status page (FETCHED; latest update Sep 10 10:00 UTC; pegs suspended; reserve restoration in progress). https://status.blockstream.com/incidents/b8b719f3-db70-4487-9cff-946e69509228
-
-### Sovereign / policy (not slotted)
-- Congress.gov — H.R. 8957 text. https://www.congress.gov/bill/119th-congress/house-bill/8957/text
-- govtrack — H.R. 8957 (fetch 403). https://www.govtrack.us/congress/bills/119/hr8957
-- CoinGape — Steil substitute: 20-year lock runs from enactment; annual proof-of-reserve; fork/airdrop assets locked one year (search-verified). https://coingape.com/us-house-to-discuss-steil-amendment-and-advance-strategic-bitcoin-reserve-bill-today/
+### Protocol / security (demoted)
+- Blockstream — Liquid incident status page (FETCHED; latest update still Sep 10 10:00 UTC; pegs suspended). https://status.blockstream.com/incidents/b8b719f3-db70-4487-9cff-946e69509228
+- Blockstream — "Liquid Network Security Incident Assessment", Sep 23 (FETCHED): details in "Considered and not slotted". https://blog.blockstream.com/liquid-network-security-incident-assessment/
+- Liquid Network on X — Sep 17 21:05 UTC status (search-verified). https://x.com/Liquid_BTC/status/2100696334596452426
 
 ## Key dated facts (for /refresh-deep-analysis)
 
-### Price path (FALLBACK_ATH $126,080, Oct 6 2025)
+### Price path (FALLBACK_ATH $126,080, Oct 6 2025 — no claim above it)
 | Date | Level | Note |
 |---|---|---|
-| Sep 12 | close $77,174 | week −3.3% |
-| Sep 14 | close $78,163 | +1.7%; ETF +$160M |
-| Sep 15 | ~$77,400 → $75,850 | −4.2%; cloture fails 2:18 p.m.; ETF −$450M; ~$288M longs liquidated in 4h |
-| Sep 16 | open $75,587; $75,400–$75,700 through the FOMC; ~$75,400 after presser | little changed on the hike; **≈ −40% from ATH**; ≈ −8% from the Sep 3–4 high (~$82,300) |
+| Sep 16 | ~$75,500 | FOMC +25bp; ETF −$296M |
+| Sep 21 | peak $87,300; ~$85,750 late day | highest since late January; +14% from Sep 16; ≈31% below ATH; ~$844M shorts liquidated; broke $82,000 |
+| Sep 22 | close $86,198 | ETF +$715M; 2026 flows turn positive |
+| Sep 23 | $86,140 a.m. → close $84,383 (−2.1%) | profit-taking; three-month streak noted |
+| Sep 24 | ~$83,943 (10 a.m. ET) | 10y 5.21% |
+| Sep 25 | ~$84,413 (9 a.m. ET); week ≈ +10% | ETF +$134.5M |
+| Sep 26 | ~$84,035 | Saturday |
 
 ### ETF net flows (US$)
 | Date | Net flow | Notes |
 |---|---|---|
-| Sep 8–11 | −$462.7M | four straight outflow days |
-| Sep 14 | +$159.9M | IBIT +$134.3M, FBTC +$53.3M, ARKB −$42.0M |
-| Sep 15 | −$450.4M | largest outflow since Jun 25; IBIT −$161.7M |
-| Sep 8–15 (6 sessions) | **−$753M** | ≈ the Sep 3 record day (+$730.9M); <1% of ~$100B assets |
-| Sep 16 | not yet published | |
+| Sep 15 | −$450.4M | largest outflow since Jun 25 |
+| Sep 16 | −$295.9M | FOMC day |
+| Sep 17 | +$159.45M | IBIT +$183.66M; FBTC −$16.64M |
+| Sep 18 | +$433.0M | FBTC +$310.7M; IBIT +$108.4M |
+| Sep 21 | +$998.95M | IBIT $381.4M, ARKB $289.1M, FBTC $238.8M; largest since Oct 6 2025 ($1.2B) |
+| Sep 22 | +$714.7M | YTD turns positive (+$886.8M) for the first time since May 26 |
+| Sep 23 | +$346.9M | |
+| Sep 24 | +$190.7M | six-day streak $2.84B |
+| Sep 25 | +$134.5M | IBIT $97M; FBTC $49.3M |
+| **Sep 21–25** | **+$2.39B** | best week of 2026; largest since Oct 2025; IBIT $1.16B, FBTC $701.6M |
+| **Sep 17–25** | **≈+$2.98B** | seven straight sessions |
+YTD ≈ +$1.56B by Sep 25 (computed from the Sep 22 figure); 2025 full-year +$21.35B; cumulative since launch ≈$57.5B; average holder cost basis $81,722 (Bloomberg Intelligence, Sep 21); combined assets above $100B (Sep 3 milestone; ≈1.32M BTC).
 
-### FOMC — delivered and next
-- Sep 16: +25bp to 3.75%–4.00%, 12–0; first hike since Jul 2023. SEP: median end-2026 4.1% (one more hike), 16/18 see ≥1 more; June median was 3.8%. Core PCE 2026 3.4%.
-- Pre-decision futures (Sep 15): Oct 28 hike 43.5%; Dec 9 cumulative 88.4%. Next meetings Oct 27–28, Dec 8–9.
-- Warsh: "inflation is too high and has been for too long"; "removed a dose of accommodation"; no need "to do harm to the labor markets"; declined to discuss the president.
+### FOMC and rates
+- Sep 16: +25bp to 3.75%–4.00%, 12–0; SEP median end-2026 4.1% (one more hike). Next meetings Oct 27–28, Dec 8–9.
+- Futures Sep 25: Oct 28 hike 61.6% (Sep 15: 43.5%); Dec 9 cumulative 91.7% (Sep 15: 88.4%); 89bp priced over nine meetings. CME FedWatch Sep 18: 57.6%.
+- 10y: 4.96% (Sep 16) → 5.21% (Sep 24, highest since 2007) → 5.16% (Sep 25). 30y ~5.5% (highest since 2004). Treasury long-bond buybacks at least doubled to $4B+ (Sep–Nov).
+- Brent $105.83 (Sep 16) → ~$105.70 (Sep 25), Hormuz still closed; US–Iran phased-reopening talks reported Sep 24. Gold $4,290 (Sep 16) → ~$4,275 (Sep 25), −2% w/w. DXY 101.03 (two-month high).
+- Data: Aug PCE Sep 30 (Jul 3.7% headline / 3.3% core); Sep jobs Oct 2; Aug CPI 3.4% (Sep 11).
 
 ### CLARITY — status after the vote
-- Cloture on the motion to proceed failed 49–50 (Sep 15). Motions to reconsider filed by Tillis (3:01 p.m.) and entered by Thune. Senate expected to leave ~Oct 1; lame duck possible. Polymarket 7% (from 23% Sep 13; 82% in Feb).
-- Agency track: SEC (Atkins: "with or without legislation…"; Regulation Crypto Assets comments close Oct 20) and CFTC (Selig: "locked in and ready to ship"; Aug 20 directive to draft "crypto asset market" DCM rules). JPMorgan: agency rules less durable than statute.
+- Cloture failed 49–50 (Sep 15); motions to reconsider on file; no vote scheduled; no floor action Sep 22–24; Senate leaves Oct 2, back Nov 9; lame duck is the only 2026 window. Polymarket 7% (Sep 26).
+- Agency track: SEC Innovation Exemption (Sep 17, five years); SEC Regulation Crypto Assets comments close Oct 20; CFTC "locked in and ready to ship" (Selig, Sep 16).
+- House: Ways & Means 38–5 on the tax bill (Sep 16); HFSC 28–21 on the reserve bill (Sep 16); House out until Nov 9.
 
-### Strategy (Sep 14 8-K)
-- 845,050 BTC; cost $63.73B; average $75,412 (spot ≈ $75,500 → holdings at roughly break-even). No BTC trades and zero ATM sales for two consecutive weeks (Aug 31–Sep 13). STRC repurchases: $176.3M (Aug 31–Sep 7), $139.3M (Sep 8–13); $1.05B of the $2.0B preferred program remains. USD Reserve $5.10B; USD Cash $1.30B. MSCI: feedback closes Sep 30; results by Oct 16.
+### Strategy (Sep 21 and Sep 25 8-Ks)
+- 846,000 BTC; cost $63.80B; average $75,416 (spot ≈ $84,000 → ≈ +11% paper gain). 950 BTC bought Sep 14–20 at $79,670 **with USD Cash**; zero ATM sales for three weeks (Aug 31–Sep 20). STRC repurchases: $176.3M (Aug 31–Sep 7), $139.3M (Sep 8–13), $174.0M (Sep 14–20); $875.1M of the $2.0B preferred program remains. USD Reserve $5.04B; USD Cash $1.05B. Daily-dividend amendments to a vote Oct 28. MSCI: feedback closes Sep 30; results Oct 16.
 
 ### Calendar ahead
-- Sep 18 IBIT options expiry · Sep 20 eCash beta (~block 967,680) · Sep 30 MSCI feedback closes · ~Oct 1 Senate leaves · Oct 16 MSCI results · Oct 20 SEC Regulation Crypto Assets comments close · Oct 27–28 FOMC · Oct 31 eCash mainnet · Nov 4 Treasury buyback schedule ends · Dec 8–9 FOMC · Dec 11 CR expires.
+- Sep 28 Senate reconvenes (S.4668 passage vote 5:30 p.m.); Strategy weekly 8-K · Sep 30 August PCE 8:30 a.m. ET; MSCI feedback closes · Oct 2 September jobs; Senate leaves · Oct 5–Nov 6 Senate state work period · ~Oct 10 Bitcoin Core 32.0 · Oct 16 MSCI results · Oct 20 SEC Regulation Crypto Assets comments close · Oct 27–28 FOMC · Oct 28 Strategy special meeting (daily dividends) · Oct 31 eCash permanent split (block 973,728) · Nov 2 first STRC daily dividend (if approved) · Nov 3 midterms · Nov 9 House and Senate return · Dec 8–9 FOMC · Dec 11 CR expires · Jan 4, 2027 first daily dividends on STRF/STRK/STRD.
 
 ## Archives updated (HISTORICAL_HIGHLIGHTS + FALLBACK_NEWS)
 
-### HISTORICAL_HIGHLIGHTS — 4-week window (cutoff Aug 19, from asOf Sep 16)
-- **Aged out (older than Aug 19): 1** — Aug 18 SEC Regulation Crypto Assets (now belongs to SIX_MONTH_HIGHLIGHTS; comment deadline Oct 20 still worth carrying there).
-- **Dropped as superseded / moot: 2** — Sep 8 "GOP expects failure" (superseded by the Sep 15 vote); Sep 1 continuing resolution (its only relevance was CLARITY floor time, now moot).
-- **Added: 3** — Sep 16 Fed hike; Sep 16 SEC/CFTC "existing authority" + Polymarket 7%; Sep 15 cloture 49–50 + BTC <$76K + ETF −$450M.
-- **Kept: 11.** Final count 14 (at cap), Aug 19 – Sep 16, sorted date-desc, all starred, every title ≤35 words. Fact-check guard: no price above $126,080; all events 2026.
+### HISTORICAL_HIGHLIGHTS — 4-week window (cutoff Aug 29, shared with the headlines-archive agent)
+- **Aged out (Aug 28 and earlier): 4** — Aug 28 Warsh Jackson Hole; Aug 25 BTC tops $81K; Aug 23 eCash alpha; Aug 19 BTC +8% on the White House meeting (all now belong to SIX_MONTH_HIGHLIGHTS, curated concurrently — I did not touch that array).
+- **Dropped as superseded: 2** — Sep 16 Atkins/Selig "existing authority" (replaced by the Sep 17 SEC exemption entry, which carries the pledge and the 7% odds); Sep 4 payrolls (absorbed into the delivered Sep 16 hike).
+- **Added: 6** — Sep 25 best ETF week of 2026 / YTD positive; Sep 24 10-year at 5.21%; Sep 21 BTC $87,000 + $999M ETF day + squeeze; Sep 21 Strategy 950 BTC with cash (+ Strive 1,355); Sep 17 SEC Innovation Exemption; Sep 16 House committees (reserve bill 28–21, tax bill 38–5, House leaves until Nov 9).
+- **Kept: 8.** Final count **14** (at cap), Aug 31 – Sep 25, sorted date-desc, all starred. Fact-check guard: no price above $126,080; all events 2026; the Sep 21 entries name the record-high day only as "last October".
 
-### FALLBACK_NEWS — past ~48h (Sep 15–16), fully replaced
-- Sep 16: Fed +25bp to 3.75%–4.00%, unanimous, one more penciled in; BTC ~$75,500 (starred, FED)
-- Sep 15: Senate 49–50 on CLARITY, every Democrat present no; BTC −4% below $76,000 (starred, REGULATION)
-- Sep 16: Atkins + Selig will write rules under existing authority; betting market 7% from 23% (unstarred, REGULATION)
-- Sep 15: ETFs −$450M, most since Jun 25; net −$750M since Sep 8 (unstarred, ETFs)
+### FALLBACK_NEWS — past ~48–72h (Sep 23–25), fully replaced
+- Sep 25: ETFs +$134M, seventh straight day, $2.39B week, BTC near $84,000 (starred, ETFs)
+- Sep 24: 10-year 5.21%, highest since 2007; October hike odds ~60% (starred, MACRO)
+- Sep 25: Strategy daily-dividend proposal, vote Oct 28; 950 BTC bought with cash (unstarred, CORPORATE)
+- Sep 23: Blockstream post-mortem — two bugs, ~602 BTC outstanding, withdrawals still frozen (unstarred, SECURITY)
 
-## check:plain
-Hard 0 / structural 0 after the second pass. Soft findings left for the Editor: average sentence length 24–30 words on the four `plain` lines and three `detail` fields (single-sentence `plain` fields cannot average below their own length); Fog 15–16 on the Strategy card (long words: strategy, corporate, dividend, repurchasing); acronyms not in the glossary: LBTC ×3, IBIT ×1, STRC ×1 — proposing glossary entries for **L-BTC** (Editor requested it last week; source https://docs.liquid.net/docs/technical-overview) and **STRC** (Strategy's variable-rate preferred; source https://www.strategy.com/strc) on the next Monday run.
+## check:plain / check:schema
+- `npm run check:plain -- --file src/data/market-news.js`: first pass **exit 2** — one hard finding (`CURATED[0].detail`: the sentence splitter reads "…leaning no." as an abbreviation and merged it with the next sentence, 47 words) plus 12 soft. Fixed by reordering so the band phrase closes the field; also brought three `plain` lines to 23–25 words, parenthesised the cloture gloss, and glossed/removed "preferred" (now house dialect). Second pass **exit 1 — hard 0 · structural 0 · soft 4**: average sentence 24.3–24.8 words on `CURATED[0–2].detail` (target 22) and `CURATED[0].plain` at 26 words versus the 25-word Tier 1 opening target. Left for the Editor per the no-loop rule.
+- `npm run check:schema`: **exit 0**, clean (10 modules).
+- Acronyms in rendered prose: none new (STRC/STRF/STRK/STRD appear only in source labels). No glossary proposals this run.
 
 ## index.html
-Not touched — slot 1 category stayed MACRO (a looming hike became a delivered hike; same primary identity).
+Not touched. Slot 1's category moved MACRO → MARKETS (the Fed hike gave way to the breakout on record fund buying). My view: this is a routine rotation of the weekly top theme, not a shift in the dashboard's primary identity — no meta-description change recommended; the orchestrator decides.
