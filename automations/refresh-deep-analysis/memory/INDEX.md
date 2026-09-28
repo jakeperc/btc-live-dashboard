@@ -63,6 +63,20 @@ Persistent context for `/refresh-deep-analysis`. Read at the start of every run,
 | `themes/<slug>.md` | Markdown | No edits >26 weeks → mark `dormant` in INDEX; manual archive after 52 weeks |
 | `actors/<slug>.md` | Markdown | Same as themes |
 
+## Core themes (annotated at the Q3 2026 consolidation)
+
+Slot-1 category / theme-file activity across the 17 MAY 18 – SEP 26, 2026 runs:
+
+- **`etfs`** — slot-1 category (as ETFs / MARKETS) in 14 of 17 runs. The dominant recurring theme of the project; its theme file and the `etf-net-inflows → spot-price-pressure` edge are effectively always-hot-path, relevance-routing notwithstanding.
+- **`corporate-treasuries`** — never slot-1 by category, but a top-5 fixture in every run since MAY 18 (either as a card or as the secondary anchor of the slot-1 narrative, e.g. "…Bounded Corporate Leak"). Pairs tightly with `etfs` per `heuristics.md` #1–#3.
+- **`fed-monetary-policy`** — slot-1 twice (SEP 13, SEP 16) but a top-5 or matrix-row presence in nearly every run since JUN. The macro backdrop for almost every other theme's probability.
+
+Treat these three as the default relevance-load even when a given week's `MARKET_THEME`/`CURATED_MARKET_UPDATES` slugs don't obviously name them — they are rarely irrelevant to the primary thesis.
+
+## Consolidation log
+
+- **SEP 26, 2026 — first-ever `/consolidate-deep-analysis` pass** (covering the full MAY 18 – SEP 26 project history; overdue since ~AUG 17). 5 heuristics promoted, 2 retired (`heuristics.md`); theme-interaction matrix rules adopted (category floor/cap respected, excluded-theme sympathy nudge zeroed, fed↔etfs delta 0.10→0.07 — `theme-interactions.md`); calibration MATRIX bias correction formalized (`calibration.md`); "Manager fragmentation" cross-current moved to Archived; several files condensed for headroom. Full report: `briefings/2026-Q3.md`. Next due ~13 weeks out (~late Dec 2026) or sooner on a regime shift.
+
 ## Archived files (moved out of `memory/` to stay under the 300 KB cap)
 
 - **SEP 26, 2026:** `themes/sovereign-reserves.md` and `actors/cftc.md` **RESTORED** from `../memory-archive/` (their documented triggers fired: HFSC ordered H.R. 8957 reported 28–21 on Sep 16; the CFTC filed its crypto market-structure pre-rule with OIRA on Sep 17) — both condensed on restore; the archive copies were removed. **Cap pressure after the restores (320 KB): `themes/protocol-security.md` (the umbrella; not loaded this run — Liquid demoted; RESTORE on a consensus/BIP event or a new adjacent-layer incident) and `actors/senate-banking.md` (no action Sep 22–26; its Sep 30 cloture row scores from the ledger alone; RESTORE if a lame-duck CLARITY vote is noticed) moved to `../memory-archive/`.** `themes/liquid-sidechain.md` is out of the top-5 — archive after its row resolves (Oct 15) unless a second bug appears. `actors/senate-banking.md` re-archives next run once the Sep 30 cloture row scores. Decay applied this run: the `theme-history.jsonl` AUG 19 + SEP 13 notes condensed; `watch-list-outcomes.md` housekeeping and `calibration.md` run-history condensed; `actors/blackrock.md` JUL–AUG snapshots merged; `theme-interactions.md` run notes condensed; `themes/clarity-act.md` SEP 13 status condensed; the `causal-model.md` ethics-amendments evidence condensed. Still archived: `trump-admin.md` (restore on a White House move on the CFTC rules or a lame-duck push), `fidelity.md` (FBTC led Sep 18, +$310.7M, outside stress — a DAY, not a week; the rule needs a week), `spacex.md`, `japan-fiea.md`.

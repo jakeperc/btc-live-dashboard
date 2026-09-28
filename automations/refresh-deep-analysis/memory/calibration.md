@@ -53,7 +53,7 @@ Apply these as priors during Phase 3 drafting. Updated by `/consolidate-deep-ana
 - **ETF — near-calibrated (N=5, +0.07), with the fed→flows edge SCOPE-CORRECTED (SEP 26).** Keep the sustain haircut at ONE notch. Do NOT price a post-event flow row off the guidance branch alone: a fully-priced decision's delivery is a flow non-event, and non-Fed impulses (policy shocks, breakouts) drive the big runs. Composition (which-fund) bets stay humble.
 - **REGULATION (N=3, +0.05):** leadership commitments are weak evidence vs floor reality; name the instrument in rulemaking rows.
 - **PROTOCOL (N=3, +0.10):** heavily-evidenced non-events at 0.05, not 0.10.
-- **MATRIX (proposed for consolidation, SEP 26):** matrix finals must respect category floors/caps (a Fed-INTENT row lifted 0.35→0.45 by ETF strength has no mechanism); excluded themes (`sovereign-reserves`, `clarity-act`) have now been lifted on sympathy three times (SEP 13 clarity +0.10; SEP 16 clarity +0.10; SEP 26 sovereign +0.10) — zero the bounded nudge for excluded themes unless a mechanism is named.
+- **MATRIX (ADOPTED at the Q3 2026 consolidation, SEP 26 — see `theme-interactions.md` Step 1, items 3–4):** matrix finals must respect category floors/caps (a Fed-INTENT row may no longer be lifted above its cap by cross-theme strength alone); the excluded-theme sympathy nudge (fired mechanism-less 3×: clarity-act +0.10 twice, sovereign-reserves +0.10 once) is zeroed by default. Also recalibrated: fed↔etfs matrix delta 0.10→0.07, matching the `fed-rate-cut-signaling → flows` edge's strong→medium downgrade.
 
 ## Run history (append-only summary)
 

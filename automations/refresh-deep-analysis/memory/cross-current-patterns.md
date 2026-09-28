@@ -8,12 +8,10 @@ Durable inter-theme patterns observed in recurring `crossCurrents` entries. A pa
 
 ## Active patterns
 
-### Buyer-class convergence on scarce float (seed pattern — REVIVED SEP 13)
+### Buyer-class convergence on scarce float (seed pattern — REVIVED SEP 13) — PROMOTED to `heuristics.md` #1 at Q3 2026 consolidation
 
-- **First observed:** MAY 18, 2026 · **Last observed:** SEP 26, 2026 (**3rd instance — PROMOTION-ELIGIBLE at consolidation:** the ETF complex +$2.98B over seven days (the best week of 2026; 2026 YTD positive Sep 22) AND Strategy's cash-funded 950-BTC buy (Sep 21 8-K) AND Strive's 1,355 — plus, on the statutory side, HFSC's 28–21 for a 20-year no-sale lock on ~328K government coins (supply removed by law rather than by balance sheet); price +11% off the Sep 16 base, peak $87,300; the short base squeezed again (~$844M Sep 21). Prior SEP 13, 2nd instance: August — ETFs +$3.52B + Strategy's 4,603 above cost; +25% on the month; the short base squeezed ($2.7–4B).)
-- **Themes linked:** ETF flows, corporate treasuries
-- **Activation condition:** ≥2 structural-buyer events (ETF inflow month / corporate 8-K buy / sovereign formalization) in one cycle.
-- **Implication:** float scarcity dominates when both classes accumulate together; the inverse sibling below governs when both pause. Promotion needs a 3rd instance.
+- **First observed:** MAY 18, 2026 · **Last observed:** SEP 26, 2026 — 3rd instance, PROMOTED at the Q3 2026 consolidation. Full evidence and rule now in `heuristics.md` #1.
+- **Themes linked:** ETF flows, corporate treasuries · **Activation condition:** ≥2 structural-buyer events (ETF inflow month / corporate 8-K buy / sovereign formalization) in one cycle.
 
 ### Quantum-migration governance as latent geopolitical risk (STUB)
 
@@ -23,12 +21,10 @@ Durable inter-theme patterns observed in recurring `crossCurrents` entries. A pa
 
 - **MAY 18, 2026 only.** Federal classification statutorily protects sovereign reserves. Untested; the Sep 15 cloture (0.15) is the 2026 test; sovereign-reserves out of the top-5. Revive on a sovereign event or a cloture win.
 
-### Buyer-class convergence under macro stress
+### Buyer-class convergence under macro stress — PROMOTED (as "independent clocks") to `heuristics.md` #2 at Q3 2026 consolidation
 
-- **First observed:** MAY 29, 2026 · **Last observed:** SEP 26, 2026 (14th run — **the dual PAUSE did NOT fire: the week ending Sep 18 netted ≈$0 (not negative) and the Sep 21 8-K printed a purchase; both pillars then bought together (the seed pattern's 3rd instance above). The activation condition was one Friday print from firing and reversed — the two pillars' clocks converged UP.** Prior SEP 16 (13th run): near-literal dual pause forming (−$753M over six sessions; two covering 8-Ks). Prior SEP 13 (12th run): the mirror — both constructive in August, then split on the rate repricing.)
-- **Themes linked:** ETF flows, corporate treasuries
-- **Activation condition:** the ETF complex prints a multi-week outflow streak AND the largest corporate holder discloses a covering 8-K without an accumulation print in the same window.
-- **Implication (condensed; full arc in git):** the two pillars run on different clocks — flows answer REPRICINGS (rate or policy) within a day; the corporate program answers its own price/premium/dividend calendar (the reflexivity valve). Arc: May divergence → June–July convergence in retreat → AUG 3–19 corporate below-cost distribution while flows whipsawed → AUG 31 the corporate valve reopened above cost. See `nav-premium` + `fed-rate-cut-signaling` edges.
+- **First observed:** MAY 29, 2026 · **Last observed:** SEP 26, 2026 (14th run — the dual pause came within one Friday print of firing, then reversed: both pillars bought together instead, feeding pattern #1's 3rd instance above). Full evidence and rule now in `heuristics.md` #2 ("independent clocks").
+- **Themes linked:** ETF flows, corporate treasuries · **Activation condition:** the ETF complex prints a multi-week outflow streak AND the largest corporate holder discloses a covering 8-K without an accumulation print in the same window.
 
 ### Price/flow decoupling on a capitulation handoff
 
@@ -58,11 +54,10 @@ Durable inter-theme patterns observed in recurring `crossCurrents` entries. A pa
 - **Activation condition:** a multi-week ETF outflow streak coincides with elevated leverage/funding, and a price break trips a forced-long-liquidation cascade that sells more spot into the same thin book.
 - **Implication (condensed):** leverage makes the marginal seller non-discretionary and self-reinforcing (Jun 2–5: ~17%); a given position liquidates once (burnout JUN 13). Pairs with `etf-passive-outflow + leverage → reflexive-liquidation-cascade` (strong).
 
-### Forced-dividend sale: the corporate floor's pro-cyclical leak (3 instances; promote-toward-durable flag — now CONDITIONAL)
+### Forced-dividend sale: the corporate floor's pro-cyclical leak (3 instances) — PROMOTED (folded into "price-vs-basis gating") to `heuristics.md` #3 at Q3 2026 consolidation
 
-- **First observed:** JUN 5, 2026 · **Last observed:** AUG 19, 2026 (3rd/4th sale-instances: JUN 1 32 BTC; JUL 6 3,588; AUG 3 1,638; AUG 10 1,690) — **SEP 13 COUNTER-INSTANCE: with BTC above the $75,412 cost basis and the ATM accretive on the rally, Strategy BOUGHT 4,603 BTC (Aug 24–30) and used ATM proceeds for dividends/buybacks — no sale.** The pattern's activation condition is refined: a leveraged-treasury company with fixed obligations sells the underlying when BTC is BELOW its cost basis AND the premium is thin on a dividend date; when the premium is open it funds the same obligations with stock. The flag for consolidation stands with the conditionality attached.
-- **Themes linked:** Corporate treasuries, Fed / macro policy
-- **Implication:** the corporate floor is a function of issuance windows + fixed liabilities + price-vs-basis, not conviction. Pairs with `nav-premium→forced-selling` (strong, two-sided) + `higher-for-longer→financing-window-compression`.
+- **First observed:** JUN 5, 2026 · **Last observed:** AUG 19, 2026 (sales JUN 1 / JUL 6 / AUG 3 / AUG 10, then a SEP 13 counter-instance — bought above basis instead of selling). Rule now in `heuristics.md` #3, folded together with the pattern below.
+- **Themes linked:** Corporate treasuries, Fed / macro policy.
 
 ### Corporate-treasury legitimization via blue-chip listing + dip-buying (STUB)
 
@@ -72,31 +67,24 @@ Durable inter-theme patterns observed in recurring `crossCurrents` entries. A pa
 
 - **JUL 12 → JUL 19, 2026.** BSTR/Cantor terminated (30,021 BTC; renegotiating). No news since; needs a 2nd vehicle instance. Quiet.
 
-### Geopolitical de-escalation vs core-inflation Fed: relief the central bank refuses to spend (4 instances; promote-toward-durable flag) — and its mirror
+### Geopolitical de-escalation vs core-inflation Fed: relief the central bank refuses to spend (4 instances) — and its mirror — PROMOTED to `heuristics.md` #4 at Q3 2026 consolidation
 
-- **First observed:** JUN 20, 2026 · **Last observed:** SEP 16, 2026 (**the mirror instance COMPLETED (not a 6th): the Sep 11 Saudi East-West pipeline strike (Brent $108–109) fed straight into the Sep 16 hike; Warsh conceded the Fed "cannot affect any individual price, whether it be oil prices" and hiked anyway — energy re-shock hardens the path every time.** Prior, SEP 13: **5th instance, in the MIRROR form — escalation the Fed DOES spend:** U.S. strikes on Iranian tankers + Iranian missile strikes on U.S. forces in Jordan (Sep 8–9) → Brent $100 → $107.63 → PPI goods +1.1% on diesel, gasoline over a third of the CPI rise → hike odds 85–87% for Sep 16. The asymmetry is the pattern's core: energy RELIEF buys no pivot when core binds (Jun 17, Jul 29), energy RE-SHOCK hardens the path every time (Jul 24, Sep 9).)
-- **Themes linked:** Iran / geopolitical macro, Fed / monetary policy
-- **Activation condition:** a geopolitical/energy de-escalation lands in the same window as a hawkish Fed action that does not ease — OR (mirror) an escalation lands into a Fed already leaning hawkish.
-- **Implication (condensed):** "peace → oil falls → Fed eases → risk rallies" breaks at the second link when core binds; the macro tail is stagflation-lite; tariff-dependent relief prices near zero. PROMOTE-TOWARD-DURABLE flag stands (5 instances incl. the mirror).
+- **First observed:** JUN 20, 2026 · **Last observed:** SEP 16, 2026 (5 instances incl. the mirror — the Sep 9–16 Iran-strikes-into-a-hike sequence completed it). Full evidence and rule now in `heuristics.md` #4.
+- **Themes linked:** Iran / geopolitical macro, Fed / monetary policy · **Activation condition:** a de-escalation lands with a hawkish Fed action that does not ease — OR (mirror) an escalation lands into a Fed already leaning hawkish.
 
 ### Two-jurisdiction regulatory divergence (STUB — quiet)
 
 - **JUL 19 → JUL 26, 2026.** Japan's FIEA statute carries the unlock mechanism while CLARITY stalls; the migration leg has not fired (Metaplanet reaffirmed 43,000 BTC; no U.S.-issuer Tokyo plans). Revive on venue migration or a 2nd major-market statute.
 
-### Hawkish Fed bites the corporate floor through the financing window
+### Hawkish Fed bites the corporate floor through the financing window — folded into `heuristics.md` #3 ("price-vs-basis gated") at Q3 2026 consolidation
 
-- **First observed:** JUN 20, 2026 · **Last observed:** SEP 26, 2026 (the window stayed SHUT a THIRD week (Sep 14–20) under the delivered hike — and the buying happened anyway, from cash ($75.7M): the pattern gates the SIZE of the buy (the equity channel), not the decision. The premium then reopened to ~1.17× on the rally (Sep 21–22) and slipped to 1.07× (Sep 26); the Sep 28 8-K is the ATM test under a 62%-priced second hike. Prior SEP 16: a second zero-ATM week at the basis. Prior SEP 13: the buy came with the window OPEN on the August rally; the zero-ATM week came as the hike repriced.)
-- **Themes linked:** Fed / monetary policy, corporate treasuries
-- **Activation condition:** a hawkish/higher-for-longer Fed action coincides with a leveraged-treasury company funding via ATM/convert/preferred issuance into a compressed premium.
+- **First observed:** JUN 20, 2026 · **Last observed:** SEP 26, 2026 (a third straight zero-ATM week under the delivered hike — Strategy bought anyway, from cash: the pattern gates the SIZE of the buy, not the decision). Rule folded into `heuristics.md` #3.
+- **Themes linked:** Fed / monetary policy, corporate treasuries.
 - **Implication (condensed):** the corporate floor the bull case treats as rate-insensitive is gated by the cost-of-capital regime through the financing window — a SLOW squeeze distinct from the spot channel. Pairs with `higher-for-longer-rates → financing-window-compression`.
 
 ### Sovereign drawdowns and corporate cash-parking (STUB — quiet)
 
 - **JUN 24 → JUL 12, 2026.** Bhutan drawdown + Strategy cash-parking = the same fiscal logic at different scales. Watch: a 2nd sovereign seller (Argentina/Pakistan under IMF).
-
-### Manager fragmentation: ETF flows consolidate by fund under stress (STUB — RETIRED as a regime tell)
-
-- **JUN 20 → JUN 28; scored out JUL 19.** SEP 13 note: IBIT's −$9M on Sep 9 was only its third outflow day since launch; no within-complex divergence outside a stress window. Unchanged.
 
 ### Disclosure asymmetry: corporate via S-1, sovereign via on-chain forensics (STUB — quiet)
 
@@ -116,12 +104,11 @@ Durable inter-theme patterns observed in recurring `crossCurrents` entries. A pa
 - **Activation condition:** a major index provider opens a consultation whose eligibility screen would eject leveraged-treasury equities, putting passive holders on a dated path to forced selling.
 - **Implication (condensed):** passive index ownership becomes a CONDITIONAL forced seller with a calendar; transmission to BTC via the financing loop plus the perverse compliance lever. Promotion needs a 2nd instance or the screen's adoption plus observed forced flow. Watch: MSTR's spread to BTC into Oct 16.
 
-### Synchronized regulatory + monetary tailwinds (and their inverse)
+### Synchronized regulatory + monetary tailwinds (and their inverse) — PROMOTED (scope-narrowed) to `heuristics.md` #5 at Q3 2026 consolidation
 
-- **First observed:** MAY 18, 2026 · **Last observed:** SEP 26, 2026 (14th run — **the pattern's FIRST CLEAN COUNTER-INSTANCE: no clarity (cloture failed; Congress gone until Nov 9), a MORE hostile rate environment (Oct hike odds 44%→62%; the 30Y at 5.49%), and the funds' best week of 2026. The implication "clarity into a hostile rate environment is a trickle" describes allocator behaviour at the margin — and September's marginal buyer was not allocating on policy or rates; it was buying a breakout. The administrative fourth leg advanced (SEC Innovation Exemption Sep 17; the CFTC pre-rule to OIRA Sep 17). THESIS-006 #4 CLEARED (Sep 18 traded $76–78K). Do not retire — 13 supporting runs — but log the counter-instance for consolidation.** Prior SEP 16 (13th run): the INVERSE conjunction FIRED — a 25bp hike with a series SEP a day after cloture failed 49–50; the Senate leg carried the surprise, the Fed leg none; the administrative leg activated within 24h. Prior SEP 13 (12th run): the conjunction literal and priced; the information moved to the guidance and the fallback.)
-- **Themes linked:** U.S. legislative clarity, Fed policy / leadership; since AUG 19 the ADMINISTRATIVE track (SEC rule; CFTC fallback)
-- **Activation condition:** a structural regulatory unlock event and a Fed policy pivot land ≤2 weeks apart — OR, inverted, a regulatory setback and a hawkish Fed action land together.
-- **Implication (condensed; full arc in git):** allocators rarely act on one without the other — clarity into a hostile rate environment is a trickle; clarity into a cutting cycle is the unlock; both together → acceleration within 1–2 quarters, and the inverse. Arc: JUN 24/28 mirror (hawkish Fed + ethics collapse) → JUL 26 mirror completed (regulatory leg dead for the summer as the monetary leg went live-hike) → AUG 7 convergence literalized on Sep 15–16 → AUG 19 the administrative third leg (partial regulatory progress × friendly-not-easing rates = the Aug 19 re-rating) → SEP 13 the priced inverse.
+- **First observed:** MAY 18, 2026 · **Last observed:** SEP 26, 2026 (14th run). Full mechanism, evidence arc and the SEP 26 counter-instance now live in `heuristics.md` #5 — not duplicated here. This entry stays open (not retired: 13 supporting runs vs. 1 scope-limiting counter-instance) so a 15th run can bump `last observed` without re-deriving the rule.
+- **Themes linked:** U.S. legislative clarity, Fed policy / leadership; since AUG 19 the ADMINISTRATIVE track (SEC rule; CFTC fallback).
+- **Activation condition:** a structural regulatory unlock and a Fed policy pivot land ≤2 weeks apart — OR, inverted, a regulatory setback and a hawkish Fed action land together.
 
 ### Post-event relief: fund money returns once a PRICED Fed decision passes, regardless of guidance (NEW SEP 26 — 1st instance)
 
@@ -145,5 +132,6 @@ Durable inter-theme patterns observed in recurring `crossCurrents` entries. A pa
 
 _(Entries move here when `last observed` is >26 weeks old OR when superseded and single-cycle. Stubs kept for audit; full text in git.)_
 
+- **Manager fragmentation: ETF flows consolidate by fund under stress** (JUN 20 → JUN 28, 2026; scored out JUL 19 as a stress artifact, not a regime tell — the largest fund re-engaged first on recovery, not the lowest-friction one). Moved here at the Q3 2026 consolidation (already self-labelled retired; no `last observed` activity since SEP 13's one-line confirmation).
 - **Passive-ETF parity with single corporate holder** (MAY 18–20, 2026) — IBIT (~810K then) approaching Strategy's stack. SEP 13 postscript: the first hard datapoint in months (bitbo, Sep 1: IBIT 779,840 vs Strategy 845,050) shows the gap WIDENED after the Aug buy; the crosses-Strategy watch steps to 0.05.
 - **Buyer-class divergence under macro stress** (MAY 20–29, 2026) — ETF outflow WHILE corporate buys above cadence. Inverted within two weeks into "Buyer-class convergence under macro stress" (active above).
