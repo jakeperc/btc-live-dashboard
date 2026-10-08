@@ -13,24 +13,30 @@
 //   FORECAST_LEDGER = {
 //     asOf,                                   // "MMM D, YYYY" uppercase — the run that last wrote this file
 //     summary: {
-//       nResolved,                            // === sum(resolved[].count)
+//       nResolved,                            // === sum(resolved[].count) over hit/miss rows (no-resolution rows excluded)
 //       aggregateBrier, rolling20Brier,       // 2-decimal means
 //       plain,                                // ≤45 words, Tier 1, defines "Brier score" inline
 //       byCategory: [{ category, n, meanResidual, plain }],   // only categories with n ≥ 3; plain ≤30 words
-//       bands: [{ range, n, hitRate }],       // the decile calibration curve (partial = half a hit)
+//       bands: [{ range, n, hitRate }],       // the decile calibration curve (every row a hit or a miss; no-resolution rows excluded)
 //     },
 //     resolved: [{                            // newest first
 //       id, made, window, resolvedOn, category,
 //       event,                                // the scoring letter for a newcomer, ≤35 words, comparators spelled out
 //       probability,                          // rounded to 0.05 (grouped rows: the mean of `probabilities`)
-//       outcome,                              // "hit" | "miss" | "partial"
-//       brier,                                // (probability − outcome)²; grouped rows: mean per-forecast Brier
+//       outcome,                              // "hit" | "miss" | "no-resolution" — no partial credit (see below)
+//       brier,                                // (probability − outcome)²; grouped rows: mean per-forecast Brier; null for no-resolution
 //       count,                                // 1, or N for a grouped row (then `probabilities: [..N values..]`)
 //       lesson,                               // ≤45 words, plain English, "we gave this 15% odds and it happened"
 //       source: { label, url },               // the primary source the outcome was scored against
 //     }],
 //     openCount,                              // forecasts still open (rendered watch list + memory-only rows)
 //   }
+//
+// Scoring rule: a binary forecast is a hit (1) or a miss (0) against the threshold in
+// its own event text and the cited primary source. A row its event text genuinely
+// cannot decide is "no-resolution": listed, brier null, count 1, and counted in
+// NOTHING (not nResolved, not any Brier, residual or band). Never pick an outcome
+// to move the numbers.
 //
 // Plain-language standard: SCOPE.md § "Audience & plain-language standard".
 //   summary.plain            Tier 1, cap 45
@@ -40,53 +46,151 @@
 // Check: npm run check:plain -- --file src/data/forecast-ledger.js
 
 export const FORECAST_LEDGER = {
-  asOf: "SEP 26, 2026",
+  asOf: "OCT 7, 2026",
   summary: {
-    nResolved: 34,
-    aggregateBrier: 0.19,
-    rolling20Brier: 0.18,
-    plain: "A Brier score grades forecasts from 0 (perfect) to 1; coin-flipping scores 0.25. Across 34 scored calls ours is 0.19, fair and steady; our biggest errors were expecting a gentler central bank than we got and doubting the biggest Bitcoin-holding company's buying.",
+    nResolved: 41,
+    aggregateBrier: 0.20,
+    rolling20Brier: 0.19,
+    plain: "A Brier score grades forecasts from 0 (perfect) to 1; coin-flipping scores 0.25. Across 41 scored calls ours is 0.20, a little better than coin-flipping. Our biggest errors: expecting a gentler central bank, and doubting the biggest Bitcoin-holding company's buying.",
     byCategory: [
       {
         category: "macro",
         n: 14,
-        meanResidual: 0.26,
-        plain: "We have leaned too optimistic about the Fed going easy. Five times running it has been tougher than we expected, so we now cap those calls at 35%.",
+        meanResidual: 0.33,
+        plain: "We have leaned too optimistic about the Fed going easy. Five times running it has been tougher than we expected, so we cap those calls at 35%.",
       },
       {
         category: "corporate",
-        n: 7,
-        meanResidual: -0.30,
-        plain: "We keep doubting Strategy, the biggest Bitcoin-holding company: in five of seven calls it did more than we expected. It acts on Bitcoin's price against its average cost.",
+        n: 9,
+        meanResidual: -0.32,
+        plain: "We keep doubting Strategy, the biggest Bitcoin-holding company: in seven of nine calls it did more than we expected. It acts on Bitcoin's price against its average cost.",
       },
       {
         category: "etf",
-        n: 5,
-        meanResidual: 0.07,
-        plain: "Close to well-calibrated on money entering the Bitcoin funds. Single-week direction calls land; calls needing several positive weeks in a row run optimistic, so those get trimmed.",
+        n: 8,
+        meanResidual: 0.03,
+        plain: "Near even overall, but two errors cancel: too optimistic on buying lasting several weeks, and far too gloomy on buying resuming after a Fed decision.",
       },
       {
         category: "regulation",
-        n: 3,
+        n: 4,
         meanResidual: 0.05,
-        plain: "Slightly optimistic on Congress. Leaders' promises about timing have been weak evidence; the real floor calendar has been the better guide, twice.",
+        plain: "Slightly optimistic on Congress. Leaders' promises about timing have been weak evidence; the real floor calendar has been the better guide, three times.",
       },
       {
         category: "protocol",
-        n: 3,
-        meanResidual: 0.10,
-        plain: "A touch generous to non-events. Three forks and bugs we called unlikely all fizzled, so well-evidenced non-events now get our lowest 5% band.",
+        n: 4,
+        meanResidual: 0.09,
+        plain: "A touch generous to non-events. Four forks, bugs and proposals we called unlikely all fizzled, so well-evidenced non-events now get our lowest 5% band.",
       },
     ],
     bands: [
-      { range: "0–10%", n: 6, hitRate: 0.00 },
-      { range: "10–30%", n: 8, hitRate: 0.38 },
+      { range: "0–10%", n: 10, hitRate: 0.00 },
+      { range: "10–30%", n: 9, hitRate: 0.44 },
       { range: "30–50%", n: 8, hitRate: 0.25 },
-      { range: "50–70%", n: 11, hitRate: 0.41 },
+      { range: "50–70%", n: 13, hitRate: 0.38 },
       { range: "70–90%", n: 1, hitRate: 1.00 },
     ],
   },
   resolved: [
+    {
+      id: "2026-10-07-etf-two-weeks-post-decision",
+      made: "SEP 16, 2026",
+      window: "by Oct 2, 2026",
+      resolvedOn: "OCT 7, 2026",
+      category: "etf",
+      event: "Net money into the U.S. spot Bitcoin funds is positive over the two full weeks after the September Fed decision (weeks ending September 25 and October 2, combined).",
+      probability: 0.30,
+      outcome: "hit",
+      brier: 0.49,
+      count: 1,
+      lesson: "The two weeks brought $2.6 billion, the best fortnight of 2026. We gave this 30% odds because fund money had followed the Fed's next move all year; a rate rise everyone expected turned out to be no news at all.",
+      source: { label: "The Block — U.S. spot Bitcoin ETF daily flows (week of Sep 21–25 +$2.39 billion; week of Sep 28–Oct 2 +$241 million)", url: "https://www.theblock.co/data/etfs/bitcoin-etf/spot-bitcoin-etf-flows" },
+    },
+    {
+      id: "2026-10-07-strategy-purchase-by-oct-12",
+      made: "SEP 26, 2026",
+      window: "by Oct 12, 2026",
+      resolvedOn: "OCT 7, 2026",
+      category: "corporate",
+      event: "Strategy (the software company that holds more Bitcoin than any other) discloses at least one further Bitcoin purchase in its weekly filings of September 28, October 5 or October 12.",
+      probability: 0.65,
+      outcome: "hit",
+      brier: 0.1225,
+      count: 1,
+      lesson: "It bought 1,665 coins the very next week, paying with new share sales, then 334 more. We gave this 65% odds, our first test of a simple rule: with Bitcoin above its average cost, the company buys.",
+      source: { label: "SEC EDGAR — Strategy Form 8-K, September 28, 2026 (1,665 BTC bought Sep 21–27 at $85,681, funded by MSTR stock sales)", url: "https://www.sec.gov/Archives/edgar/data/0001050446/000119312526403417/mstr-20260914.htm" },
+    },
+    {
+      id: "2026-10-07-strategy-share-sales-resume",
+      made: "SEP 26, 2026",
+      window: "by Oct 5, 2026",
+      resolvedOn: "OCT 7, 2026",
+      category: "corporate",
+      event: "Strategy discloses new sales of its own shares to raise money in the weekly filing of September 28 or October 5, after three weeks without any.",
+      probability: 0.55,
+      outcome: "hit",
+      brier: 0.2025,
+      count: 1,
+      lesson: "The September 28 filing showed $246 million of new shares sold. We gave this 55% odds: its shares had just risen to about 17% above the value of the Bitcoin behind them, and it sells when that gap is open.",
+      source: { label: "SEC EDGAR — Strategy Form 8-K, September 28, 2026 (1,469,165 MSTR shares sold for $246.2M net)", url: "https://www.sec.gov/Archives/edgar/data/0001050446/000119312526403417/mstr-20260914.htm" },
+    },
+    {
+      id: "2026-10-07-clarity-cloture-by-sep-30",
+      made: "SEP 13, 2026",
+      window: "by Sep 30, 2026",
+      resolvedOn: "OCT 7, 2026",
+      category: "regulation",
+      event: "The Senate votes to end debate (cloture, 60 votes needed) and take up the CLARITY Act, the crypto rules bill, on September 15 or in a repeat vote by September 30.",
+      probability: 0.05,
+      outcome: "miss",
+      brier: 0.0025,
+      count: 1,
+      lesson: "The September 15 vote failed 49 to 50 and no repeat was called before the Senate left on September 30. We had cut this to 5% after the first failure, and it stayed a non-event.",
+      source: { label: "U.S. Senate Daily Press — Wednesday, September 30, 2026: the Senate adjourns; next vote November 9; no action on H.R. 3633", url: "https://www.dailypress.senate.gov/wednesday-september-30-2026/" },
+    },
+    {
+      id: "2026-10-07-ibit-150b-aum",
+      made: "AUG 19, 2026",
+      window: "by Sep 30, 2026",
+      resolvedOn: "OCT 7, 2026",
+      category: "etf",
+      event: "BlackRock's IBIT, the largest Bitcoin fund, reaches $150 billion of assets by September 30.",
+      probability: 0.05,
+      outcome: "miss",
+      brier: 0.0025,
+      count: 1,
+      lesson: "The fund held about $67 billion of Bitcoin at the deadline. We had cut this to 5% once we found the $150 billion figure came from a different, broader January measure; a mis-scaled question, scored as a non-event.",
+      source: { label: "bitbo.io — BlackRock IBIT holdings: 801,033 BTC on Sep 30, 2026 (806,038 on Oct 6, about $67 billion)", url: "https://bitbo.io/treasuries/blackrock-ibit/" },
+    },
+    {
+      id: "2026-10-07-ibit-crosses-strategy",
+      made: "AUG 19, 2026",
+      window: "by Sep 30, 2026",
+      resolvedOn: "OCT 7, 2026",
+      category: "etf",
+      event: "BlackRock's IBIT fund holds more Bitcoin than Strategy, the largest corporate holder, by September 30.",
+      probability: 0.05,
+      outcome: "miss",
+      brier: 0.0025,
+      count: 1,
+      lesson: "At the deadline the fund held about 801,000 coins against Strategy's roughly 848,000, a gap of about 47,000. We had cut this to 5% in September once a hard holdings figure replaced our earlier extrapolation.",
+      source: { label: "bitbo.io — BlackRock IBIT holdings: 801,033 BTC on Sep 30, 2026; Strategy 847,666 per its Sep 28 filing", url: "https://bitbo.io/treasuries/blackrock-ibit/" },
+    },
+    {
+      id: "2026-10-07-bip-361-pool-signal",
+      made: "MAY 18, 2026",
+      window: "by Sep 30, 2026",
+      resolvedOn: "OCT 7, 2026",
+      category: "protocol",
+      event: "A major mining pool or exchange states a position on BIP-361, a draft proposal to retire Bitcoin's older signature types against future quantum computers, by September 30.",
+      probability: 0.05,
+      outcome: "miss",
+      brier: 0.0025,
+      count: 1,
+      lesson: "The proposal is still a draft with no activation plan, and no pool or exchange took a public position in eighteen quiet weeks. We had cut this to 5%, and it behaved like a non-event.",
+      source: { label: "BIP-361 — 'Post Quantum Migration and Legacy Signature Sunset' (status: Draft; no activation parameters or miner signaling defined)", url: "https://raw.githubusercontent.com/bitcoin/bips/master/bip-0361.mediawiki" },
+    },
     {
       id: "2026-09-26-strategy-further-buy",
       made: "SEP 13, 2026",
@@ -263,11 +367,11 @@ export const FORECAST_LEDGER = {
       category: "macro",
       event: "The August 7 jobs report and August 12 inflation report take a September rate rise off the table, with the market's odds of a rise closing below 40% after the inflation report.",
       probability: 0.60,
-      outcome: "partial",
-      brier: 0.01,
+      outcome: "miss",
+      brier: 0.36,
       count: 1,
-      lesson: "The jobs report was weak and inflation came in as expected; the odds of a September rise closed between 38% and 42%, straddling our line. We gave it 60% odds and scored half. In-line inflation confirms a shift but does not extend it.",
-      source: { label: "BLS — Consumer Price Index news release (July 2026 data, published Aug 12)", url: "https://www.bls.gov/news.release/cpi.nr0.htm" },
+      lesson: "Inflation came in as expected, but the market's odds of a September rise closed near 42%, above our 40% line. We gave this 60% odds. An in-line report confirms a shift; it does not extend it.",
+      source: { label: "CME FedWatch via CNBC — a September rise priced at about 42% after the July inflation report (Aug 12)", url: "https://www.cnbc.com/2026/08/12/cpi-inflation-report-july-2026.html" },
     },
     {
       id: "2026-08-07-clarity-pre-recess-vote",
@@ -375,11 +479,11 @@ export const FORECAST_LEDGER = {
       category: "macro",
       event: "June's inflation report comes in soft enough to keep the market's shift toward rate cuts, set off by the jobs report, intact through the July Fed meeting.",
       probability: 0.55,
-      outcome: "partial",
-      brier: 0.0025,
+      outcome: "miss",
+      brier: 0.3025,
       count: 1,
-      lesson: "Inflation came in soft, but the market had already given up on cuts before the report landed. We gave it 55% odds and scored half. A number and the market's reaction to it are two different forecasts; we now write them as separate calls.",
-      source: { label: "BLS — Consumer Price Index news release (June 2026 data)", url: "https://www.bls.gov/news.release/cpi.nr0.htm" },
+      lesson: "Inflation came in soft, but the market had given up on cuts, and in July three Fed officials voted to raise rates. We gave the shift lasting 55% odds. The data and how the market takes it are separate forecasts; we now write them apart.",
+      source: { label: "Federal Reserve — FOMC statement, July 29, 2026: rates held on a 9–3 vote, three officials preferring a rise", url: "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260729a.htm" },
     },
     {
       id: "2026-07-06-june-jobs-rate-path",
@@ -432,10 +536,10 @@ export const FORECAST_LEDGER = {
       category: "etf",
       event: "The U.S. spot Bitcoin funds print a week of net buying before June 15.",
       probability: 0.65,
-      outcome: "partial",
-      brier: 0.0225,
+      outcome: "miss",
+      brier: 0.4225,
       count: 1,
-      lesson: "The record run of daily withdrawals ended inside the window, but no full week finished positive. We gave it 65% odds and scored half. A streak ending and a positive week are different things, and we now forecast them separately.",
+      lesson: "The record run of daily withdrawals ended inside the window, but no full week finished with money coming in. We gave a week of net buying 65% odds. A streak ending and a positive week are different things; we now forecast them separately.",
       source: { label: "CoinDesk — Bitcoin and Ether ETFs end a record multi-billion outflow streak (Jun 5)", url: "https://www.coindesk.com/markets/2026/06/05/bitcoin-and-ether-etfs-end-record-multi-billion-outflow-streak" },
     },
     {
@@ -481,5 +585,5 @@ export const FORECAST_LEDGER = {
       source: { label: "CoinDesk — Clarity Act clears the U.S. Senate committee (May 14)", url: "https://www.coindesk.com/policy/2026/05/14/clarity-act-clears-u-s-senate-committee-on-its-way-to-a-final-test-in-congress" },
     },
   ],
-  openCount: 16,
+  openCount: 11,
 };

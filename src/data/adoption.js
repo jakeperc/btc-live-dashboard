@@ -30,26 +30,26 @@ export const ADOPTION_DATA = [
 ];
 
 export const ADOPTION_INDEX_TOP20 = [
-  { rank: 1, country: "India", flag: "🇮🇳", score: 1.00 },
-  { rank: 2, country: "United States", flag: "🇺🇸", score: 0.97 },
-  { rank: 3, country: "Pakistan", flag: "🇵🇰", score: 0.93 },
-  { rank: 4, country: "Vietnam", flag: "🇻🇳", score: 0.91 },
-  { rank: 5, country: "Brazil", flag: "🇧🇷", score: 0.89 },
-  { rank: 6, country: "Nigeria", flag: "🇳🇬", score: 0.87 },
-  { rank: 7, country: "Indonesia", flag: "🇮🇩", score: 0.85 },
-  { rank: 8, country: "Ukraine", flag: "🇺🇦", score: 0.83 },
-  { rank: 9, country: "Philippines", flag: "🇵🇭", score: 0.81 },
-  { rank: 10, country: "Russia", flag: "🇷🇺", score: 0.79 },
-  { rank: 11, country: "UK", flag: "🇬🇧", score: 0.77 },
-  { rank: 12, country: "Ethiopia", flag: "🇪🇹", score: 0.75 },
-  { rank: 13, country: "Bangladesh", flag: "🇧🇩", score: 0.73 },
-  { rank: 14, country: "Turkey", flag: "🇹🇷", score: 0.71 },
-  { rank: 15, country: "South Korea", flag: "🇰🇷", score: 0.69 },
-  { rank: 16, country: "Yemen", flag: "🇾🇪", score: 0.67 },
-  { rank: 17, country: "Thailand", flag: "🇹🇭", score: 0.65 },
-  { rank: 18, country: "Venezuela", flag: "🇻🇪", score: 0.63 },
-  { rank: 19, country: "Japan", flag: "🇯🇵", score: 0.61 },
-  { rank: 20, country: "Argentina", flag: "🇦🇷", score: 0.59 },
+  { rank: 1, country: "Brazil", flag: "🇧🇷", score: 1.00 },
+  { rank: 2, country: "United States", flag: "🇺🇸", score: 0.98 },
+  { rank: 3, country: "Nigeria", flag: "🇳🇬", score: 0.96 },
+  { rank: 4, country: "Japan", flag: "🇯🇵", score: 0.94 },
+  { rank: 5, country: "South Korea", flag: "🇰🇷", score: 0.92 },
+  { rank: 6, country: "India", flag: "🇮🇳", score: 0.90 },
+  { rank: 7, country: "Ukraine", flag: "🇺🇦", score: 0.88 },
+  { rank: 8, country: "Thailand", flag: "🇹🇭", score: 0.86 },
+  { rank: 9, country: "South Africa", flag: "🇿🇦", score: 0.84 },
+  { rank: 10, country: "Canada", flag: "🇨🇦", score: 0.82 },
+  { rank: 11, country: "Mexico", flag: "🇲🇽", score: 0.80 },
+  { rank: 12, country: "China", flag: "🇨🇳", score: 0.78 },
+  { rank: 13, country: "Germany", flag: "🇩🇪", score: 0.76 },
+  { rank: 14, country: "Indonesia", flag: "🇮🇩", score: 0.74 },
+  { rank: 15, country: "Australia", flag: "🇦🇺", score: 0.72 },
+  { rank: 16, country: "Russia", flag: "🇷🇺", score: 0.70 },
+  { rank: 17, country: "UK", flag: "🇬🇧", score: 0.68 },
+  { rank: 18, country: "Vietnam", flag: "🇻🇳", score: 0.66 },
+  { rank: 19, country: "Philippines", flag: "🇵🇭", score: 0.64 },
+  { rank: 20, country: "Turkey", flag: "🇹🇷", score: 0.62 },
 ];
 
 export const COUNTRY_HOLDINGS = [
@@ -66,7 +66,7 @@ export const COUNTRY_HOLDINGS = [
 ];
 
 export const COMPANY_HOLDINGS = [
-  { company: "Strategy",          ticker: "MSTR", country: "🇺🇸", btc: 846000, method: "Treasury reserve (funded by stock and debt sales)", status: "Bought again in late August after selling coins three times" },
+  { company: "Strategy",          ticker: "MSTR", country: "🇺🇸", btc: 848000, method: "Treasury reserve (funded by stock and debt sales)", status: "Active accumulation — purchased 334 BTC in October" },
   { company: "Twenty One Capital", ticker: "XXI", country: "🇺🇸", btc: 43514,  method: "Bitcoin-only treasury (Tether / SoftBank / Bitfinex)", status: "Cantor-backed Bitcoin holding company" },
   { company: "Metaplanet",        ticker: "3350", country: "🇯🇵", btc: 43000,  method: "Treasury — equity / bond financed",            status: "Top 3 corporate holder — aggressive APAC accumulation" },
   { company: "MARA Holdings",     ticker: "MARA", country: "🇺🇸", btc: 35577,  method: "Self-mined + open-market purchases",            status: "Partial BTC sale Mar 2026 — pivoting toward AI infrastructure" },
