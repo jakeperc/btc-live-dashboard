@@ -46,8 +46,8 @@ Follow the load order in `memory/INDEX.md`. Briefly:
 9. **Tail** the journals: last ~8 entries of `theme-history.jsonl`; unresolved + recently-resolved rows of `watch-list-outcomes.md` and `contrarian-ledger.md`; active section of `cross-current-patterns.md`.
 10. **Read current dashboard state.** `MARKET_THEME` + `CURATED_MARKET_UPDATES` from `src/data/market-news.js`, `HISTORICAL_HIGHLIGHTS` from `src/data/headlines.js`, current `DEEP_ANALYSIS` from `src/data/deep-analysis.js`. If `/refresh-market-news` just ran and `automations/refresh-market-news/last-run-artifacts.md` exists, prefer it over re-fetching the same primary sources.
 11. **Score Phase 1 resolutions.** For each unresolved item whose `window` has elapsed:
-    - Assign outcome ∈ {1.0 hit, 0.5 partial, 0.0 miss, n/a no-resolution}.
-    - Compute Brier `(p − outcome)²`.
+    - Assign outcome ∈ {1.0 hit, 0.0 miss, no-resolution}. **There is no partial credit.** A binary forecast is judged against the threshold stated in its own event text and the cited primary source: either it was met or it was not. Only if the event text genuinely cannot decide it, mark `no-resolution` — it is then EXCLUDED from every Brier, residual and decile figure (and from `nResolved`). Never pick an outcome to make the numbers look better or worse; state the reasoning in the one-line lesson.
+    - Compute Brier `(p − outcome)²` for hits and misses only.
     - Write a 1-line lesson with primary-source citation.
     - Hold these for Phase 5 write-back.
 
@@ -233,14 +233,14 @@ const DEEP_ANALYSIS = {
 export const FORECAST_LEDGER = {
   asOf: "SEP 16, 2026",                         // the run that last wrote this file
   summary: {
-    nResolved: 32,                              // === sum(resolved[].count) === calibration.nResolved
+    nResolved: 32,                              // === sum(resolved[].count) over hit/miss rows (no-resolution rows excluded) === calibration.nResolved
     aggregateBrier: 0.19,                       // all-time mean, 2 decimals (calibration.md "All-time")
     rolling20Brier: 0.17,                       // calibration.md "Last 20 items"
     plain: "…",                                 // ≤45 words, Tier 1 — defines "Brier score" inline in plain words + the headline read
     byCategory: [                               // ONLY categories with N ≥ 3, from the per-category bias table
       { category: "macro", n: 14, meanResidual: 0.26, plain: "…≤30 words: what the sign means (\"we have leaned too optimistic about…\")" },
     ],
-    bands: [                                    // the decile calibration curve; partial = half a hit
+    bands: [                                    // the decile calibration curve; every row is a hit or a miss (no-resolution rows are excluded)
       { range: "0–10%", n: 5, hitRate: 0.00 },
     ],
   },
@@ -253,8 +253,8 @@ export const FORECAST_LEDGER = {
       category: "macro",                        // same enum as watchList[].category
       event: "…",                               // the scoring letter for a newcomer, ≤35 words, comparators in words, no bookkeeping
       probability: 0.40,                        // rounded to 0.05; grouped rows: the mean of `probabilities` rounded to 0.05
-      outcome: "miss",                          // hit | miss | partial
-      brier: 0.16,                              // (p − outcome)²; grouped rows: mean per-forecast Brier
+      outcome: "miss",                          // hit | miss | no-resolution (no-resolution: brier null, count 1, not counted in nResolved or any aggregate)
+      brier: 0.16,                              // (p − outcome)²; grouped rows: mean per-forecast Brier; null for no-resolution
       count: 1,                                 // N for a grouped row, then also probabilities: [..N values..]
       lesson: "…",                              // ≤45 words, plain English — "we gave this 15% odds and it happened"
       source: { label: "…", url: "https://…" }, // the primary source the outcome was scored against

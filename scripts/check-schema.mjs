@@ -88,7 +88,12 @@ const isHalf = (p) => Math.abs(p - 0.5) < 1e-9;
 const CATEGORY_ENUM = new Set(["regulation", "macro", "protocol", "corporate", "sovereign", "etf", "market-structure"]);
 const STATUS_TONE_ENUM = new Set(["advancing", "active", "stalled", "passed"]);
 const REGIME_ENUM = new Set(["reinforcing", "contagion"]);
-const OUTCOME_VALUE = { hit: 1, miss: 0, partial: 0.5 };
+// A binary forecast is a hit (1) or a miss (0) against the threshold in its own
+// event text — there is no partial credit. "no-resolution" marks a row whose
+// event text genuinely cannot decide it: it is listed, but it carries no Brier
+// and counts toward nothing (not nResolved, not the aggregates, not a band).
+const OUTCOME_VALUE = { hit: 1, miss: 0 };
+const NO_RESOLUTION = "no-resolution";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Shared checks
@@ -704,7 +709,8 @@ function checkStrategy(mod) {
 //                   brier, count, probabilities? (when count > 1), lesson, source: { label, url } } ],  // newest first
 //     openCount,
 //   }
-//   sum(resolved[].count) === summary.nResolved
+//   sum(resolved[].count) over hit/miss rows === summary.nResolved
+//   (outcome "no-resolution" rows: brier null, count 1, excluded from every sum)
 
 function checkForecastLedger(mod) {
   const F = "src/data/forecast-ledger.js";
@@ -756,15 +762,15 @@ function checkForecastLedger(mod) {
         else bandTotal += b.n;
         if (!isNum(b.hitRate) || b.hitRate < 0 || b.hitRate > 1) fail(F, `${base}.hitRate`, `must be a number in [0, 1] (got ${show(b.hitRate)})`);
         else if (isInt(b.n) && b.n > 0) {
-          // A hitRate is really "k of n happened" with k a multiple of 0.5 (a
-          // "partial" outcome counts as half) — the same round-trip the Track
-          // record's own bandHits() does to print "4.5 of 11". If hitRate*n
-          // doesn't land near a half-integer, the two numbers were not computed
+          // A hitRate is really "k of n happened" with k a whole number (every
+          // scored row is a hit or a miss) — the same round-trip the Track
+          // record's own bandHits() does to print "3 of 11". If hitRate*n
+          // doesn't land near a whole number, the two numbers were not computed
           // from the same set of forecasts.
-          const k = Math.round(b.hitRate * b.n * 2) / 2;
+          const k = Math.round(b.hitRate * b.n);
           const reconstructed = k / b.n;
           if (Math.abs(reconstructed - b.hitRate) > 0.01) {
-            fail(F, `${base}.hitRate`, `${b.hitRate} over ${b.n} forecasts doesn't round-trip through a half-integer hit count (nearest is ${k} of ${b.n} = ${reconstructed.toFixed(3)})`);
+            fail(F, `${base}.hitRate`, `${b.hitRate} over ${b.n} forecasts doesn't round-trip through a whole hit count (nearest is ${k} of ${b.n} = ${reconstructed.toFixed(3)})`);
           }
         }
       });
@@ -785,7 +791,8 @@ function checkForecastLedger(mod) {
     if (!isText(r.id)) fail(F, `${base}.id`, "missing id (stable slug)");
     else if (ids.has(r.id)) fail(F, `${base}.id`, `duplicate id "${r.id}"`);
     else ids.add(r.id);
-    if (CATEGORY_ENUM.has(r.category) && isInt(r.count)) {
+    const unresolved = r.outcome === NO_RESOLUTION; // listed for transparency, scored nowhere
+    if (!unresolved && CATEGORY_ENUM.has(r.category) && isInt(r.count)) {
       categoryTotals.set(r.category, (categoryTotals.get(r.category) ?? 0) + r.count);
     }
 
@@ -794,11 +801,16 @@ function checkForecastLedger(mod) {
     }
     requireText(F, base, r, ["window", "event", "lesson"]);
     if (!CATEGORY_ENUM.has(r.category)) fail(F, `${base}.category`, `${show(r.category)} is not in the category enum (${[...CATEGORY_ENUM].join(" | ")})`);
-    if (!(r.outcome in OUTCOME_VALUE)) fail(F, `${base}.outcome`, `${show(r.outcome)} is not one of hit | miss | partial`);
+    if (!(r.outcome in OUTCOME_VALUE) && !unresolved) fail(F, `${base}.outcome`, `${show(r.outcome)} is not one of hit | miss | no-resolution`);
     if (!isProbability(r.probability)) fail(F, `${base}.probability`, `probability missing or out of [0, 1] (got ${show(r.probability)})`);
     else if (!onGrid(r.probability)) fail(F, `${base}.probability`, `probability ${r.probability} is not a multiple of 0.05`);
-    if (!isNum(r.brier) || r.brier < 0 || r.brier > 1) fail(F, `${base}.brier`, `must be a number in [0, 1] (got ${show(r.brier)})`);
-    if (!isInt(r.count) || r.count < 1) fail(F, `${base}.count`, `must be an integer of at least 1 (got ${show(r.count)})`);
+    if (unresolved) {
+      if (r.brier !== null) fail(F, `${base}.brier`, `a no-resolution row carries no Brier score — must be null (got ${show(r.brier)})`);
+      if (r.count !== 1) fail(F, `${base}.count`, `a no-resolution row is a single forecast — count must be 1 (got ${show(r.count)})`);
+    } else if (!isNum(r.brier) || r.brier < 0 || r.brier > 1) fail(F, `${base}.brier`, `must be a number in [0, 1] (got ${show(r.brier)})`);
+    if (unresolved) {
+      // not counted: no-resolution rows never enter nResolved or any aggregate
+    } else if (!isInt(r.count) || r.count < 1) fail(F, `${base}.count`, `must be an integer of at least 1 (got ${show(r.count)})`);
     else {
       countTotal += r.count;
       if (isNum(r.brier)) brierWeighted += r.brier * r.count;

@@ -205,22 +205,22 @@ const CATEGORY_LABELS = {
 };
 const categoryLabel = (c) => CATEGORY_LABELS[c] ?? c;
 
-// hit / miss / partial → the words a newcomer reads, plus the status colour of the dot.
+// hit / miss / no-resolution → the words a newcomer reads, plus the status colour of the dot.
+// There is no partial credit: a forecast either met the wording of its own letter or it did not.
+// "No resolution" is a forecast whose wording cannot decide it — shown, but scored nowhere.
 const OUTCOME_META = {
-  hit:     { label: "Happened",       color: "var(--status-up)" },
-  miss:    { label: "Did not happen", color: "var(--status-down)" },
-  partial: { label: "Half happened",  color: "var(--status-warn)" },
+  hit:             { label: "Happened",       color: "var(--status-up)" },
+  miss:            { label: "Did not happen", color: "var(--status-down)" },
+  "no-resolution": { label: "No resolution",  color: "var(--text-muted)" },
 };
+const scoreText = (r) => r.brier == null ? "—" : Number(r.brier).toFixed(2);
 
 const pctText = (p) => `${Math.round(p * 100)}%`;
 const oddsText = (r) => r.count > 1 && Array.isArray(r.probabilities)
   ? `${r.count} forecasts · ${r.probabilities.map(pctText).join(", ")}`
   : pctText(r.probability);
-// A half-happened outcome scores half a hit, so a band can read "4.5 of 11".
-const bandHits = (b) => {
-  const k = Math.round(b.hitRate * b.n * 2) / 2;
-  return Number.isInteger(k) ? String(k) : k.toFixed(1);
-};
+// Every scored forecast is a hit or a miss, so a band reads as a whole count: "3 of 11".
+const bandHits = (b) => String(Math.round(b.hitRate * b.n));
 
 const MONO_LABEL = {
   fontSize: "var(--fs-xs)", color: "var(--text-muted)", textTransform: "uppercase",
@@ -298,7 +298,7 @@ export const TrackRecord = ({ ledger = FORECAST_LEDGER }) => {
             </td>
             <td style={{ ...cell, ...mono }}>{oddsText(r)}</td>
             <td style={cell}><OutcomeDot outcome={r.outcome} /></td>
-            <td style={{ ...cell, ...mono }}>{Number(r.brier).toFixed(2)}</td>
+            <td style={{ ...cell, ...mono }}>{scoreText(r)}</td>
             <td style={cell}><LedgerSource source={r.source} /></td>
           </tr>
         ))}
@@ -327,7 +327,7 @@ export const TrackRecord = ({ ledger = FORECAST_LEDGER }) => {
           }}>
             <dt style={MONO_LABEL}>Our odds</dt><dd style={{ margin: 0, ...mono }}>{oddsText(r)}</dd>
             <dt style={MONO_LABEL}>What happened</dt><dd style={{ margin: 0 }}><OutcomeDot outcome={r.outcome} /></dd>
-            <dt style={MONO_LABEL}>Score</dt><dd style={{ margin: 0, ...mono }}>{Number(r.brier).toFixed(2)}</dd>
+            <dt style={MONO_LABEL}>Score</dt><dd style={{ margin: 0, ...mono }}>{scoreText(r)}</dd>
             <dt style={MONO_LABEL}>Source</dt><dd style={{ margin: 0 }}><LedgerSource source={r.source} /></dd>
           </dl>
           {r.lesson && (
@@ -437,7 +437,7 @@ export const TrackRecord = ({ ledger = FORECAST_LEDGER }) => {
         >
           {isMobile ? stacked : table}
           <p style={{ margin: 0, fontSize: "var(--fs-xs)", color: "var(--text-muted)", fontFamily: "var(--font-sans)", lineHeight: 1.5 }}>
-            Score is the <Term k="brier">Brier score</Term>: (our odds − outcome)², lower is better; 0.25 is what coin-flipping scores. A half-happened outcome counts as 0.5.
+            Score is the <Term k="brier">Brier score</Term>: (our odds − outcome)², lower is better; 0.25 is what coin-flipping scores. A forecast is scored as happened or did not happen against the wording of the forecast itself; one whose wording cannot decide it is marked No resolution and left out of every score.
           </p>
         </AnalysisCard>
       )}
