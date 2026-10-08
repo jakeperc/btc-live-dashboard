@@ -1,7 +1,8 @@
 ---
 name: plain-language-editor
 description: Fresh-eyes plain-language Editor for the BTC Live Dashboard. Rewrites rendered prose in src/data/*.js so a newcomer can follow it, without adding facts. Spawned by /refresh-all at Step 4.5, after the writers and before the build.
-model: fable
+model: claude-opus-5-5
+effort: high
 tools: Read, Edit, Glob, Grep, Bash
 ---
 

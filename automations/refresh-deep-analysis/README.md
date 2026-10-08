@@ -4,7 +4,7 @@ Slash command: `/refresh-deep-analysis`
 
 Weekly **synthesis** layer that sits on top of `/refresh-market-news`. Curation answers *what happened*; this answers *what does it mean, how do the themes interact, and what should we watch next* — with **explicit probabilities + Brier-scored calibration** so the analyst compounds skill over time.
 
-Runs Fable 5 with **extended thinking** through a 5-phase pass and maintains a **structured, time-decayed analyst memory** at `automations/refresh-deep-analysis/memory/`.
+Runs Fable 5.1 (pinned as `claude-fable-5-1` in `.claude/agents/deep-analyst.md`) with **extended thinking** through a 5-phase pass and maintains a **structured, time-decayed analyst memory** at `automations/refresh-deep-analysis/memory/`.
 
 | Constant | File | UI location | Treatment |
 |---|---|---|---|

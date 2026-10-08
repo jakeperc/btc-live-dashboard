@@ -1,5 +1,5 @@
 ---
-description: Orchestrator — cadence-gated parallel sub-agents (market-news on Fable 5, others Haiku) + Fable 5 deep-analysis (fires as soon as market-news completes), single rebuild at end
+description: Orchestrator — cadence-gated parallel sub-agents (market-news on Fable 5.1, adoption + headlines-archive on Sonnet 5.5, fallbacks on Haiku) + Fable 5.1 deep-analysis (fires as soon as market-news completes), Opus 5.5 Editor, single rebuild at end
 ---
 
 You are the **Orchestrator** for the BTC Live Dashboard refresh suite.
@@ -37,20 +37,20 @@ Report which agents are due and which are skipped **before spawning anything**.
 
 ## Step 3 — Launch Phase 1 agents (background, parallel)
 
-Spawn all due Phase 1 agents in a single message with `run_in_background: true` — `model: haiku` for Agents 1, 2 and 4; `model: fable` (Fable 5) for Agent 3 (Market News). Agents not due are skipped entirely — do not spawn them.
+Spawn all due Phase 1 agents in a single message with `run_in_background: true` — `model: haiku` for Agent 1 (Fallbacks); `model: sonnet` (Sonnet 5.5) for Agents 2 and 4 (Adoption, Headlines Archive — both are fact-verification jobs); `model: fable` (Fable 5.1) for Agent 3 (Market News). Agents not due are skipped entirely — do not spawn them.
 
 Every agent prompt must include: **`SKIP REBUILD — the orchestrator runs npm run build once at the end.`**
 
 **Agent 1 — Fallbacks (if due, `model: haiku`, `run_in_background: true`)**
 Read `automations/refresh-fallbacks/README.md`, then `src/data/fallbacks.js`. Fetch current BTC price, ATH, block height, and mined supply from primary sources. Update the five constants (`FALLBACK_MINED`, `FALLBACK_BLOCK`, `FALLBACK_PRICE`, `FALLBACK_ATH`, `FALLBACK_ATH_DATE`) in `src/data/fallbacks.js`. Sanity-check: ATH ≥ price, block strictly increases, mined between 19.5M–21M. Use narrow `Edit` anchored on constant names. Report old → new for each. SKIP REBUILD.
 
-**Agent 2 — Adoption (if due, `model: haiku`, `run_in_background: true`)**
+**Agent 2 — Adoption (if due, `model: sonnet` / Sonnet 5.5, `run_in_background: true`)**
 Read `automations/refresh-adoption/README.md`, then `src/data/adoption.js`. Check internal cadence gates per-table — skip tables not due. Update due constants. Re-sort `COMPANY_HOLDINGS` and `COUNTRY_HOLDINGS` by `btc` descending after any row change. Use narrow `Edit` calls. Report per-table: skipped/updated, row delta, top-3 changes, sort verified. SKIP REBUILD.
 
-**Agent 3 — Market News (if due, `model: fable` / Fable 5, `run_in_background: true`)**
+**Agent 3 — Market News (if due, `model: fable` / Fable 5.1, `run_in_background: true`)**
 Read `automations/refresh-market-news/README.md`, then `src/data/market-news.js` and the `HISTORICAL_HIGHLIGHTS` block of `src/data/headlines.js`. Follow the 5-phase playbook. Update `MARKET_THEME`, `CURATED_MARKET_UPDATES`, `FALLBACK_NEWS`, `HISTORICAL_HIGHLIGHTS`. After all edits, write `automations/refresh-market-news/last-run-artifacts.md` with the primary URLs + key facts validated this run. Report slot changes and HISTORICAL_HIGHLIGHTS delta. SKIP REBUILD.
 
-**Agent 4 — Headlines Archive (if due, `model: haiku`, `run_in_background: true`)**
+**Agent 4 — Headlines Archive (if due, `model: sonnet` / Sonnet 5.5, `run_in_background: true`)**
 Read `automations/refresh-headlines-archive/README.md`, then `src/data/headlines.js`. Curate `SIX_MONTH_HIGHLIGHTS` (exactly 10 items, all `important: true`, window: older than 4 weeks, younger than ~6 months, no overlap with `HISTORICAL_HIGHLIGHTS`). Rank by lasting impact. Use narrow `Edit` anchored on the constant. Report items promoted, dropped, added. SKIP REBUILD.
 
 ## Step 4 — Fire deep-analysis the moment market-news completes
@@ -61,7 +61,7 @@ If market-news was skipped (not due): check whether `automations/refresh-market-
 
 If deep-analysis is not due (cadence gate) and market-news was not force-targeted, skip Agent 5. **Note:** when deep-analysis fires only because market-news was force-targeted (i.e., deep-analysis was not itself due on cadence), it is treated as a force-run for manifest purposes — its timestamp does NOT bump (see Step 5).
 
-**Agent 5 — Deep Analysis (if due, `model: fable` / Fable 5)**
+**Agent 5 — Deep Analysis (if due, `subagent_type: deep-analyst` — Fable 5.1, pinned as `claude-fable-5-1` in `.claude/agents/deep-analyst.md`; do not pass `model`, which would override the pin)**
 Follow the refresh-deep-analysis v2 5-phase playbook in full. Load memory files per `automations/refresh-deep-analysis/memory/INDEX.md` order. Read `automations/refresh-market-news/last-run-artifacts.md` instead of re-fetching those sources. Use **extended thinking** for the Phase 3 synthesis pass. Apply Brier scoring to resolved items. Update all auto-mutable memory files. Stay under 300 KB total memory directory size. SKIP REBUILD.
 
 ## Step 4.5 — Plain-language pass (the Editor)
@@ -84,7 +84,7 @@ npm run check:plain -- --snapshot
 
 This writes `automations/refresh-plain-language/.invariants-<timestamp>.json` — the per-card numeric fingerprint plus a full copy of each data file, which is the restore source if the Editor drifts a fact. Always through `npm run`: a bare `node scripts/...` call needs a permission the unattended Monday run does not have, and a permission prompt at 04:00 stalls the whole pipeline.
 
-**4.5.3 — Agent 6 — Editor (`model: fable` / Fable 5, foreground, `subagent_type: plain-language-editor`).**
+**4.5.3 — Agent 6 — Editor (`subagent_type: plain-language-editor`, foreground — Opus 5.5 at `effort: high`, pinned as `claude-opus-5-5` in the agent file; do not pass `model`, which would override the pin).**
 
 > Read `automations/refresh-plain-language/README.md`, then `SCOPE.md` § "Audience & plain-language standard", `automations/refresh-plain-language/reader-feedback.md`, `house-dialect.txt`, `src/data/glossary.js`, and `automations/refresh-plain-language/last-check.md`. Then read ONLY these changed files: `<list from 4.5.1>`. **Do NOT read `automations/refresh-deep-analysis/memory/` or `automations/refresh-market-news/last-run-artifacts.md`** — the value of this pass is that you cannot. Rewrite rendered prose in place per the playbook: consequence first, define at first use, probability band phrases, longest sentence under 45 words. Never add a fact, number or source; never touch a read-only field; leave compliant fields byte-identical. Replace `automations/refresh-plain-language/drafter-notes.md`. Verify with `npm run check:plain -- --verify`. SKIP REBUILD — the orchestrator runs npm run build once at the end.
 
