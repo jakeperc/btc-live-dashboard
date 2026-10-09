@@ -70,7 +70,7 @@ Between Mondays, `/refresh-all <hint>` force-runs for genuinely major news; the 
 
 **The Editor.** After the writers and before the build, `/refresh-plain-language` reads every rendered field with fresh eyes and rewrites for a newcomer: consequence first, every term defined at first use, probability band phrases instead of numbers, no sentence over 45 words. It never adds a fact, never reads the analyst memory, and never touches a scoring field. `npm run check:plain` measures the result, and its exit code decides whether the Editor runs again, the build proceeds, or the file is restored from the pre-edit snapshot.
 
-**Memory and calibration.** `/refresh-deep-analysis` keeps a project-scoped analyst memory in `automations/refresh-deep-analysis/memory/`: theme and actor files, a causal model, the watch-list ledger and calibration bins. Every watch-list row carries a probability on a 0.05 grid; when its window closes it is scored hit, miss or partial and the Brier score updates. `/consolidate-deep-analysis` distills the journals each quarter.
+**Memory and calibration.** `/refresh-deep-analysis` keeps a project-scoped analyst memory in `automations/refresh-deep-analysis/memory/`: theme and actor files, a causal model, the watch-list ledger and calibration bins. Every watch-list row carries a probability on a 0.05 grid; when its window closes it is scored hit or miss against the threshold in its own wording (never partial; a forecast its wording cannot decide is marked no-resolution and left out of every score) and the Brier score updates. `/consolidate-deep-analysis` distills the journals each quarter.
 
 ## The forecast ledger
 
@@ -85,12 +85,22 @@ npm run build          # split build: dist/index.html + dist/assets/, crawler re
 npm run build:single   # one self-contained dist/index.html (CSS, JS and SEO content inlined)
 npm run check:schema   # shape gate for every src/data module — exit 1 on any violation
 npm run check:plain    # plain-language checker — 0 clean · 1 style · 2 Editor must fix · 3 structural, do not build
-npm test               # check:schema, then the glossary-matcher regression tests
+npm run check:llms     # dist/llms.txt is present, valid, linked from the page and current — exit 1 on any problem; skipped without a build
+npm test               # check:schema, the glossary-matcher regression tests, then check:llms
 ```
 
 `scripts/render-seo.mjs` regenerates a text rendition of the curated content on every build, so crawlers that never run JavaScript still read this week's analysis. After any `src/data/*.js` edit, rebuild.
 
 Deployment is a file upload. See `deploy/README.md` for the target directory, the optional `.htaccess`, and how to verify it.
+
+## llms.txt
+
+The build also writes `dist/llms.txt`: a short plain-text guide to the page for AI readers, most of which run no JavaScript. It says what the page shows, how to read its stated probabilities and Brier-scored track record, what not to conclude from them, where the live data comes from, and the `#/<tab>/<anchor>` addresses. The page points at it from the `<head>` (`index.html`) and from the first line of the static text (`render-seo.mjs`).
+
+- **Where the prose lives.** `scripts/llms.txt.tpl`, hand-written. `scripts/render-llms.mjs` fills in everything that moves: tab names and routes (`src/lib`), endpoints and polling intervals (`constants.js`), the probability wording bands (`SCOPE.md`), the page's own stale-after rule (`shared.jsx`), and the weekly analysis and track record (`src/data`). The "Current state" block carries the analysis's own `asOf` date, never the build date.
+- **Quote check.** Every double-quoted string in the template must still be on the page (`index.html`, `src/` or the static text in `render-seo.mjs`). Reword a label, a probability band, the Brier sentence or a disclaimer and the template needs the same change. The build only warns (lines prefixed `llms:`): the weekly refresh runs it unattended, and llms.txt is never allowed to be the reason it fails. `npm run check:llms` (and `npm test`) turns the same findings into failures.
+- **Contract.** ASCII only, under 10 KB, and the opening blockquote must equal this dashboard's row in `JakePercy.com/content/llms/sites.json` (summary plus caveat). `node scripts/check-llms.mjs` in that repo validates every dashboard's file together; edit the sheet there, not here.
+- **See it without building.** `node scripts/render-llms.mjs` prints the file from the current source.
 
 ## Contributing
 

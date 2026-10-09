@@ -7,6 +7,8 @@
 ```
 dist/
   index.html                 ← the page: no-cache, rebuilt weekly
+  llms.txt                   ← plain-text guide for AI readers, stamped with the
+                               analysis date: upload it with index.html so the two agree
   assets/
     index-<hash>.js          ← shell + Dashboard tab (eager)
     vendor-react-<hash>.js   ← react, react-dom, scheduler

@@ -3,7 +3,7 @@
 //
 // Both modes: inline the built CSS into <head>, inject the crawler-visible
 // static content at <!-- SEO_STATIC_CONTENT -->, add the build stamp and the
-// Article JSON-LD.
+// Article JSON-LD, and write dist/llms.txt (scripts/render-llms.mjs).
 //
 //   split  (default)  keep Vite's <script type="module" src="./assets/…">
 //                     and <link rel="modulepreload"> tags; leave dist/assets/.
@@ -105,6 +105,19 @@ export const finalizeDist = async ({ single = false } = {}) => {
     if (inlineScript) variant = variant.replace(/<\/body>/i, () => `    ${inlineScript}\n  </body>`);
     await writeFile(join(distDir, out), variant, "utf8");
     console.log(`Wrote dist/${out} — canonical ${origin} (build: ${buildStamp}, ${single ? "single-file" : "split"})`);
+  }
+
+  // 5) llms.txt: a plain-text guide to the page for AI readers, written beside
+  //    index.html. The weekly refresh builds unattended and llms.txt must never
+  //    be the reason it fails: writeLlms catches its own errors (odd data drops
+  //    its "Current state" block, everything else is a warning prefixed
+  //    "llms:"), and the module is imported here, not at the top, so even a
+  //    broken render-llms.mjs cannot stop the build.
+  try {
+    const { writeLlms } = await import("./render-llms.mjs");
+    await writeLlms(distDir);
+  } catch (e) {
+    console.warn(`llms: skipped - ${e.message}`);
   }
 
   if (single) {

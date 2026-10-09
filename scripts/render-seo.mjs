@@ -64,6 +64,13 @@ function asOfToISO(asOf) {
 
 // --- sections --------------------------------------------------------------
 
+// First line of the static text: points a reader that runs no script (and the AI
+// fetchers this block exists for) at the plain-text guide that
+// scripts/render-llms.mjs writes beside index.html.
+function llmsPointer() {
+  return `  <p class="seo-llms">A short plain-text guide to this page for AI readers (what it shows, how to read its probabilities and track record, where its live data comes from): <a href="llms.txt">llms.txt</a></p>`;
+}
+
 function introSection() {
   return `  <header>
     <h1>Bitcoin Intelligence — Live Bitcoin Dashboard</h1>
@@ -126,7 +133,7 @@ const CATEGORY_LABELS = {
   macro: "Macro", corporate: "Corporate", etf: "ETF flows", regulation: "Regulation",
   protocol: "Protocol", sovereign: "Sovereign", "market-structure": "Market structure",
 };
-const OUTCOME_WORDS = { hit: "Happened", miss: "Did not happen", partial: "Half happened" };
+const OUTCOME_WORDS = { hit: "Happened", miss: "Did not happen", "no-resolution": "No resolution" };
 
 // The forecast ledger — every scored call, the odds we gave it, and the lesson.
 function trackRecordSection() {
@@ -148,7 +155,7 @@ function trackRecordSection() {
             : ""
         }</td><td>${esc(odds(r))}</td><td>${esc(
           OUTCOME_WORDS[r.outcome] || r.outcome
-        )}</td><td>${Number(r.brier).toFixed(2)}</td></tr>`
+        )}</td><td>${r.brier == null ? "—" : Number(r.brier).toFixed(2)}</td></tr>`
     )
     .join("\n");
   const cats = (s.byCategory || [])
@@ -182,7 +189,7 @@ function trackRecordSection() {
 ${rows}
       </tbody>
     </table>
-    <p>Score is the Brier score: (our odds − outcome)², lower is better; 0.25 is what coin-flipping scores. A half-happened outcome counts as 0.5.</p>
+    <p>Score is the Brier score: (our odds − outcome)², lower is better; 0.25 is what coin-flipping scores. A forecast is scored as happened or did not happen against the wording of the forecast itself; one whose wording cannot decide it is marked No resolution and left out of every score.</p>
     <h3>Where the forecasts lean, by category</h3>
     <ul>
 ${cats}
@@ -423,6 +430,7 @@ function aboutSection() {
 
 export function renderSeoHtml() {
   return `<main class="seo-static" aria-label="Bitcoin Intelligence — text summary for readers without JavaScript">
+${llmsPointer()}
 ${introSection()}
 ${analysisSection()}
 ${trackRecordSection()}

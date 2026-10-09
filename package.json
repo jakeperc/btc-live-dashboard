@@ -12,7 +12,8 @@
     "test:glossary": "node scripts/test-glossary-match.mjs",
     "build:single": "node scripts/build.mjs --single",
     "check:schema": "node scripts/check-schema.mjs",
-    "test": "node scripts/check-schema.mjs && node scripts/test-glossary-match.mjs"
+    "check:llms": "node scripts/render-llms.mjs --verify",
+    "test": "node scripts/check-schema.mjs && node scripts/test-glossary-match.mjs && node scripts/render-llms.mjs --verify"
   },
   "dependencies": {
     "react": "^18.3.1",
