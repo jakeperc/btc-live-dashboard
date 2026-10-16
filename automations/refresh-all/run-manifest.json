@@ -1,11 +1,11 @@
 {
-  "last-run": "2026-10-07T16:02:08Z",
+  "last-run": "2026-10-16T13:56:54Z",
   "agents": {
-    "fallbacks": "2026-09-13T07:10:13Z",
-    "adoption": "2026-10-07T16:02:08Z",
-    "market-news": "2026-10-07T16:02:08Z",
+    "fallbacks": "2026-10-16T13:56:54Z",
+    "adoption": "2026-10-16T13:56:54Z",
+    "market-news": "2026-10-16T13:56:54Z",
     "headlines-archive": "2026-09-27T02:08:27Z",
-    "deep-analysis": "2026-10-07T16:02:08Z",
-    "plain-language": "2026-10-07T16:02:08Z"
+    "deep-analysis": "2026-10-16T13:56:54Z",
+    "plain-language": "2026-10-16T13:56:54Z"
   }
 }

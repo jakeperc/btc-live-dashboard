@@ -2,9 +2,9 @@
 // Owner: /refresh-fallbacks (quarterly).
 // Do not Read src/BitcoinDashboard.jsx to edit these — edit this file instead.
 
-export const FALLBACK_MINED = 20083556;
+export const FALLBACK_MINED = 20098843;
 export const FALLBACK_BLOCK = 966777;
-export const FALLBACK_PRICE = 77204;
+export const FALLBACK_PRICE = 82179;
 export const FALLBACK_ATH = 126080.00;
 export const FALLBACK_ATH_DATE = "2025-10-06T18:57:42.558Z";
 
@@ -47,14 +47,23 @@ export const YARDSTICKS = [
     value: 848000,
     unit: "BTC",
     plain: "Strategy alone holds about 848,000 coins",
-    asOf: "2026-10-05",
-    source: "https://www.sec.gov/Archives/edgar/data/1050446/000119312526413164/mstr-20261005.htm", // 8-K filed Oct 5: holdings as of Oct 4
+    asOf: "2026-10-12",
+    source: "https://www.sec.gov/Archives/edgar/data/1050446/000119312526419726/mstr-ex99_1.htm", // 8-K filed Oct 12: holdings as of Oct 11 (848,250 BTC)
   },
-  // TODO(/refresh-fallbacks): add on the next monthly run, each with a primary source —
+  {
+    key: "us-m2",
+    label: "US money supply (M2)",
+    value: 23300000000000,
+    unit: "USD",
+    plain: "about $23.3 trillion of US dollars in the broad money supply",
+    asOf: "2026-09-22",
+    source: "https://www.federalreserve.gov/releases/h6/current/default.htm", // H.6 release, Sept 22 2026: seasonally adjusted M2 for Aug 2026 = $23,342.8B
+  },
+  // TODO(/refresh-fallbacks): add on a later run, each with a primary source that is reachable —
   //   avg-weekly-etf-flow   (trailing 12-week mean net flow, Farside Investors)
   //   total-etf-aum         (combined US spot ETF assets)
   //   btc-daily-spot-volume (typical daily spot volume)
-  //   us-m2                 (federalreserve.gov H.6)
+  // Farside (farside.co.uk) returned a bot challenge on Oct 16 2026, so these stay open.
   // Until they exist, prose must draw its yardstick from the story itself.
 ];
 

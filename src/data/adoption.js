@@ -66,16 +66,16 @@ export const COUNTRY_HOLDINGS = [
 ];
 
 export const COMPANY_HOLDINGS = [
-  { company: "Strategy",          ticker: "MSTR", country: "🇺🇸", btc: 848000, method: "Treasury reserve (funded by stock and debt sales)", status: "Active accumulation — purchased 334 BTC in October" },
+  { company: "Strategy",          ticker: "MSTR", country: "🇺🇸", btc: 848250, method: "Treasury reserve (funded by stock and debt sales)", status: "Active accumulation — purchased 584 BTC in October" },
+  { company: "Metaplanet",        ticker: "3350", country: "🇯🇵", btc: 44000,  method: "Treasury — equity / bond financed",            status: "Second-largest corporate holder — added a net 1,000 BTC in July–September" },
   { company: "Twenty One Capital", ticker: "XXI", country: "🇺🇸", btc: 43514,  method: "Bitcoin-only treasury (Tether / SoftBank / Bitfinex)", status: "Cantor-backed Bitcoin holding company" },
-  { company: "Metaplanet",        ticker: "3350", country: "🇯🇵", btc: 43000,  method: "Treasury — equity / bond financed",            status: "Top 3 corporate holder — aggressive APAC accumulation" },
+  { company: "Strive",            ticker: "ASST", country: "🇺🇸", btc: 35595,  method: "Treasury (Asset Entities merger)",             status: "Bought about 6,100 BTC since Oct 2 — now fourth-largest" },
   { company: "MARA Holdings",     ticker: "MARA", country: "🇺🇸", btc: 35577,  method: "Self-mined + open-market purchases",            status: "Partial BTC sale Mar 2026 — pivoting toward AI infrastructure" },
   { company: "Bitcoin Standard Treasury", ticker: "BSTR", country: "🇺🇸", btc: 30021, method: "Bitcoin-only treasury company",   status: "Active accumulation" },
-  { company: "Strive",            ticker: "ASST", country: "🇺🇸", btc: 26355,  method: "Treasury (Asset Entities merger)",             status: "Aggressive accumulation — fast scaling" },
-  { company: "Bullish",           ticker: "BLSH", country: "🇺🇸", btc: 24300,  method: "Exchange treasury (post-IPO)",                 status: "Active treasury" },
+  { company: "Bullish",          ticker: "BLSH", country: "🇺🇸", btc: 24300,  method: "Exchange treasury (post-IPO)",                 status: "Active treasury" },
   { company: "SpaceX",            ticker: "SPCX", country: "🇺🇸", btc: 18712,  method: "Treasury reserve (pre-IPO accumulation)",      status: "Public via June 12 IPO disclosure — long-term hold" },
   { company: "Coinbase",          ticker: "COIN", country: "🇺🇸", btc: 17311,  method: "Corporate treasury",                           status: "Operational + investment" },
-  { company: "CleanSpark",        ticker: "CLSK", country: "🇺🇸", btc: 13703,  method: "Self-mined",                                   status: "Keeps most of the BTC it mines" },
+  { company: "CleanSpark",        ticker: "CLSK", country: "🇺🇸", btc: 13530,  method: "Self-mined",                                   status: "Sold more BTC than it mined in September" },
   { company: "Trump Media & Tech", ticker: "DJT", country: "🇺🇸", btc: 12062,  method: "Treasury — equity + note raise",               status: "Added 2,520 BTC in Aug; pivoting away from Bitcoin strategy" },
   { company: "Tesla",             ticker: "TSLA", country: "🇺🇸", btc: 11509,  method: "2021 purchase (partial sale 2022)",            status: "Held on balance sheet" },
   { company: "Riot Platforms",    ticker: "RIOT", country: "🇺🇸", btc: 11380,  method: "Self-mined",                                   status: "Sold 4,300 BTC to raise cash; about half the rest backs loans" },

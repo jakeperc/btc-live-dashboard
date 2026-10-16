@@ -25,7 +25,7 @@ _(promoted at the Q3 2026 consolidation — the first-ever consolidation pass, r
 #### 2. ETF flows and corporate treasury buying run on independent clocks
 
 - **Rule:** Spot ETF flows answer the market's NEXT-move repricing (rate or policy) within a day. Corporate treasury buying (Strategy) answers its own price-vs-cost-basis and share-premium calendar, on a weekly filing cadence. The two pillars converging (both buying, or both pausing) is a stronger tell than either one's direction alone — but convergence is not automatic, because the clocks differ.
-- **Evidence (14 cycles):** MAY (divergence) → JUN–JUL (convergence in retreat) → AUG 3–19 (corporate distributes below cost while flows whipsaw) → AUG 31 (valve reopens above cost) → SEP 13–16 (a near dual-pause: −$753M/6 sessions + two covering 8-Ks) → SEP 26 (reverses on one Friday print — both buy together, feeding #1).
+- **Evidence (15 cycles):** MAY (divergence) → JUN–JUL (convergence in retreat) → AUG 3–19 (corporate distributes below cost while flows whipsaw) → AUG 31 (valve reopens above cost) → SEP 13–16 (a near dual-pause: −$753M/6 sessions + two covering 8-Ks) → SEP 26 (reverses on one Friday print — both buy together, feeding #1) → **OCT 16 (a clean divergence: the funds sold on the Fed's next move — −$487M on the minutes, −$262M on CPI — while Strategy bought in a fourth straight above-basis filing, sized to its premium; two clocks, same fortnight).**
 - **Confidence:** high — the best-evidenced pattern in memory. Default frame before reaching for a single-pillar explanation.
 - **Retire if:** the two pillars move in lockstep on the SAME clock for 3+ consecutive cycles (would mean the independent-clocks premise has broken down).
 
@@ -41,7 +41,7 @@ _(promoted at the Q3 2026 consolidation — the first-ever consolidation pass, r
 
 - **Rule:** An oil/energy geopolitical RE-SHOCK (supply disruption, tanker/pipeline strikes) reliably feeds through to PPI/CPI within one data cycle and hardens the Fed's hawkish path. The mirror does NOT hold with the same strength: energy RELIEF (a ceasefire, a de-escalation) does not buy a dovish pivot once core inflation is already binding — the asymmetry is the pattern, not either direction alone.
 - **Evidence (5 cycles incl. the mirror):** JUN 17 (US–Iran deal, same day as a hawkish FOMC — relief bought no pivot) · JUL 24 (ceasefire collapse → Brent >$100 → re-hardened) · SEP 9–10 (Iran tanker/missile strikes → Brent $100→$107.63 → PPI/CPI reaccelerate → the Sep hike) · SEP 11 (Saudi pipeline strike fed the same hike) · SEP 16 (Warsh: the Fed "cannot affect any individual price… whether it be oil" — hiked anyway).
-- **Confidence:** high. Named mechanism, 5 consistent cycles, zero counter-instances.
+- **Confidence:** high. Named mechanism, 5 consistent cycles, zero counter-instances. **OCT 16 — 6th cycle at the data level:** Brent $101–107 since Sep 9 → September CPI energy +5.2% m/m / +20.4% y/y, gasoline +9.1% m/m, PPI energy +10.8% m/m → the minutes name energy the risk and the December path hardened to ~90% — even as the chair's "I don't prejudge" softened OCTOBER. Texture: the re-shock hardens the SERIES; a chair's remark can move the next meeting without touching the path.
 - **Retire if:** a confirmed energy re-shock (Brent sustained >$10 above its pre-shock level for 2+ weeks) fails to move CPI/PPI expectations or the Fed's priced path within one data cycle.
 
 #### 5. Regulatory clarity and monetary ease are reinforcing complements, not substitutes — but each can now act alone
