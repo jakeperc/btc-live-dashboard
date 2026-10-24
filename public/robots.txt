@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://jakepercy.com/sitemap.xml
+Sitemap: https://bitcoin.jakepercy.com/sitemap.xml

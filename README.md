@@ -1,6 +1,6 @@
 # BTC Live Dashboard
 
-A weekly, Monday-morning Bitcoin briefing at [jakepercy.com/bitcoin](https://jakepercy.com/bitcoin): live price and on-chain metrics, a probability-scored weekly analysis, a hard-money thesis, a strategy tab, curated headlines and global adoption tables, on one page.
+A weekly, Monday-morning Bitcoin briefing at [bitcoin.jakepercy.com](https://bitcoin.jakepercy.com): live price and on-chain metrics, a probability-scored weekly analysis, a hard-money thesis, a strategy tab, curated headlines and global adoption tables, on one page.
 
 It is written for three readers at once:
 
@@ -27,7 +27,7 @@ src/
   styles.css               tokens (--elev-*, --fs-*) and the elevation material system
 scripts/                   build and check scripts (Node ESM, no dependencies)
 automations/               one playbook per refresh skill, plus the analyst memory
-deploy/                    .htaccess and deploy notes
+.github/workflows/          pages.yml (build + publish to GitHub Pages), ci.yml (pull-request checks)
 ```
 
 ### `src/data/` — content modules and their owners
@@ -53,6 +53,21 @@ Tabs and in-page sections are addressable as `#/<tab>/<anchor>`, defined in one 
 - Tab slugs: `dashboard`, `thesis`, `strategy`, `headlines`, `adoption`, `analysis`.
 - Anchor ids live in `ANCHORS` in the same file. `npm run check:schema` verifies they are unique and that every anchor a data module links to is defined there.
 - A hash that does not start with `#/` is left to the browser, so plain in-page anchors keep working.
+
+## How the analysis is written
+
+The weekly analysis, the headline cards and the adoption updates are written by AI agents (Claude models running the playbooks in `automations/`), not typed by hand. Jake Percy designed the pipeline and has refined it since May 2026 until the output reads the way he wants his own writing to read: plain enough for a newcomer, tied to primary sources, and open about what it got wrong. Each weekly update arrives as a pull request, and nothing ships until he reviews and merges it.
+
+What that refinement consists of, all of it in this repository:
+
+- **A written standard that code enforces.** `SCOPE.md` sets three reader tiers, word ceilings and the probability wording bands. `npm run check:plain` measures every rendered sentence against it, and a structural failure blocks the build.
+- **One agent per job.** Fallbacks, adoption, market news, the headlines archive, the deep analysis and an Editor each run their own playbook (about 1,250 lines across `automations/*/README.md`). The analyst and the Editor run on models pinned in `.claude/agents/`.
+- **An Editor that never sees the analyst's notes.** After the writers finish, `/refresh-plain-language` rewrites the rendered text for a newcomer without reading the analyst memory, so its shorthand cannot leak onto the page. A numeric fingerprint taken before the edit restores any figure the Editor changes.
+- **A cold-read test.** A separate model sees only the rendered text and has to say what happened, why it matters to someone holding Bitcoin, and what would change the author's mind. Cards it cannot answer go back to the Editor once, and what still fails becomes a note for next week's writer.
+- **Forecasts that are scored, not just stated.** Every watch-list item carries a probability. When its window closes it is scored hit or miss (partial credit was dropped on 2026-10-07) and the Brier score in the public Track record updates.
+- **Feedback that binds the next run.** `automations/refresh-deep-analysis/memory/editorial-lessons.md` and `automations/refresh-plain-language/reader-feedback.md` are Jake's to edit, and every writer treats a line there as a hard rule.
+
+Nine of the 26 commits since the repository's July 2026 baseline change the agents' prompts or standards. The analyst's working memory is published as-is in `automations/refresh-deep-analysis/memory/`, misses included.
 
 ## The weekly pipeline
 
@@ -91,7 +106,7 @@ npm test               # check:schema, the glossary-matcher regression tests, th
 
 `scripts/render-seo.mjs` regenerates a text rendition of the curated content on every build, so crawlers that never run JavaScript still read this week's analysis. After any `src/data/*.js` edit, rebuild.
 
-Deployment is a file upload. See `deploy/README.md` for the target directory, the optional `.htaccess`, and how to verify it.
+Deployment is GitHub Pages. Every push to `master` runs `.github/workflows/pages.yml`: `npm ci`, the build, `npm test`, then publish `dist/` to bitcoin.jakepercy.com. Weekly refreshes arrive as pull requests, checked by `ci.yml`, and ship when merged. The old addresses, jakepercy.com/bitcoin/ and nati-crypto.com/bitcoin/, redirect here.
 
 ## llms.txt
 
@@ -99,7 +114,7 @@ The build also writes `dist/llms.txt`: a short plain-text guide to the page for 
 
 - **Where the prose lives.** `scripts/llms.txt.tpl`, hand-written. `scripts/render-llms.mjs` fills in everything that moves: tab names and routes (`src/lib`), endpoints and polling intervals (`constants.js`), the probability wording bands (`SCOPE.md`), the page's own stale-after rule (`shared.jsx`), and the weekly analysis and track record (`src/data`). The "Current state" block carries the analysis's own `asOf` date, never the build date.
 - **Quote check.** Every double-quoted string in the template must still be on the page (`index.html`, `src/` or the static text in `render-seo.mjs`). Reword a label, a probability band, the Brier sentence or a disclaimer and the template needs the same change. The build only warns (lines prefixed `llms:`): the weekly refresh runs it unattended, and llms.txt is never allowed to be the reason it fails. `npm run check:llms` (and `npm test`) turns the same findings into failures.
-- **Contract.** ASCII only, under 10 KB, and the opening blockquote must equal this dashboard's row in `JakePercy.com/content/llms/sites.json` (summary plus caveat). `node scripts/check-llms.mjs` in that repo validates every dashboard's file together; edit the sheet there, not here.
+- **Contract.** ASCII only, under 10 KB, and the opening blockquote must equal this dashboard's row in `content/llms/sites.json` in the jakepercy.com repository (summary plus caveat). `node scripts/check-llms.mjs` in that repo validates every dashboard's file together; edit the sheet there, not here.
 - **See it without building.** `node scripts/render-llms.mjs` prints the file from the current source.
 
 ## Contributing
@@ -113,4 +128,4 @@ The build also writes `dist/llms.txt`: a short plain-text guide to the page for 
 
 ## Licence
 
-The code is free to read and learn from. Content © Jake Percy; not financial advice.
+Two licenses, both in `LICENSE`: the code is MIT; the analysis, forecasts, playbooks and analyst memory (`src/data/`, `automations/`) are © Jake Percy, all rights reserved, quotable briefly with credit. Nothing here is financial advice.

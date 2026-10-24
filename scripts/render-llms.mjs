@@ -35,7 +35,7 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 const ROOT = dirname(dirname(fileURLToPath(import.meta.url)));
-const SITE = "https://jakepercy.com/bitcoin/";
+const SITE = "https://bitcoin.jakepercy.com/";
 const HUB = "https://jakepercy.com/llms.txt";
 const MAX_BYTES = 10 * 1024; // the cap scripts/check-llms.mjs enforces in JakePercy.com
 const QUOTE_MIN = 12; // a quoted string at least this long must still be on the page

@@ -20,12 +20,12 @@ const distDir = join(repoRoot, "dist");
 const indexPath = join(distDir, "index.html");
 const assetsDir = join(distDir, "assets");
 
-// One live domain, one self-canonical file: dist/index.html = jakepercy.com/bitcoin.
+// One live domain, one self-canonical file: dist/index.html = bitcoin.jakepercy.com (GitHub Pages).
 // (This used to emit a second per-domain variant when the page was also served
 // from a separate brand domain; that domain is gone, so index.html is the whole
 // deploy and index.html's canonical is already correct as authored.)
 const TARGETS = [
-  { origin: "https://jakepercy.com/bitcoin", out: "index.html" },
+  { origin: "https://bitcoin.jakepercy.com/", out: "index.html" },
 ];
 
 const scriptPattern =
@@ -92,12 +92,12 @@ export const finalizeDist = async ({ single = false } = {}) => {
   base = base.replace(/<head>/i, `<head>\n    <!-- build: ${buildStamp} -->`);
 
   // 4) Emit the self-canonical file. The lookahead avoids touching the og-image
-  //    path (…/bitcoin/og-image.png), rewriting only the page URL itself — a no-op
+  //    path (…/og-image.png), rewriting only the page URL itself — a no-op
   //    while index.html already carries the primary origin, but it keeps the loop
   //    correct if another target is ever added back. In single mode the inlined
   //    bundle is appended before </body> (module scripts are deferred, so order
   //    relative to <head> doesn't change execution timing).
-  const pageUrl = /https:\/\/jakepercy\.com\/bitcoin(?![/\w-])/g;
+  const pageUrl = /https:\/\/bitcoin\.jakepercy\.com\/(?![\w-])/g;
   for (const { origin, out } of TARGETS) {
     let variant = base.replace(pageUrl, origin);
     const articleLd = renderJsonLd({ origin });
