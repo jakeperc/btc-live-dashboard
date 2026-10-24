@@ -10,7 +10,7 @@
 
 ## Analytical frame
 
-- The bill converts an executive-order reserve (reversible by the next president — and, OCT 16 shows, movable by this one without explanation) into a statutory 20-year lock. Durability without market-structure law stays the open question.
+- The bill converts an executive-order reserve (reversible by the next president, and, as OCT 16 showed, its coins can move without public notice) into a statutory 20-year lock. Durability without market-structure law stays the open question.
 - No purchase authority: supply-side only (~320K coins removed from potential government sale). Pair with corporate no-sale behaviour as "buyer-class convergence on scarce float" — supply removed by statute rather than by balance sheet.
 - Shared-resource risk (legislation → floor time): the lame duck carries the Dec 11 CR, the NDAA and three crypto bills; a bill slips on timing alone. The White House's crypto desk is now empty — no executive-branch push.
 - A custody move is not a sale: score any "government sells" claim on an exchange-confirmed disposal or a Marshals notice, never on Arkham labels alone.

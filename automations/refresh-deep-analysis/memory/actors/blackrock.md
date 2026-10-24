@@ -28,7 +28,7 @@
 
 1. **Implications of CLARITY for IBIT.** Removal of legal ambiguity expected to materially expand allocator base. Track AUM acceleration post-passage.
 2. **Active vs. passive allocation.** Does BlackRock's broader fund family (active equity, model portfolios, target-date) start adding IBIT to multi-asset allocations? That's a different scale than pure ETF demand.
-3. **In-kind redemption mechanics.** IBIT settles in cash for redemptions, not BTC. If this changes (regulatory permission), it materially affects market structure.
+3. **In-kind creations and redemptions.** The SEC permitted them for spot bitcoin and ether ETPs on Jul 29, 2025 ([Morrison Foerster](https://www.mofo.com/pdf/resources/insights/250801-sec-permits-in-kind-creations-and-redemptions-for-crypto-etps)); authorized participants can now deliver or receive BTC instead of cash. Watch how much of IBIT's flow moves in kind: it changes how ETF flows show up on exchanges.
 
 ## Behavioral patterns
 
@@ -38,7 +38,7 @@
 
 ## Source priority for this actor
 
-1. `sec.gov/edgar` — IBIT 13F filings (quarterly holdings).
+1. `sec.gov/edgar` — IBIT's 10-K and 10-Q filings (CIK 1980994).
 2. BlackRock IR page + Fink letters.
 3. Quarterly earnings call transcripts.
 4. `farside.co.uk/btc` for daily IBIT flow tracking.

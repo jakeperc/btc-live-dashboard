@@ -63,7 +63,7 @@ Same as `/refresh-market-news`:
 
 ## Voice
 
-Headlines are tight — under ~150 chars, action verb, specific number when relevant. Match the style of existing entries (`"Bitcoin breaks $200K for first time; total market cap surpasses $4T"`, not `"Bitcoin hits new high"`).
+Headlines are tight — under ~150 chars, action verb, specific number when relevant. Match the style of existing entries: an action verb and the specific number (`"Bitcoin tops $X for the first time; ETFs take in $Y in a day"`, with real figures), not `"Bitcoin hits new high"`.
 
 ## Common pitfalls
 

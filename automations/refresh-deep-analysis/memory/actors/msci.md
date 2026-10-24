@@ -20,7 +20,7 @@
 
 1. Nov 11: does the final list keep Strategy AND Metaplanet (both fail in both annual periods on the face of it) — or does a buffer / the interim-filing clause give a reprieve?
 2. Does FTSE / S&P copy the screen (no sign yet)?
-3. Does Strategy respond — a MSTR buyback from the $1.0B authority, litigation, or the perverse lever (shrinking the stack to raise the operating share)?
+3. Does Strategy respond — a MSTR buyback from the $1.0B authority, litigation, or the counterintuitive lever (shrinking the stack to raise the operating share)?
 4. The November Index Review's other deletions — any read-across to the DAT cohort's financing (Upexi, SharpLink).
 
 ## Upcoming catalysts

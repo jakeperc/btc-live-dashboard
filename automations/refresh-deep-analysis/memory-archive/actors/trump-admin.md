@@ -8,8 +8,8 @@
 
 ## Snapshot
 
-- Strategic Bitcoin Reserve codified by EO Feb 4, 2026; expanded May 8, 2026 to absorb seized BTC.
-- SEC chair nomination (Nov 18, 2025) ended Gensler-era enforcement.
+- Strategic Bitcoin Reserve established by executive order, Mar 6, 2025 ([White House fact sheet](https://www.whitehouse.gov/fact-sheets/2025/03/fact-sheet-president-donald-j-trump-establishes-the-strategic-Bitcoin-reserve-and-u-s-digital-asset-stockpile/)). (Two later dates in an earlier version of this line could not be verified on 2026-10-24 and were removed.)
+- SEC chair Paul S. Atkins: nominated Jan 20, 2025, sworn in Apr 21, 2025 ([SEC](https://www.sec.gov/newsroom/press-releases/2025-68)).
 - Publicly committed to signing CLARITY Act if delivered.
 
 ## Causal links
@@ -17,13 +17,13 @@
 - → `themes/sovereign-reserves.md` (primary driver)
 - → `actors/sec.md` (chair appointment + enforcement posture shift)
 - → `themes/clarity-act.md` (signaled pro-passage; will sign)
-- ← political incentives (mid-term cycle + 2028 positioning)
+- ← the electoral calendar (midterms, 2028)
 
 ## Behavioral patterns
 
 - Executive orders used as a primary tool; legislative coordination secondary.
 - Reserve framework relies on **seized** BTC (rather than direct market purchase) — politically lower-cost.
-- Communication style is direct + transactional; signals via Truth Social often precede formal action.
+- Signals via Truth Social often precede formal action.
 
 ## Open questions
 

@@ -17,8 +17,8 @@
 - **SEP 13, 2026 — QUIET; THE RULE IS IN ITS COMMENT WINDOW.** Regulation Crypto Assets was published in the Federal Register on Aug 21 (search-verified; the FR page sits behind a bot wall); **comments close Oct 20, 2026** (pinned — the carried TODO closes). No new SEC action in the window; Chair Atkins made no public move on CLARITY's Sep 15 vote. The agency's rule is now one of two administrative fallbacks if the bill fails (the other: the CFTC's Aug 20 pledge). Watch: the volume/tone of comments at Oct 20 (litigation threats on preemption from state regulators = the durability read). [SEC press release](https://www.sec.gov/newsroom/press-releases/2026-76-sec-proposes-new-regulation-crypto-assets) · [Federal Register](https://www.federalregister.gov/documents/2026/08/21/2026-17183/regulation-crypto-assets)
 
 - **AUG 18–19, 2026 (condensed OCT 7; git) — Regulation Crypto Assets (33-11434):** the first comprehensive crypto fundraising rulebook ($5M / $75M exemptions; a conditional token safe harbor; state preemption; comments to Oct 20); Atkins at the White House summit. BTC was never a security — the significance is the regime signal; a rule can be litigated or rescinded, a statute cannot. [Atkins statement](https://www.sec.gov/newsroom/speeches-statements/atkins-statement-regulation-crypto-assets-081826) · [Rule PDF](https://www.sec.gov/files/rules/proposed/2026/33-11434.pdf)
-- Chair: Bitcoin-friendly nominee (Trump appointment Nov 18, 2025); ended Gensler-era enforcement posture.
-- Stance through 2026: shift from "regulation by enforcement" to clearer rulemaking + ETF approvals — **now demonstrated at scale (Aug 18).**
+- Chair: Paul S. Atkins, sworn in Apr 21, 2025 ([SEC press release 2025-68](https://www.sec.gov/newsroom/press-releases/2025-68)); the agency moved from enforcement-led oversight toward rulemaking.
+- Stance through 2026: shift from enforcement-led oversight to rulemaking + ETF approvals — **now demonstrated at scale (Aug 18).**
 
 ## Causal links
 
@@ -28,7 +28,7 @@
 
 ## Behavioral patterns
 
-- Current (post-Gensler) administration favors **rulemaking over enforcement** — comment periods, no-action letters, formal rules.
+- Since the 2025 leadership change, the SEC favors **rulemaking over enforcement** — comment periods, no-action letters, formal rules.
 - Approval timelines: spot ETF approvals are now expedited (weeks not years).
 - Custodian rule severity is the open question — even friendly chairs face institutional pressure to impose surveillance-grade reporting.
 

@@ -49,4 +49,4 @@ Strategy holds **848,250 BTC** (≈4.04% of the 21M cap; aggregate cost $64.00B;
 ## Press / source bias notes
 
 - `sec.gov/edgar` reachable — read the ATM, USD Cash AND preferred-repurchase lines. `strategy.com` 403 (the exhibit carries the press release). `app2.msci.com` DocGet is the MSCI primary (pub_key `aq0wbkjxPgo=` = Oct 15; `DD3Olh5uInk=` = January — do not confuse); the deletion list xlsx via Unchained. `mnav.com` for the premium — pull every run.
-- Saylor's public teases are anti-signals; only filings count.
+- Saylor's social posts are not disclosures; only 8-K filings count.

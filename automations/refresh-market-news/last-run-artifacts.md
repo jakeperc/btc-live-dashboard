@@ -30,10 +30,9 @@ Material, dated primary-source developments since every slot's `asOf` → **all 
 - **Market structure:** liquidation volumes small this week (Oct 10 ~$92M; CoinDesk's "10/10 anniversary" piece says BTC/ETH order books are deeper than a year ago). Kospi: CoinDesk's Oct 15 piece says an 8% plunge triggered circuit breakers; could not corroborate a circuit breaker on Oct 15 (Korean press shows a sub-6,000 break on Oct 13) → not used.
 
 ### Considered and not slotted (with status)
-- **Ledger** — $849 "Atom" device announced Oct 15; reseller (CryptoBilis, Asia) implant incident reported Oct 16. Press only; a Ledger blog primary was not fetched. Not used.
-- **Bo Hines / Tether / Nxum** — WSJ investigation (one-third stake in Nxum, $6.3M from Tether, first payment while in government). Not Bitcoin-specific; not used.
+- **Ledger** — $849 "Atom" device announced Oct 15; an unconfirmed reseller tampering report (Oct 16). Press only; a Ledger blog primary was not fetched. Not used.
 - **Strive** — no new 8-K after Oct 5 (29,462 BTC). Metaplanet — on MSCI's deletion list; no fresh primary.
-- **Coinbase quantum paper** — opinion; not used.
+- **Coinbase quantum paper** — commentary with no dated development; not used.
 - **Oil** — Brent ~$106 on Oct 16 (TradingEconomics: GFS Pride sunk by an Iranian projectile in Hormuz per CENTCOM; IEA releasing the last 100M barrels); retreated from three-week highs on Oct 15. Used only indirectly (energy in CPI/PPI).
 
 ## Primary-source URLs validated this run (F = fetched; S = search-verified only)

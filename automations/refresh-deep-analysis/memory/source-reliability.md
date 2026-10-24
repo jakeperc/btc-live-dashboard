@@ -44,14 +44,14 @@ Score: `prime` (always check first) / `solid` (consistently useful) / `mixed` (s
 | `coindesk.com` | press | mixed | OCT 16, 2026 — the Oct 15 live (BTC near $80K; the CME odds path; Nasdaq futures) | Confirmation + color; never sole source. |
 | `theblock.co` | press | mixed | OCT 16, 2026 — the Oct 13 London High Court piece (FT restatement); the flows page was image-only this run | The ETF-flow restatement when it renders; corporate-filing restatements with full figures. |
 | `thedefiant.io` · `orrick.com` · `archives.gov` (EO 12866) | press / law-firm / primary text | mixed / solid / prime | OCT 7, 2026 — the reginfo restatement; the Oct 2 process summary; §6(b)(2) (10 working days) — the clock that called the ANPRM date | Cite the underlying docket when it exists. |
-| `cointelegraph.com` | press | mixed | OCT 16, 2026 — the MSCI 3.1% / 13M-share passive-ownership figure (Strategy's August statement) and the Witt departure | Weakest of the majors — verify everything; the 3.1% figure traced to Strategy's own statement. |
+| `cointelegraph.com` | press | mixed | OCT 16, 2026 — the MSCI 3.1% / 13M-share passive-ownership figure (Strategy's August statement) and the Witt departure | Verify against a primary before citing; the 3.1% figure traced to Strategy's own statement. |
 | `bloomberg.com` · `cnbc.com` | press | solid / mixed | AUG 25 / SEP 13, 2026 | Institutional context; verify figures against primaries. |
 | `github.com/bitcoin/bips` · `bitcoincore.org` | protocol | prime | (BIP-361 Draft; Core 32.0 NOT released as of Oct 16 — 31.1 latest) | Authoritative for protocol proposals and releases. |
 | `congress.gov` | .gov / legislative record | prime | AUG 19, 2026 | 403s; govinfo BILLSTATUS is the fallback. |
 | `crypto.news` · `cryptoinamerica.com` · `thehackernews.com` · `aljazeera.com` · `euronews.com` · `thenationalnews.com` · `axios.com` · `thehill.com` · `pymnts.com` · `foxnews.com` · `npr.org` | press | mixed | SEP 13 and earlier | Congressional / security / Gulf-energy color; verify against primaries. |
 | `blog.coinkite.com` · `trmlabs.com` · `bgeometrics.com` · `coinglass.com` · `arkhamintelligence.com` · `prestoresearch` · `investing.com` | vendor / on-chain / research | solid–mixed | AUG 7 and earlier (Arkham labels via TFTC, OCT 16) | Verify load-bearing figures against a second source. |
 | `cryptoticker.io` · `fxstreet.com` (SoSoValue) · `financefeeds.com` · `hedgeco.net` · `kucoin.com/news/flash` · `cryptotimes.io` · `en.cryptonomist.ch` · `bloomingbit.io` · `coinstats.app` · `interactivecrypto.com` · `crowdfundinsider.com` · `news.bitcoin.com` | fast restatement tier | low–mixed | OCT 16 (CryptoTicker −$539.8M MTD; FXStreet/SoSoValue −$681M week; FinanceFeeds the intraday odds path; Bitcoin.com News the Liquid freeze Oct 11) | Fast figure restatements when primaries are unreachable; NOT primary; phrase disputed totals as ranges. |
-| `fxleaders.com` | press / FX desk | **BANNED — never cite** | JUL 26, 2026 (fabricated content) | Hard rule: never cite, including restatements. |
+| `fxleaders.com` | press / FX desk | **EXCLUDED — never cite** | JUL 26, 2026 (a figure no primary source supported) | Hard rule: never cite, including restatements. |
 
 ## Per-source notes (evolved over time)
 
@@ -62,7 +62,7 @@ Score: `prime` (always check first) / `solid` (consistently useful) / `mixed` (s
 - The daily par yield curve is the primary for rate levels; press restatements drift by 5–10bp on volatile days (OCT 16: press 5.446% vs par 5.43 on Oct 15).
 
 ### Press tier (mixed)
-- **CoinDesk** stronger on regulatory/ETF/market-structure; **The Block** the best ETF-flow restatement when its page renders (image-only OCT 16 — TFTC carried it); **Bitcoin Magazine** stronger on protocol; **Cointelegraph** weakest — verify everything.
+- **CoinDesk** stronger on regulatory/ETF/market-structure; **The Block** the best ETF-flow restatement when its page renders (image-only OCT 16 — TFTC carried it); **Bitcoin Magazine** stronger on protocol; **Cointelegraph** — verify against a primary before citing.
 
 ## Anti-pattern: aggregators
 
