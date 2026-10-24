@@ -62,7 +62,7 @@ export const COUNTRY_HOLDINGS = [
   { country: "Bhutan", flag: "🇧🇹", btc: 3704, method: "Hydroelectric-powered mining (halted 2025)", status: "70% liquidated through Jul 2026 — mining halted, ongoing sales" },
   { country: "Kazakhstan", flag: "🇰🇿", btc: 3544, method: "Government allocation", status: "Strategic reserve" },
   { country: "North Korea", flag: "🇰🇵", btc: 803, method: "Cybercrime / hacking (est.)", status: "Holdings collapsed post-enforcement (2026)" },
-  { country: "Germany", flag: "🇩🇪", btc: 0, method: "Sold all seized BTC in 2024", status: "0 BTC — preferred fiat conversion" },
+  { country: "Germany", flag: "🇩🇪", btc: 0, method: "Sold all seized BTC in 2024", status: "No holdings" },
 ];
 
 export const COMPANY_HOLDINGS = [

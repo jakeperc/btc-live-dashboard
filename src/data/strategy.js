@@ -150,7 +150,7 @@ export const COMMON_MISTAKES = [
     body: "Money needed within ~4 years is not a Bitcoin candidate. The drawdown clock and the spending clock rarely align.",
   },
   {
-    title: "\"Guaranteed return\" scams",
+    title: "\"Guaranteed\" yield",
     body: "Yield products promising fixed returns on Bitcoin have collapsed repeatedly (Celsius, BlockFi, FTX). The heuristic that survives all of them: Bitcoin itself never pays yield. Anyone offering you interest on it is lending your coins to someone else — and you're the one holding the risk.",
   },
   {

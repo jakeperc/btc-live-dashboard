@@ -385,7 +385,7 @@ export const PROPERTIES_MATRIX = [
 export const MYTHS = [
   {
     myth: "It's mostly used by criminals.",
-    refutation: "Wrong today. On-chain illicit activity is well under 1% of total transaction volume, and shrinking — most of what remains is stablecoin fraud, not Bitcoin.",
+    refutation: "Wrong today. Chainalysis puts illicit activity well under 1% of on-chain transaction volume, and most of it now moves in stablecoins, not Bitcoin.",
     mechanism: "Every Bitcoin transaction is permanently on a public ledger anyone can audit. It's closer to the least private way to move money than the most.",
     concession: "This was truer in Bitcoin's earliest years, when it was genuinely a niche instrument on dark markets like Silk Road.",
     source: "Chainalysis Crypto Crime Reports",

@@ -48,10 +48,10 @@
 export const FORECAST_LEDGER = {
   asOf: "OCT 16, 2026",
   summary: {
-    nResolved: 45,
+    nResolved: 43,
     aggregateBrier: 0.20,
     rolling20Brier: 0.15,
-    plain: "A Brier score grades forecasts from 0 (perfect) to 1; coin-flipping scores 0.25. Across 45 scored calls ours is 0.20, and 0.15 over the last 20. Our biggest errors: expecting a gentler central bank, and doubting the biggest Bitcoin-holding company's buying.",
+    plain: "A Brier score grades forecasts from 0 (perfect) to 1; coin-flipping scores 0.25. Across 43 scored calls ours is 0.20, and 0.15 over the last 20. Our biggest errors: expecting a gentler central bank, and doubting the biggest Bitcoin-holding company's buying.",
     byCategory: [
       {
         category: "macro",
@@ -61,9 +61,9 @@ export const FORECAST_LEDGER = {
       },
       {
         category: "corporate",
-        n: 10,
+        n: 9,
         meanResidual: -0.32,
-        plain: "We keep doubting Strategy, the biggest Bitcoin-holding company: in eight of ten calls it did more than we expected. It acts on Bitcoin's price against its average cost.",
+        plain: "We keep doubting Strategy, the biggest Bitcoin-holding company: in seven of nine calls it did more than we expected. It acts on Bitcoin's price against its average cost.",
       },
       {
         category: "etf",
@@ -73,8 +73,8 @@ export const FORECAST_LEDGER = {
       },
       {
         category: "regulation",
-        n: 5,
-        meanResidual: -0.03,
+        n: 4,
+        meanResidual: 0.05,
         plain: "Near even. Leaders' timing promises have been weak evidence, but agency rule-writing has arrived faster than we expected, so we now track the exact document and its review timetable.",
       },
       {
@@ -94,8 +94,8 @@ export const FORECAST_LEDGER = {
       { range: "0–10%", n: 10, hitRate: 0.00 },
       { range: "10–30%", n: 9, hitRate: 0.44 },
       { range: "30–50%", n: 9, hitRate: 0.22 },
-      { range: "50–70%", n: 15, hitRate: 0.47 },
-      { range: "70–90%", n: 2, hitRate: 1.00 },
+      { range: "50–70%", n: 14, hitRate: 0.43 },
+      { range: "70–90%", n: 1, hitRate: 1.00 },
     ],
   },
   resolved: [
@@ -626,10 +626,10 @@ export const FORECAST_LEDGER = {
       category: "corporate",
       event: "Strategy keeps up its weekly Bitcoin-purchase filings, with no gap longer than two weeks after its May 11 purchase.",
       probability: 0.75,
-      outcome: "hit",
-      brier: 0.0625,
+      outcome: "no-resolution",
+      brier: null,
       count: 1,
-      lesson: "The next filing came on schedule, with 24,869 coins bought in the week of May 11. We gave it 75% odds, slightly too cautious for a company that had bought Bitcoin almost every week for months.",
+      lesson: "Not scored. The filing that settled this was published on May 18, the day we logged it, so it was never a real forecast. It stays listed, and it counts in no score.",
       source: { label: "CoinDesk — Strategy purchases nearly 25,000 more Bitcoin worth more than $2 billion (May 18)", url: "https://www.coindesk.com/markets/2026/05/18/strategy-purchases-nearly-25-000-more-bitcoin-worth-more-than-usd2-billion" },
     },
     {
@@ -640,10 +640,10 @@ export const FORECAST_LEDGER = {
       category: "regulation",
       event: "The Senate Banking Committee votes the CLARITY Act (the crypto rules bill) through its committee stage with Bitcoin classed as a commodity and no more than three amendments.",
       probability: 0.65,
-      outcome: "hit",
-      brier: 0.1225,
+      outcome: "no-resolution",
+      brier: null,
       count: 1,
-      lesson: "The committee cleared it 15 to 9 with Bitcoin's commodity status intact. We gave it 65% odds, a touch too cautious. Our first scored forecast, registered and scored in the same opening week of the ledger.",
+      lesson: "Not scored. We logged this on May 18, four days after the committee vote it describes, so it was never a real forecast. It stays listed, and it counts in no score.",
       source: { label: "CoinDesk — Clarity Act clears the U.S. Senate committee (May 14)", url: "https://www.coindesk.com/policy/2026/05/14/clarity-act-clears-u-s-senate-committee-on-its-way-to-a-final-test-in-congress" },
     },
   ],

@@ -81,7 +81,7 @@ export const DEEP_ANALYSIS = {
       category: "regulation",
       window: "by Dec 18, 2026",
       probability: 0.10,
-      signal: "Last time: we put a repeat vote by September 30 at 5%; none came. Why this number: a motion to reconsider keeps the bill alive, but the Senate returns November 9 to a permitting bill and must fund the government by December 11. No White House negotiator remains on the ethics dispute that sank it; a betting market puts passage at 6%. If a spending fight runs to the deadline, the bill slips to 2027 on timing alone. If yes, a deal on the president's crypto income was found. If no, agency rules are the only U.S. rulebook into 2027.",
+      signal: "Last time: we put a repeat vote by September 30 at 5%; none came. Why this number: a motion to reconsider keeps the bill alive, but the Senate returns November 9 to a permitting bill and must fund the government by December 11. No White House negotiator remains on the ethics dispute that sank it; a betting market puts passage at 6%. If a spending fight runs to the deadline, the bill slips to 2027 on timing alone. If yes, a deal on the ethics provisions was found. If no, agency rules are the only U.S. rulebook into 2027.",
     },
     {
       event: "MSCI's final list on November 11 names Strategy for removal from its indexes at the close on November 30",
@@ -146,7 +146,7 @@ export const DEEP_ANALYSIS = {
         draftProbability: 0.75,
         netDelta: 0.13,
         finalProbability: 0.90,
-        reasoning: "The purchase row (0.75) HIT early on the Oct 13 8-K (250 BTC; $21.0M ATM + $0.5M cash; Brier 0.0625) — Corporate N=10, mean residual −0.32 (eight of ten under-priced). New standalone 0.75 = at least one further purchase in the Oct 19 / Oct 26 / Nov 2 filings: BTC ~$82,000 is 9% above the $75,444 basis; USD Cash $640.5M; the ATM sized down again ($15.7M → $21.0M at mNAV 1.06×, MSTR $151); MSCI's Nov 11 list inside the window (premium compression → the share valve shrinks; cash still buys); the STRC buyback ($192.4M) is the competing use. Not above 0.75: the buy size is trending to zero and the premium is one index headline from 1.0. Nudges: etfs (0.55) +0.10×0.55=+0.055; fed (0.70) +0.07×0.70=+0.049; clarity (0.10) +0.10×0.10=+0.01; sovereign (0.20) +0.07×0.20=+0.014. Sum +0.128 → 0.878 → 0.90.",
+        reasoning: "The purchase row (0.75) HIT early on the Oct 13 8-K (250 BTC; $21.0M ATM + $0.5M cash; Brier 0.0625) — Corporate N=9, mean residual −0.32 (seven of nine under-priced). New standalone 0.75 = at least one further purchase in the Oct 19 / Oct 26 / Nov 2 filings: BTC ~$82,000 is 9% above the $75,444 basis; USD Cash $640.5M; the ATM sized down again ($15.7M → $21.0M at mNAV 1.06×, MSTR $151); MSCI's Nov 11 list inside the window (premium compression → the share valve shrinks; cash still buys); the STRC buyback ($192.4M) is the competing use. Not above 0.75: the buy size is trending to zero and the premium is one index headline from 1.0. Nudges: etfs (0.55) +0.10×0.55=+0.055; fed (0.70) +0.07×0.70=+0.049; clarity (0.10) +0.10×0.10=+0.01; sovereign (0.20) +0.07×0.20=+0.014. Sum +0.128 → 0.878 → 0.90.",
       },
       {
         theme: "sovereign-reserves",
@@ -159,8 +159,8 @@ export const DEEP_ANALYSIS = {
   },
   calibration: {
     aggregateBrier: 0.20,
-    nResolved: 45,
-    briefSummary: "45 predictions scored. Our accuracy score (Brier — lower is better) is 0.20 overall and 0.15 over the last 20. Four calls landed: Strategy's purchase, MSCI's rule and the CFTC's notice all happened as we expected, while a sidechain we gave one-in-three odds of reopening withdrawals did not.",
+    nResolved: 43,
+    briefSummary: "43 predictions scored. Our accuracy score (Brier — lower is better) is 0.20 overall and 0.15 over the last 20. Four calls landed: Strategy's purchase, MSCI's rule and the CFTC's notice all happened as we expected, while a sidechain we gave one-in-three odds of reopening withdrawals did not.",
   },
   sources: [
     { label: "TFTC (Farside Investors data) — U.S. spot Bitcoin ETF daily flows, October 2026: Oct 7 −$487.1 million (IBIT −$207.7M, FBTC −$105.1M), Oct 8 −$244.1M, Oct 9 +$21.1M (week −$681.1M); Oct 12 −$65.4M, Oct 13 +$175.6M, Oct 14 −$261.5M, Oct 15 +$5.1M; month to Oct 15 −$534.8 million", url: "https://www.tftc.io/bitcoin-etf-flows/october-2026" },
