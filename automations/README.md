@@ -22,6 +22,7 @@ Editorial rules that span automations live in `SCOPE.md` (single source of truth
 | `/refresh-headlines-archive` | `SIX_MONTH_HIGHLIGHTS` | monthly |
 | `/refresh-adoption` | `COMPANY_HOLDINGS` (weekly), `COUNTRY_HOLDINGS` (monthly), `ADOPTION_INDEX_TOP20` + `ADOPTION_DATA` (quarterly) | mixed |
 | `/refresh-fallbacks` | `FALLBACK_PRICE`, `FALLBACK_ATH`, `FALLBACK_ATH_DATE`, `FALLBACK_MINED`, `FALLBACK_BLOCK` | quarterly |
+| `/publish-weekly` | The Publisher — runs `/refresh-all`, `npm test`, commits `src/data/` + `automations/` on `master`, pushes (GitHub Pages deploys), records `automations/publish-weekly/last-run.md` | Monday 06:00 ET (desktop scheduled task) |
 | `/refresh-all` | Orchestrator — runs fallbacks (Haiku 4.5), adoption and headlines-archive (Sonnet 5.5) and market-news (Fable 5.1) as parallel sub-agents (Phase 1), then deep-analysis on Fable 5.1 (Phase 2), the Editor on Opus 5.5 and a Haiku cold-read test, single rebuild at end | on demand |
 
 Out of scope for every command: Thesis tab, Strategy tab, live-API code, URL constants, `PRICE_CHART_RANGES`, `TABS` (see `SCOPE.md` § "Out of scope").

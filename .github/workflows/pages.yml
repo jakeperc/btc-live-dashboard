@@ -1,6 +1,6 @@
 # Build the dashboard and publish dist/ to GitHub Pages (bitcoin.jakepercy.com).
-# Runs on every push to master. The weekly refresh arrives as a pull request that
-# Jake merges, so a merge is what ships a new week.
+# Runs on every push to master. The Monday automation (/publish-weekly) commits the
+# weekly refresh on master and pushes, so that push is what ships a new week.
 name: Deploy site
 
 on:

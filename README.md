@@ -27,7 +27,7 @@ src/
   styles.css               tokens (--elev-*, --fs-*) and the elevation material system
 scripts/                   build and check scripts (Node ESM, no dependencies)
 automations/               one playbook per refresh skill, plus the analyst memory
-.github/workflows/          pages.yml (build + publish to GitHub Pages), ci.yml (pull-request checks)
+.github/workflows/          pages.yml (build + publish to GitHub Pages on every push to master), ci.yml (pull-request checks)
 ```
 
 ### `src/data/` — content modules and their owners
@@ -56,7 +56,7 @@ Tabs and in-page sections are addressable as `#/<tab>/<anchor>`, defined in one 
 
 ## How the analysis is written
 
-The weekly analysis, the headline cards and the adoption updates are written by AI agents (Claude models running the playbooks in `automations/`), not typed by hand. Jake Percy designed the pipeline and has refined it since May 2026 until the output reads the way he wants his own writing to read: plain enough for a newcomer, tied to primary sources, and open about what it got wrong. Each weekly update arrives as a pull request, and nothing ships until he reviews and merges it.
+The weekly analysis, the headline cards and the adoption updates are written by AI agents (Claude models running the playbooks in `automations/`), not typed by hand. Jake Percy designed the pipeline and has refined it since May 2026 until the output reads the way he wants his own writing to read: plain enough for a newcomer, tied to primary sources, and open about what it got wrong. Each weekly update is committed and published by the Monday automation; the build and test gates run twice (locally before the push, then in `pages.yml` before anything is served), and he reviews the result on the live page.
 
 What that refinement consists of, all of it in this repository:
 
@@ -106,7 +106,7 @@ npm test               # check:schema, the glossary-matcher regression tests, th
 
 `scripts/render-seo.mjs` regenerates a text rendition of the curated content on every build, so crawlers that never run JavaScript still read this week's analysis. After any `src/data/*.js` edit, rebuild.
 
-Deployment is GitHub Pages. Every push to `master` runs `.github/workflows/pages.yml`: `npm ci`, the build, `npm test`, then publish `dist/` to bitcoin.jakepercy.com. Weekly refreshes arrive as pull requests, checked by `ci.yml`, and ship when merged. The old addresses, jakepercy.com/bitcoin/ and nati-crypto.com/bitcoin/, redirect here.
+Deployment is GitHub Pages. Every push to `master` runs `.github/workflows/pages.yml`: `npm ci`, the build, `npm test`, then publish `dist/` to bitcoin.jakepercy.com. Weekly refreshes are committed on `master` by the Monday automation (`/publish-weekly`, see `automations/publish-weekly/README.md`) and ship on push; other changes arrive as pull requests, checked by `ci.yml`. The old addresses, jakepercy.com/bitcoin/ and nati-crypto.com/bitcoin/, redirect here.
 
 ## llms.txt
 
