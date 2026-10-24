@@ -3,6 +3,9 @@ dist
 .vite
 *.log
 .DS_Store
+.env
+.env.*
+!.env.example
 
 # check:plain transients. The pre-Editor snapshot carries a full copy of each data
 # file (it is the restore source when the numeric invariant fails), so it must never
