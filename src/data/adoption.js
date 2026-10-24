@@ -66,10 +66,10 @@ export const COUNTRY_HOLDINGS = [
 ];
 
 export const COMPANY_HOLDINGS = [
-  { company: "Strategy",          ticker: "MSTR", country: "🇺🇸", btc: 848250, method: "Treasury reserve (funded by stock and debt sales)", status: "Active accumulation — purchased 584 BTC in October" },
+  { company: "Strategy",          ticker: "MSTR", country: "🇺🇸", btc: 848517, method: "Treasury reserve (funded by stock and debt sales)", status: "Active accumulation — purchased 851 BTC in October" },
   { company: "Metaplanet",        ticker: "3350", country: "🇯🇵", btc: 44000,  method: "Treasury — equity / bond financed",            status: "Second-largest corporate holder — added a net 1,000 BTC in July–September" },
   { company: "Twenty One Capital", ticker: "XXI", country: "🇺🇸", btc: 43514,  method: "Bitcoin-only treasury (Tether / SoftBank / Bitfinex)", status: "Cantor-backed Bitcoin holding company" },
-  { company: "Strive",            ticker: "ASST", country: "🇺🇸", btc: 35595,  method: "Treasury (Asset Entities merger)",             status: "Bought about 6,100 BTC since Oct 2 — now fourth-largest" },
+  { company: "Strive",            ticker: "ASST", country: "🇺🇸", btc: 36818,  method: "Treasury (Asset Entities merger)",             status: "Bought about 7,400 BTC since Oct 2 — now fourth-largest" },
   { company: "MARA Holdings",     ticker: "MARA", country: "🇺🇸", btc: 35577,  method: "Self-mined + open-market purchases",            status: "Partial BTC sale Mar 2026 — pivoting toward AI infrastructure" },
   { company: "Bitcoin Standard Treasury", ticker: "BSTR", country: "🇺🇸", btc: 30021, method: "Bitcoin-only treasury company",   status: "Active accumulation" },
   { company: "Bullish",          ticker: "BLSH", country: "🇺🇸", btc: 24300,  method: "Exchange treasury (post-IPO)",                 status: "Active treasury" },

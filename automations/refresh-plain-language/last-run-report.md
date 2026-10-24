@@ -1,108 +1,167 @@
-# Editor — last run report, 2026-10-07
+# Editor — last run report, 2026-10-24
 
-Verify: `npm run check:plain -- --verify` → **exit 1** (structural 0 · hard/editable 0 · hard/locked 0 · soft 40; the 15:35 baseline was soft 46). Invariants verified for 60 cards against `.invariants-2026-10-07T15-35-14-237Z.json`; **no rule-20 numeric drift**. Two runs: the first (soft 41) showed one finding I had introduced — the checker tokenised `watchList[3].signal` at 101 words against its 100 cap after my swap of "miss this letter" for "not count as a yes"; a one-word trim ("would count as a no", which maps to the field's own "If no" branch) fixed it, and the single permitted re-run is the result above. The six soft findings the orchestrator flagged (`body[2]`, `body[3]`, `body[4]`, `contrarianTake.body`, `watchList[0].signal`, `watchList[4].signal`, average sentence 23–25) have all cleared.
+Verify: `npm run check:plain -- --verify` gave **exit 1** (structural 0 · hard/editable 0 · hard/locked 0 · soft 36; the 21:04 baseline was soft 47). Invariants were verified for 65 cards against `.invariants-2026-10-24T21-04-42-398Z.json`, with **no rule-20 numeric drift**. There was one fix-and-re-run cycle. The first run (soft 37) showed one regression of mine: `CURATED[0].detail` came to 152/150 on the checker's tokeniser (en-dash ranges count differently from a whitespace split) after I split two sentences. I trimmed three tokens ("it", the joining "and" once Meta and the chip stocks became two sentences, and the second "its"), and the single permitted re-run is the result above. (The first run was invoked twice, once more with output discarded, only to capture its exit code; the files were identical both times.) Every soft finding the orchestrator flagged in editable fields has cleared: `contrarianTake.body`, `crossCurrents[1]` and `[2].body`, `body[2]`, `body[4]`, `watchList[0].signal`, `resolved[0].lesson`, the `CURATED[0..2].detail` averages and the `MARKET_THEME.narrative` average.
 
-**Memory-directory audit:** `automations/refresh-deep-analysis/memory/` and `automations/refresh-market-news/last-run-artifacts.md` were NOT read — not listed, not grepped, not opened. Nothing under `src/` outside `src/data/` was read. Files opened, in full: `automations/refresh-plain-language/README.md`, `SCOPE.md` lines 45–150 (the `## ` heading grep touched nothing else), `reader-feedback.md`, `house-dialect.txt`, `src/data/glossary.js`, `last-check.md`, the previous `drafter-notes.md` and `last-run-report.md`, `src/data/market-news.js`, `src/data/deep-analysis.js`, `src/data/forecast-ledger.js`, `src/data/adoption.js`, `src/data/headlines.js` (context), `src/data/fallbacks.js` (context). No script source was read this week. No `$ARGUMENTS`: no force, no strict, no reader feedback. `adoption.js` untouched (no hint); `headlines.js`, `fallbacks.js`, `forecast-ledger.js` byte-identical.
+**Memory-directory audit:** `automations/refresh-deep-analysis/memory/` and `automations/refresh-market-news/last-run-artifacts.md` were **not read**: not listed, not grepped, not opened. Nothing under `src/` outside `src/data/` was read, and no script source was read. Files opened: `automations/refresh-plain-language/README.md`; `SCOPE.md` lines 45–150 (a `## ` heading grep touched nothing else); `reader-feedback.md`; `house-dialect.txt`; `last-check.md` (the baseline, then each verify's output); the previous `last-run-report.md` and `drafter-notes.md`; a directory listing of `automations/refresh-plain-language/`; `src/data/glossary.js`; `src/data/deep-analysis.js` (in full); `src/data/market-news.js` (in full); `src/data/forecast-ledger.js` (lines 1–120, a grep of every `lesson:` line, line 113, and `git diff`); `src/data/adoption.js` (lines 1–40, a grep of the `method`/`status` lines, and `git diff`); `src/data/headlines.js` and `src/data/fallbacks.js` (context only); and `git diff --stat` over `src/data/`. A final repo-wide `git status --short` printed modified file *names*, including paths under the memory directory and the artifacts file. No contents were shown or opened. From the invariants snapshot JSON I read only the key structure, and I extracted its copies of the three edited files to the session scratchpad to measure before and after. (`deep-analysis.js` itself carries `themeInteractions.adjustments[].reasoning`, written in ledger dialect. It is in the data file, not the memory directory. The checker does not register it and it is not on my editable list, so I left it alone.) No `$ARGUMENTS`: no force, no strict, no reader feedback. `adoption.js`, `headlines.js` and `fallbacks.js` are byte-identical: nothing in adoption's `method`/`status` failed a reader (the "851 BTC in October" total matches 334 + 250 + 267).
 
-## Fields touched: 12 (1 in market-news.js, 11 in deep-analysis.js, 0 in forecast-ledger.js)
+## Fields touched: 18 (13 in deep-analysis.js, 4 in market-news.js, 1 in forecast-ledger.js)
 
 | field | words before → after | longest sentence before → after |
 |---|---|---|
-| CURATED[0].detail | 149 → 149 | 37 → 37 |
-| primaryAnalysis.body[2] | 120 → 120 (cap 120) | 34 → 28 |
-| primaryAnalysis.body[3] | 117 → 119 | 35 → 27 |
-| primaryAnalysis.body[4] | 118 → 118 | 31 → 24 |
-| primaryAnalysis.body total | 565 → 567 (cap 650) | — |
-| crossCurrents[0].body | 148 → 149 | 34 → 34 |
-| crossCurrents[1].body | 150 → 150 (cap 150) | 40 → 40 |
-| watchList[0].signal | 96 → 96 | 36 → 36 |
-| watchList[3].signal | 100 → 100 (cap 100) | 26 → 26 |
-| watchList[4].signal | 100 → 100 (cap 100) | 45 → 29 |
-| contrarianTake.plain | 37 → 38 | 23 → 24 |
-| contrarianTake.body | 150 → 149 | 35 → 31 |
-| calibration.briefSummary | 58 → 59 | 32 → 32 |
+| plainSummary | 43 → 43 | 29 → 29 |
+| marketContext | 98 → 99 (cap 100) | 31 → 32 |
+| primaryAnalysis.body[1] | 111 → 113 | 24 → 26 |
+| primaryAnalysis.body[2] | 121 → 120 (cap 120) | 29 → 26 |
+| primaryAnalysis.body[3] | 112 → 116 | 24 → 24 |
+| primaryAnalysis.body[4] | 121 → 119 | 23 → 23 |
+| primaryAnalysis.body total | 582 → 585 (cap 650) | — |
+| crossCurrents[0].body | 149 → 150 (cap 150) | 28 → 28 |
+| crossCurrents[1].body | 158 → 149 | 33 → 28 |
+| crossCurrents[2].body | 170 → 150 (cap 150) | 26 → 25 |
+| watchList[0].plain | 32 → 33 | 21 → 21 |
+| watchList[0].signal | 101 → 99 | 33 → 33 |
+| contrarianTake.plain | 43 → 44 | 26 → 27 (opening sentence 10 → 11) |
+| contrarianTake.body | 165 → 150 (cap 150) | 32 → 30 |
+| MARKET_THEME.narrative | 90 → 88 | 26 → 25 (average 18.0 → 14.7) |
+| CURATED[0].detail | 147 → 147 (checker: 149) | 33 → 29 (average 24.5 → 18.4) |
+| CURATED[1].detail | 150 → 150 | 35 → 35 (average 25.0 → 18.8) |
+| CURATED[2].detail | 148 → 149 | 31 → 30 (average 24.7 → 18.6) |
+| FORECAST_LEDGER.resolved[0].lesson | 45 → 45 | 27 → 27 (average 22.5 → 15.0) |
 
-Untouched, byte-identical (words / longest sentence): MARKET_THEME narrative 90/34, whyItMatters 58/25, wouldChange 22, milestone 58/20 · CURATED[0] plain 25, wouldChange 28 · CURATED[1] plain 25, detail 149/36, wouldChange 24 · CURATED[2] plain 24, detail 144/32, wouldChange 27 · CURATED[3] plain 28/22, detail 148/36, wouldChange 30 · headline 19 · plainSummary 45/23 · marketContext 100/29 · primaryAnalysis.plain 40/19 · body[0] 104/34, body[1] 106/27 · crossCurrents titles and plains (30, 28, 29) · crossCurrents[2].body 150/25 · watchList plains 32, 28, 27, 26, 32, 30 · signals [1] 85/40, [2] 97/34, [5] 94/29 · FORECAST_LEDGER summary.plain 40, byCategory plains 27, 28, 25, 22, 23, every lesson.
+(Counts are a whitespace split; the checker differs by a token or two on en-dash ranges.)
 
-**Edit volume: 12 fields; about 60 tokens removed and 62 added (net +4 words), of which 26 are punctuation- or capitalisation-only tokens from six sentence splits at semicolons and one colon.** Substantive words changed: roughly 35 out, 38 in. Prior runs: 2026-08-24 about 120 words / 9 fields; 2026-09-13 88 / 8; 2026-09-26 272 / 17. The number fell sharply from last week. Cause: the writers glossed Strategy, the ETFs, the Federal Reserve and the 30-year yield at first use in almost every card, so only one Tier 1 term ("tightening") reached this pass undefined. Two patterns remain and belong in the writer prompts: semicolon-joined 28–45-word sentences (six fields averaged 23–25 words per sentence; every one split with no word change), and ledger idiom inside `signal` fields ("miss this letter", "held", "capped").
+Untouched, byte-identical (words / longest sentence): headline 19 · primaryAnalysis.plain 41/21 · body[0] 117/42 · every crossCurrents title and plain (29, 30, 30) · watchList plains [1]–[5] (35, 29, 31, 32, 35) and signals [1]–[5] (92, 99, 100, 93, 96) · calibration.briefSummary 44/25 · MARKET_THEME whyItMatters 58/21, milestone 57/19, wouldChange 30 · CURATED plains (27, 29, 30, 29) and wouldChange (28, 28, 27, 28) · CURATED[3].detail 150/41 · FORECAST_LEDGER summary.plain 41, all six byCategory plains, every other lesson. Read-only fields (`falsificationConditions[]`, `watchList[].event`, `resolved[].event`, `themeTitle`, `CURATED[].title`, every number) are untouched; no glyph substitution was needed.
+
+**Edit volume: 18 fields; about 195 tokens removed and 155 added (net −40).** About 25 tokens on each side are punctuation or capital-letter changes from eleven semicolon-to-full-stop splits. Prior runs: 2026-08-24 ~120 words / 9 fields; 09-13 88 / 8; 09-26 272 / 17; 10-07 ~60 / 12; 10-16 ~315 / 27 (two passes, cold-read driven). The number rose from Oct 7's low. Cause: the writers handed over five fields above cap (120–170 against caps of 120 and 150) and four at 22.5–25 words per sentence. Most of the volume is trimming to cap, which belongs in the writer prompts ("write to the cap"), not in a harder Editor.
 
 ## Probability bands
 
 | field | p | band phrase used |
 |---|---|---|
-| plainSummary | 0.55 | "slightly more likely than not" (unchanged) |
-| primaryAnalysis.plain | 0.55 | "slightly more likely than not" (unchanged) |
-| primaryAnalysis.body[3], first sentence (Tier 1) | 0.55 | "slightly more likely than not" — rewritten from "We still lean toward …, but only just", which had no band phrase; "still" kept, "only just" carried by "slightly" |
-| CURATED[0].plain (one-in-five October rise) | ~0.20 | "possible but less likely than not" (unchanged) |
-| CURATED[0].detail "A rise by December remains likely" | 0.843 market-implied | "likely" (the writer's; one band below the number, never above — left) |
-| watchList[0].plain | 0.70 | "likely" (unchanged) |
+| plainSummary | 0.35 | "possible but less likely than not" (unchanged; "surviving our test" became "holding through October") |
+| primaryAnalysis.plain | 0.35 | "possible but less likely than not" (unchanged) |
+| body[2] | 0.35 | "possible but less likely than not" (unchanged) |
+| body[3] "A pause is likely" | 0.75 | "likely" (unchanged) |
+| marketContext: October rise / December rise | ~0.10 / ~0.73–0.75 market-implied | "unlikely" / "likely" (reworded from "while December stays likely", same bands) |
+| CURATED[0].plain | ~0.10 / ~0.75 | "unlikely" / "likely" (unchanged) |
+| watchList[0].plain | 0.75 | "likely" (unchanged; "the live meeting" became "the meeting to watch") |
 | watchList[1].plain | 0.55 | "slightly more likely than not" (unchanged) |
-| watchList[2].plain | 0.75 | "likely" (unchanged) |
-| watchList[3].plain | 0.65 | "likely" (unchanged) |
-| watchList[4].plain | 0.55 | "slightly more likely than not" (unchanged) |
-| watchList[5].plain | 0.20 | "possible but less likely than not" (unchanged) |
-| contrarianTake.plain | 0.25 | "possible but less likely than not" (unchanged; sentence 1 reworded, sentence 2 byte-identical) |
+| watchList[2].plain | 0.55 | "slightly more likely than not" (unchanged) |
+| watchList[3].plain | 0.75 | "likely" (unchanged) |
+| watchList[4].plain | 0.80 | "likely" (unchanged) |
+| watchList[5].plain | 0.10 | "unlikely" (unchanged) |
+| contrarianTake.plain | 0.20 | "possible but less likely than not" (unchanged; "it trades as protection" became "it could trade as protection") |
 
-Every hedge in the source survived: "still", "only just" (now "slightly"), "could", "reportedly", "partly", "remains the live middle path", "possible but less likely than not". One hedge was added, never removed: "is paused" became "looks paused" in `crossCurrents[1].body`, which had stated the 0.55 thesis flat.
+Hedges: none removed. Five were added where the prose was flatter than its probability: "could trade" (contrarianTake.plain, and .body in place of "Bitcoin trades with gold" under a 20% call), "may pass unnoticed" (crossCurrents[0], whose own plain line says "may not rescue it"), "could be sold" in place of "become supply" (crossCurrents[1]), and "currently pays" in place of "pays a fixed" (body[4], matching CURATED[2]'s own "currently pay").
 
 ## Three worst offenders
 
-**1. `contrarianTake.body` — an undefined noun, a noun stack, a house-dialect variant and a 35-word sentence, all at the 150 cap.**
-> Before: "A 30-year Treasury paying 5.7%, its most since 2002, with $40 trillion of debt to refinance and oil above $100, is a global reset of what safe money earns. On October 7 stocks, gold and Bitcoin fell together on one yield spike; gold has lost 5% in two weeks, so … the central bank's own path eased, and Strategy keeps buying."
-> After: "A 30-year U.S. government bond paying 5.7%, its most since 2002, with $40 trillion of debt to refinance and oil above $100, resets what safe money earns worldwide. On October 7 stocks, gold and Bitcoin fell together as yields spiked. Gold has lost 5% in two weeks, so … the central bank's own rate-rise threat eased, and Strategy keeps buying."
+**1. `contrarianTake.body`: 165/150, an opaque opener, and a 20% call stated as fact.**
+> Before: "The optimist's read is about the driver, not the Fed. Bitcoin is walking into oil at $117, household inflation expectations at 4.7%, a central bank that cannot cut and a bond market where the 10-year yield fell below 5% on fear. That is the setup in which gold ran to $5,600 in January. … Once they do, … Bitcoin trades with gold rather than with the Nasdaq."
+> After: "The optimist points to the backdrop: oil at $117, households expecting 4.7% inflation, a central bank that cannot cut rates, and the government's 10-year borrowing rate below 5% on fear. Gold ran to $5,600 in January in a similar setup. … Once they do, … Bitcoin could trade with gold rather than with the Nasdaq." (Also "were closed out by force on Saturday" became "on Saturday … were force-closed". The test sentence and the "We put it at 20% because…" sentence are byte-identical.)
 
-**2. `crossCurrents[1].body` — a flat claim against a 0.55 thesis, and a number that read as the amount spent rather than the amount held.**
-> Before: "…the two buyers, the stock-market funds and Strategy (…), bought together. Both are still buying, so the rally is paused, not over. … at or below it, the company uses cash, $833 million. … index funds would then have to sell its shares, pressing the gap."
-> After: "…the stock-market funds and Strategy (…) bought together. Both are still buying, so the rally looks paused, not over. … at or below it, the company spends from its $833 million of cash. … index funds would then have to sell its shares, narrowing the gap." ("the two buyers," paid for the three-word gloss; "Both" and "bought together" carry it.)
+**2. `crossCurrents[1].body`: 158/150, with a private-dialect mechanism sentence.**
+> Before: "…the funds netted $301 million, and Strategy, the company that holds more Bitcoin than any other, bought 267 coins. The buying that remains is funded by preferred shares (shares that promise a fixed yearly payout ahead of ordinary shareholders). Strategy spent $193 million buying back its 12% shares, nine times its coin spending: retiring 12% paper beats buying a non-yielding asset when its share price barely exceeds the value of its Bitcoin. … Those payouts are due in cash every month; … those coins become supply."
+> After: "…the funds netted $301 million, and Strategy, the biggest corporate holder, bought 267 coins. The buying that remains is funded by shares that promise investors a yearly payout. Strategy spent $193 million buying back its 12% shares, nine times its coin spending. While its stock is worth barely more than its Bitcoin, buying back 12% shares beats buying a coin that pays nothing. … Those payouts are due monthly in cash. … those coins could be sold." (The condition "while its stock is worth barely more than its Bitcoin" is kept.)
 
-**3. `contrarianTake.plain` and `CURATED[0].detail` — "tightening" / "tightened" as the load-bearing word of a Tier 1 line and a Tier 2 pivot.**
-> Before: "the bond market is now doing the tightening the central bank stopped" / "Yet the bond market tightened anyway."
-> After: "the bond market is now raising borrowing costs where the central bank stopped" / "Yet long-term borrowing costs rose anyway."
+**3. `crossCurrents[2].body`: 170/150, with an undefined "stablecoin" and an untranslatable "unstable correlation".**
+> Before: "…finished the first stablecoin rulebook on October 21, … JPMorgan's fund arm put a range on Bitcoin's returns for the first time but calls its unstable correlation the obstacle. This week showed why: rules and products arrive faster than laws, and none of them stops Bitcoin trading like a technology stock on a bad day."
+> After: "…finished the first rulebook for stablecoins, tokens fixed at one dollar, on October 21, … Rules and products arrive faster than laws, but none stops Bitcoin trading like a technology stock on a bad day."
 
-Other rewrites: `body[3]` opening sentence to the band phrase (above) and "all passed: the week" → "all passed. The week"; `body[2]` and `body[4]` semicolons → full stops (no word changed); `crossCurrents[0].body` "with the 30-year yield at 5.7%" → "with the 30-year government bond paying 5.7%" (the card's own title says "the 30-year bond"); `watchList[0].signal` the 27-word "Last time" clause split at its semicolon; `watchList[3].signal` "could also skip to a full proposal, which would miss this letter" → "could skip to a full proposal, which would count as a no"; `watchList[4].signal` the 45-word sentence split at "; but"; `calibration.briefSummary` "Our one miss was costly" → "Our one wrong call was costly" (the ledger row it describes renders as a "hit", so the two senses collided on one page).
+Other rewrites:
+- `plainSummary`: "surviving our test" became "holding through October" (an undefined in-house term in a Tier 1 line; the word count is unchanged).
+- `marketContext`: "the 10-year Treasury yield" became "the government's 10-year borrowing rate" (the term was undefined on this card), and "a rate rise is unlikely while December stays likely" became "a rise is unlikely then but likely by December".
+- `body[1]`: "under-water holders tend to sell bounces" became "such holders tend to sell when prices recover".
+- `body[2]`: the semicolon became a full stop. The restating clause "The price risk is gone, the flow risk is a coin toss" was cut, and "came close to our $1 billion danger line" became "…, as borrowed bets were closed out, came close to $1 billion, a one-day level that would also fail the test" (a ledger leak and an undefined "forced selling").
+- `body[3]`: "would revive December rate-rise talk, now at about three in four" became "would push the odds of a December rate rise, now about three in four, higher". "Revive" contradicted odds that already stood at 75%.
+- `body[4]`: "nearly nine times as much" (no referent on the card) became "nearly nine times its coin spending", "a fixed 12%" became "currently pays 12%", and "keeping faith in 12% to 15% payouts; … tests that faith" became "trusting 12% to 15% payouts. … tests that trust".
+- `crossCurrents[0].body`: "while bonds rally, investors are raising cash, not re-pricing interest rates" became "while investors buy government bonds, they are raising cash, not reacting to interest rates". The signpost "That changes what October 28 can do." was folded into "So a Federal Reserve pause on October 28 helps…", and the semicolon was split.
+- `watchList[0].signal`: "We move up one notch" became "We raise it".
+- `MARKET_THEME.narrative`: "Then" was removed (the card's own source dates the diplomat order October 21, before the October 22 rout), and the 28-word sentence was split.
+- `CURATED[0..2].detail` and `resolved[0].lesson`: sentence splits at semicolons and joining "and"s, with no other word change except "they gave" in CURATED[0].
 
 ## Substantive cuts
 
-None. No sentence was removed and no number was deleted. Two connective fragments went: "the two buyers," in `crossCurrents[1].body` (meaning carried by "bought together" and "Both") and "also" in `watchList[3].signal`.
+1. `crossCurrents[2].body`: "JPMorgan's fund arm put a range on Bitcoin's returns for the first time but calls its unstable correlation the obstacle." plus the bridge "This week showed why:". "Unstable correlation" cannot be made plain inside the 150 cap. JPMorgan's forecast stays on the page in `CURATED[3]` (plain and detail). The sentence had no digits.
+2. `primaryAnalysis.body[2]`: "The price risk is gone, the flow risk is a coin toss," which restates "The price part is settled" and "The flow part is on a knife edge". No number.
+3. `crossCurrents[1].body`: the gloss "(shares that promise a fixed yearly payout ahead of ordinary shareholders)" and the term "preferred". The rewrite no longer needs the word, and "fixed" conflicted with STRC's "currently pay 12%".
+4. `contrarianTake.body`: the opener "The optimist's read is about the driver, not the Fed." and "Bitcoin is walking into", replaced by "The optimist points to the backdrop:". The "not the Fed" contrast is gone.
+
+**No number was deleted.** Rule 20 confirms it.
 
 ## Glossary proposals (unsourced by me; the drafter appends with a URL)
 
-Treasury yield · share premium / "the gap" (the value of the Bitcoin behind the shares — now written out in six fields) · the Fed (alias) · Strategic Bitcoin Reserve. House-dialect proposals: tighten/tightening, path (bare), letter (ledger idiom), floor (bare). Details and locations in `drafter-notes.md`.
+stablecoin · Treasury yield (carried over) · SEC · OCC · share premium (carried over). Details are in `drafter-notes.md`.
 
 ## Residuals
 
-- Soft findings left as found in editable fields: `FORECAST_LEDGER.resolved[7].lesson` 22.5 average (two sentences at the 45 cap, mine from Sep 26); `resolved[22]`, `[26]`, `[30]` nominalisation findings on old lessons (not reopened — nothing in them fails a reader).
-- Rule 18 duplication (`29,000` ×4, `84,000` ×3, `1,665` ×4) and every finding in `headlines.js`, `thesis.js`, `strategy.js` and `adoption.js` are not mine.
-- "Treasury yield" still bare in `contrarianTake.body` ("the 30-year yield still above 5.6%"), `CURATED[0].wouldChange` and `watchList[1].signal` — the tab defines it in `marketContext`; the durable fix is the glossary entry. "the Fed" remains the shorthand after `marketContext` and `body[0]` name the Federal Reserve.
-- Routed to `drafter-notes.md`: "ethics deal" with no stated dispute in `CURATED[1]`; "ejecting" with no object in `MARKET_THEME.milestone` and `CURATED[2].detail`; "Strategy" unglossed at Tier 1 in `crossCurrents[1].plain` (28/30, no room); `marketContext` "gold fell 5%" with no period; `watchList[0].signal` "written before the September minutes" going stale at 2 p.m.; locked-field dialect (`watchList[1].event` "net flows", `falsificationConditions[3]`).
+- In editable fields, only rule 18 duplication remains (`848517` ×3, `4045` ×5, anchored at body[4]). Removing either would mean cutting a sentence that carries a yardstick, so I left them.
+- Not mine: twelve `HISTORICAL_HIGHLIGHTS` titles over 35, `DRAWDOWN_CAVEAT`, the thesis/strategy long-read findings, `falsificationConditions[2]` (Fog 15, locked) and `resolved[25].event` (locked).
+- Routed to `drafter-notes.md`: the $828M versus $699M figure against the $1B line; Strategy's coins funded by ordinary rather than preferred shares; STRC's fixed versus current rate; the unsourced midterms-and-Iran line in `MARKET_THEME.milestone`; the diplomat-order date; "permitting bill" and "Nasdaq" undefined; CURATED[0..2].plain lacking an owner consequence with no room left; "The next three days" in body[3]; ledger idiom in watchList[1]–[3] signals.
 
 ## Cold-read: intended answers (Tier 1/2 cards)
 
-**MARKET_THEME.** (1) Bitcoin's September rally stalled: the Bitcoin funds' weekly buying fell to a tenth of the week before, and on October 7 the price slipped under $84,000 as long-term U.S. government borrowing costs hit a 24-year high. (2) Big investors are still buying, just far less, and the drag is bond yields rather than Bitcoin news — higher safe interest pulls money away from an asset that pays none. (3) A week ending below $82,500, the low of the past two weeks, would say the rally has reversed rather than paused.
+**MARKET_THEME.** (1) Bitcoin rose to about $84,500 on October 21, then fell under $80,000 on October 24, as technology stocks had their worst day since June and oil passed $116 after attacks on Saudi oil sites and a U.S. diplomatic pull-out. (2) The selling came from war and stock-market fear, not Bitcoin news. Bitcoin is about 8% below its September high, October is on course to be its first losing month after three gains, and fund money came in early in the week and left late. (3) A week ending above $84,000 or two straight weeks of net fund buying would say the dip is over; a week ending under $79,000 would say it is not.
 
-**CURATED[0] (macro).** (1) Weaker inflation and hiring cut the odds of an October Fed rate rise to about one in five, yet the 30-year Treasury yield reached 5.7%, its highest since 2002. (2) Bitcoin pays no interest, so a safe 5.7% a year competes with it even as the central bank backs off; a rise by December is still likely. (3) The 30-year yield back below 5.5%, where it sat on September 25, or September inflation on October 14 below August's 3.4%.
+**CURATED[0] (macro).** (1) After a technology sell-off sent money into government bonds and the 10-year rate under 5%, traders cut the odds of a Fed rate rise on October 28 to one in ten. Oil near $117 keeps a December rise likely, at three in four. (2) The card's own text does not say. The intended answer: the immediate rate threat to an asset that pays no interest has eased, but oil-driven inflation keeps a December rise on the table. (Routed: the plain line has no room left for this.) (3) A surprise rise on October 28, or the 10-year rate back above 5.2% before December.
 
-**CURATED[1] (regulation).** (1) The crypto rules bill is stuck until Congress returns November 9; meanwhile the SEC proposed custody rules and FinCEN withdrew two plans to track private Bitcoin transfers. (2) Rules are arriving by agency instead of by law — faster, but reversible — and two FinCEN reporting proposals for self-hosted wallets and coin mixers were withdrawn. (3) An ethics deal between Senate Democrats and the White House, or a second Senate vote set for November.
+**CURATED[1] (regulation).** (1) The crypto rules bill is stuck until the Senate returns November 9, with a 4% betting-market chance of passing this year. Meanwhile the OCC finished stablecoin rules on October 21 and comments closed on the SEC's token-sale plan. (2) Rules for the businesses around Bitcoin are arriving faster through agencies, but agency rules are easier for the next administration to undo than a law. (3) A named White House crypto adviser plus a Senate vote scheduled for November, or the bill's sponsors conceding it waits for 2027.
 
-**CURATED[2] (corporate).** (1) Strategy, the biggest corporate Bitcoin holder, reopened share sales to buy about 2,000 coins — 0.2% of its 848,000 — and estimates a $20.9 billion third-quarter paper gain. (2) The largest single buyer is still buying, funded by share sales whenever its shares trade above the value of its Bitcoin, and MSCI's October 16 ruling could shut that funding route. (3) A weekly filing with no new shares sold and coins still bought from cash, or any coins sold.
+**CURATED[2] (corporate).** (1) Strategy bought only 267 coins and spent nine times as much, $193 million, buying back its 12% shares. Rival Strive bought 4,045 coins with $630 million raised at a 15% payout. (2) The biggest corporate buyer is slowing, the buying that continues depends on high payouts investors must keep trusting, and MSCI may drop Strategy from its indexes on November 11. (3) Strategy missing from MSCI's final list on November 11, or a weekly filing showing coins sold to pay dividends.
 
-**CURATED[3] (sovereign).** (1) A House committee approved, 28 to 21, a bill writing the U.S. Strategic Bitcoin Reserve into law with a 20-year ban on selling the government's roughly 328,000 coins, but no new buying. (2) It would stop the government selling for 20 years yet adds no demand; a full House vote waits until November and is possible but less likely than not. (3) A full House vote scheduled for the November session, or the Senate Banking Committee taking up a matching bill.
+**CURATED[3] (ETFs).** (1) Switzerland approved its first Bitcoin fund for ordinary savers, BlackRock filed a fund that limits losses to about 10% in exchange for capped gains, and JPMorgan's fund arm assumed a 10% yearly return for Bitcoin for the first time. (2) There are more regulated, more cautious ways into Bitcoin, and a major asset manager now gives it a return forecast, while still calling it speculative. (3) BBIT trading in Zurich in November or a second Swiss approval would strengthen this read; BlackRock withdrawing PBIT or the Swiss fund drawing little money would weaken it.
 
-**DEEP_ANALYSIS primaryAnalysis.** (1) Rate-rise fears eased after weak jobs and softer inflation, but Bitcoin stalled anyway: fund buying fell to a tenth and the 30-year government bond yield hit a 24-year high. (2) The ceiling on Bitcoin is now set by long-term bond yields, which no Fed meeting controls — gold, stocks and Bitcoin all fell together — and keeping September's gains through October is slightly more likely than not. (3) Two straight Fridays below $80,000 before October 31, net selling by the Bitcoin funds in at least three of the five weeks to October 30, Strategy selling any coins, or a $1 billion one-day liquidation or a 15% fall inside seven days.
+**DEEP_ANALYSIS primaryAnalysis.** (1) Bitcoin fell under $80,000 with technology stocks and war-driven oil, even though borrowing costs and rate-rise odds fell. (2) On bad days it trades like a risky stock, so a Fed pause alone may not help. September's rally holding through October is possible but less likely than not, and it hinges on whether fund money comes in during the week ending October 30. (3) A third week of net fund selling (the week ending October 30), any Strategy coin sale, or $1 billion of forced closings in a day or a 15% fall within seven days.
 
-## Cold-read fix pass (same day)
+**crossCurrents[0].** (1) On October 22, rate-rise odds and the 10-year rate both fell, yet $636 million left the Bitcoin funds as the Nasdaq fell 2.6%, and gold fell too. (2) Investors were raising cash, not reacting to rates, so a Fed pause helps Bitcoin only if stocks steady. (3) Money returning to the funds in the week of November 2, after the meeting.
 
-Coordinator result: a context-free reader answered every card; A, B, C and F matched the intended answers. Card D (`CURATED[2]`) merged the 1,665-coin $142.7 million purchase with the 334, missed the 0.2% scale, the share-premium route and the MSCI risk, and got no consequence from "eject it"; the reader named "spot" and "paper gain" as undefined; Card E (`CURATED[3]`) read the 20-year lock as price support. Six fields changed, no read-only field, no new fact or number, no rebuild.
+**crossCurrents[1].** (1) Both big buyers were weak in the same week: the funds netted $301 million, and Strategy bought 267 coins while spending nine times as much on buybacks. Strive bought 4,045 coins with 15% shares. (2) Corporate demand now rests on high payouts due in cash, and if investors lose faith, the 136,000 coins bought this way could be sold. (3) MSCI's November 11 decision.
 
-| field | before → after | words | longest |
-|---|---|---|---|
-| MARKET_THEME.narrative | "The U.S. spot Bitcoin ETFs, funds that hold Bitcoin and trade on the stock market" → "The U.S. Bitcoin ETFs, funds that hold Bitcoin itself and trade on the stock market" (the gloss already was the meaning of "spot"; "itself" keeps it and drops the term, holding the 90 cap) | 90 → 90 (cap 90) | 23 → 23 |
-| CURATED[2].plain | "…to buy 2,000 coins, 0.2% of its pile, and reports a $21 billion paper gain." → "…to buy 2,000 coins, only 0.2% of its pile. It reports a $21 billion paper gain, not yet cashed in." (scale emphasised; "paper gain" defined at first editable use — the title is read-only; split so the opening sentence is 18) | 24 → 29 (cap 30) | 24 → 18 |
-| CURATED[2].detail | "That did not last. Its September 28 filing shows 1,665 Bitcoin bought for $142.7 million, paid entirely by selling new shares; its October 5 filing shows 334 more, mostly from share sales." → "Two filings since show 1,665 coins bought for $142.7 million on September 28, all from new share sales, then 334 more on October 5, mostly from share sales." (cost tied to the right purchase in one sentence); "switching its dividends to daily payment" → "paying its dividends daily"; "decides October 16 whether to eject it." → "decides October 16 whether to drop it; those funds would then have to sell its shares." (consequence follows from the card's own "whose lists many funds copy" and is stated verbatim in `watchList[4].plain`) | 144 → 147 (cap 150) | 32 → 29 |
-| CURATED[3].plain | "into law, with a 20-year sales ban but no new buying." → "into law: a 20-year sales ban, no new buying, so no new demand." | 28 → 30 (cap 30) | 22 → 24 |
-| primaryAnalysis.body[0] | same "spot" → "itself" swap as the narrative | 104 → 104 | 34 → 34 |
-| primaryAnalysis.body[4] | "It booked a $20.9 billion paper gain for the quarter after losing $22.8 billion in the first half." → "Its $20.9 billion paper gain for the quarter, not yet cashed in, follows a $22.8 billion first-half loss." ("paper gain" defined at its first use on the Analysis tab) | 118 → 118 (cap 120) | 24 → 24 |
+**crossCurrents[2].** (1) With the CLARITY Act stuck until at least November 9, agencies (the OCC's stablecoin rules, the SEC, the CFTC) and Switzerland are building the rules and products instead. (2) Rules and products arrive faster than laws, but none of them stops Bitcoin falling like a technology stock on a bad day. (3) A second Senate vote before December 18, which is unlikely.
 
-Verify: `npm run check:plain -- --verify` → **exit 1** (structural 0 · hard/editable 0 · hard/locked 0 · soft 40 — unchanged; no finding on any field above). Invariants verified for 60 cards, **no rule-20 numeric drift**. Cuts: "That did not last." (connective, no fact) and the word "spot" twice (meaning carried by "itself"); no number deleted. Edit volume this pass: 6 fields, about 50 tokens out and 58 in, net +10 words; combined day: 17 distinct fields, net +14 words.
+**contrarianTake.** (1) Today Bitcoin is being sold like a technology stock. (2) With oil at $117, households expecting 4.7% inflation and a central bank that cannot cut, Bitcoin could trade as protection, as gold did in January, once forced sellers run out. That is possible but less likely than not. (3) A week ending above $87,570 by December 31, with oil above $100 and technology stocks below their October 21 level.
 
-Still failing, routed to `drafter-notes.md`: the share-premium funding route is absent from `CURATED[2]` (it lives in `body[4]`; borrowing it needs a cut at 147/150); "spot" in the read-only `watchList[1].event`, `falsificationConditions[1]` and source labels; "paper gain" in the read-only `CURATED[2].title` and `HISTORICAL_HIGHLIGHTS[1]`; `CURATED[3].detail` (148/150) states "buys no more coins" without the "no demand" consequence.
+## Second pass (cold-read revision, Step 4.5.4)
+
+The coordinator's cold reader failed question 2 ("why does it matter to someone who owns Bitcoin") on CURATED[0]–[3] and plainSummary/marketContext, and question 3 ("what would change the author's mind") on crossCurrents[1] and [2]. It also flagged undefined terms and two apparent figure conflicts. Every fix below draws on material already on the card or the page. No fact, number or source was added, and read-only fields are byte-identical.
+
+| field | words: pass 1 → pass 2 | what changed |
+|---|---|---|
+| plainSummary | 43 → 44 | "rally" became "rise". The two-clause sentence was split. Fund money is tied to the outcome: "It depends on Bitcoin funds, big buyers this year, drawing money the week the U.S. central bank meets." ("big buyers this year" is from crossCurrents[1]) |
+| marketContext | 99 → 100 (cap 100) | "36% below its peak" became "36% below its all-time high", against MARKET_THEME's "8% below its September high" |
+| body[1] | 113 → 114 | "the first in three" became "after two weeks of selling". This agrees with watchList[1] and body[2]: two of four weeks positive so far |
+| body[2] | 120 → 119 | "$828 million of forced selling, as borrowed bets were closed out" became "$828 million of forced closings, on borrowed bets in both directions". contrarianTake's "$699 million … on a rising Bitcoin price" was already labelled and is unchanged |
+| crossCurrents[1].body | 149 → 149 | Q3 added: "A reprieve would ease the strain; a coin sale would confirm it." (from CURATED[2].wouldChange). To fit: "behind this year's gains" became "This year's two big buyers", the payout sentence was tightened, and the Fidelity sentence was cut |
+| crossCurrents[2].body | 150 → 150 | Q3 added: "A Senate vote set for November would change this read; the bill's sponsors conceding 2027 would confirm it." (from CURATED[1].wouldChange). To fit, the SEC/CFTC comment-window sentence was cut |
+| watchList[0].plain | 33 → 30 | "After September's rate rise, a stock sell-off cut the odds of another next week to one in ten. So holding rates steady is likely; December is the meeting to watch." This explains the event's "second rise" and replaces the bare "pause". "pushed borrowing costs down" went (it is still in crossCurrents[0] and marketContext). The band "likely" for 0.75 is unchanged |
+| CURATED[0].detail | 147 → 146 | Opens with the consequence: "Bitcoin pays no interest, so rate rises work against it. October's risk has faded; December's has not." The Meta/chip-stock sentences became "That day a stock sell-off sent money to the safety of government bonds." |
+| CURATED[0].wouldChange | 28 → 27 | "would put rate pressure back at the center of this read" became "would make rates the main weight on Bitcoin's price again" |
+| CURATED[1].detail | 150 → 147 | "investment contracts" became "shares"; "A betting market puts…" became "Bettors give passage this year a 4% chance"; "crypto council" became "The White House office that advises on crypto". GENIUS Act is glossed as "last year's stablecoin law". "comments closed" became "the window for public comments closed". It closes on the consequence: "…easier to undo, so until Congress acts, U.S. rules around Bitcoin can change with each administration." The NY attorney general / 140 comments sentence and "reserves, redemption and audits" were cut |
+| CURATED[2].detail | 149 → 150 (cap 150) | The Strategy gloss was shortened. "filing" became "filing with regulators"; "7% ahead" became "it is about 7% in profit"; buybacks are "instead of buying coins"; "index company" became "the company whose stock lists many funds copy"; "provisional" became "draft". Q2 added: "If it is dropped, those funds must sell its shares, and selling new shares to buy Bitcoin gets harder." The $3 billion budget and cash sentences were cut |
+| CURATED[2].wouldChange | 27 → 28 | "to pay dividends" became "to pay its shareholders" |
+| CURATED[3].detail | 150 → 149 | Opens with: "Two new funds open Bitcoin to ordinary and cautious savers, but they move the price only if money comes in." "debt notes" became "IOUs from their issuers"; "The issuer, BIT Asset Management, expects its BBIT fund to list in Zurich" became "Its maker expects it to start trading in Zurich"; PBIT and IBIT were removed ("its existing Bitcoin fund"). The 41-word JPMorgan sentence was split. The FINMA waiver sentence (the "spread-your-bets rule" and its quote) was cut |
+| CURATED[3].wouldChange | 28 → 29 | "BBIT" became "The Swiss fund"; "PBIT" became "its protected fund"; "the Swiss fund drawing little money" became "little money arriving" |
+
+**Second-pass cuts:**
+- CURATED[0]: Meta's 7% fall and the chip stocks' worst day since June.
+- CURATED[1]: "About 140 came in, and New York's attorney general said the SEC is exceeding its powers.", plus "reserves, redemption and audits".
+- CURATED[2]: "It also raised the budget for such repurchases to $3 billion.", plus "Its cash fell to $447 million from $641 million a week earlier."
+- CURATED[3]: the FINMA waiver sentence with its quote, plus the names BIT Asset Management, BBIT, PBIT and IBIT.
+- crossCurrents[1]: "Fidelity counts 136,000 coins bought this way since 2025." (still in body[4]).
+- crossCurrents[2]: "Comments closed on the SEC's token-sale rules, and the CFTC takes comments on Bitcoin trading venues until mid-December."
+
+Each went because a consequence, falsifier or definition needed the room under a 150 cap. Whole sentences carrying a number were cut whole; no number was altered. All are listed for the drafters in `drafter-notes.md`.
+
+**Not fixed:**
+- "Nasdaq": no room in body[0]'s 42-word sentence, crossCurrents[0] (150/150) or contrarianTake (150/150).
+- "pause": still bare in body[3], crossCurrents[0] and watchList[2].
+- "net" in MARKET_THEME.wouldChange: 30/30, no room.
+- CURATED[0..2].plain: no owner consequence, at 27–30/30.
+- watchList[1]–[5].plain: Q2 shortfalls, routed as a writer-prompt item.
+- The $828M-versus-the-$1B-line comparison: the label is now honest, but the line counts rising-price bets only, so the drafter must decide which figure belongs there.
+
+**Verify (second pass):** `npm run check:plain -- --verify` gave **exit 1**: structural 0 · hard/editable 0 · hard/locked 0 · soft 36. It verified 65 cards and found **no rule-20 numeric drift**, with no finding on any field touched. I trimmed crossCurrents[1].body and CURATED[3].detail to cap on my own count before running, so the single run needed no fix.
+
+**Edit volume, second pass:** 14 fields (4 new: CURATED[0], [2] and [3].wouldChange and CURATED[3].detail), about 218 tokens out and 214 in. **Day total:** 22 distinct fields, about 413 tokens out and 369 in (net −44). Oct 16 was 27 fields and ~315 words over two passes; Oct 7 was 12 fields and ~60 words.
+
+**Memory audit (second pass):** still not read: no file under `automations/refresh-deep-analysis/memory/` and not `automations/refresh-market-news/last-run-artifacts.md`. This pass opened only `src/data/deep-analysis.js` and `src/data/market-news.js` (by `sed`/`grep` of the edited lines), `last-check.md`, and the scratchpad measuring scripts.

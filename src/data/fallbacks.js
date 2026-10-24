@@ -44,11 +44,11 @@ export const YARDSTICKS = [
   {
     key: "strategy-holdings",
     label: "Strategy's bitcoin holdings",
-    value: 848000,
+    value: 849000,
     unit: "BTC",
-    plain: "Strategy alone holds about 848,000 coins",
-    asOf: "2026-10-12",
-    source: "https://www.sec.gov/Archives/edgar/data/1050446/000119312526419726/mstr-ex99_1.htm", // 8-K filed Oct 12: holdings as of Oct 11 (848,250 BTC)
+    plain: "Strategy alone holds about 849,000 coins",
+    asOf: "2026-10-19",
+    source: "https://www.sec.gov/Archives/edgar/data/1050446/000119312526424688/mstr-20261019.htm", // 8-K filed Oct 19: holdings as of Oct 18 (848,517 BTC)
   },
   {
     key: "us-m2",
