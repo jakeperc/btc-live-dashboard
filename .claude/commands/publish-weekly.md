@@ -15,7 +15,7 @@ Argument (optional): `$ARGUMENTS` is forwarded verbatim to `/refresh-all` as its
 
 ## Steps
 
-1. **Preflight.** `git rev-parse --abbrev-ref HEAD` must be `master`. `git status --porcelain` must be empty apart from ignored files — if anything is modified or staged, stop and report it in `last-run.md`; a half-finished edit is never committed by the robot. `git fetch origin` then `git pull --ff-only origin master`; a non-fast-forward is a stop.
+1. **Preflight.** `git rev-parse --abbrev-ref HEAD` must be `master`. `git status --porcelain` must list nothing except, at most, `automations/publish-weekly/last-run.md` (last week's run record, written after last week's commit; it is committed with this week's refresh). If anything else is modified or staged, stop and report it in `last-run.md`; a half-finished edit is never committed by the robot. `git fetch origin` then `git pull --ff-only origin master`; a non-fast-forward is a stop.
 2. **Refresh.** Invoke the `refresh-all` skill with `$ARGUMENTS`. It runs the cadence gate, the agents, the Editor, the single `npm run build`, and updates `automations/refresh-all/run-manifest.json`. Keep its unified report; it goes into `last-run.md`.
 3. **Nothing changed?** If `git status --porcelain src/data automations` is empty after the refresh (every gate closed), write `last-run.md` saying so and stop. Nothing to publish.
 4. **Verify.** `npm test` (schema gate, glossary matcher, llms.txt check). Exit 0 or stop.
@@ -24,6 +24,6 @@ Argument (optional): `$ARGUMENTS` is forwarded verbatim to `/refresh-all` as its
    Body: three to six lines of what changed per agent (from the refresh report), then the attribution line the session gives you (`Co-Authored-By: ...`).
 6. **Push.** `git push origin master`.
 7. **Watch the deploy.** `gh run list --workflow pages.yml --limit 1 --json databaseId,status,conclusion,url`, then `gh run watch <id> --exit-status` (give it up to 15 minutes). Then `curl -sI https://bitcoin.jakepercy.com/` and record `Last-Modified`. A failed workflow is reported, not retried: the previous deploy is still live.
-8. **Record.** Write `automations/publish-weekly/last-run.md`: timestamp, commit hash, deploy run URL and conclusion, `Last-Modified`, then the refresh report. This file is committed on the *next* run (it is written after this run's commit), which is fine.
+8. **Record.** Write `automations/publish-weekly/last-run.md`: timestamp, commit hash, deploy run URL and conclusion, `Last-Modified`, then the refresh report. It is written after this run's commit, so it rides along with the *next* run's commit; the preflight in step 1 tolerates it for that reason.
 
 Report in one message: pushed or not (and why not), commit subject, deploy conclusion, site `Last-Modified`, and the refresh summary.

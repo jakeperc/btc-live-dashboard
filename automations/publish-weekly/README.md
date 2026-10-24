@@ -22,7 +22,7 @@ Hand-made code changes are a different thing and still go through a branch and p
 ## Workflow
 
 0. **Read** `.claude/commands/publish-weekly.md` (the steps) and this file.
-1. **Preflight** — on `master`, clean tree (ignored files excepted), `git pull --ff-only origin master`. A dirty tree or a non-fast-forward is a stop: the robot never commits a half-finished edit and never merges.
+1. **Preflight** — on `master`, clean tree (ignored files and last week's `automations/publish-weekly/last-run.md` excepted), `git pull --ff-only origin master`. Any other dirty file or a non-fast-forward is a stop: the robot never commits a half-finished edit and never merges.
 2. **Refresh** — `/refresh-all $ARGUMENTS`. Cadence gate, Phase 1 agents, deep-analysis, Editor, cold-read test, one `npm run build`, manifest update. Its rules are its own (`automations/refresh-all/README.md`).
 3. **Nothing changed** — if `git status --porcelain src/data automations` is empty, record and stop.
 4. **Verify** — `npm test` must exit 0.
@@ -35,7 +35,7 @@ Hand-made code changes are a different thing and still go through a branch and p
 
 | Condition | What happens |
 |---|---|
-| not on `master`, dirty tree, non-fast-forward pull | stop before the refresh; `last-run.md` says why |
+| not on `master`, dirty tree (other than last week's `last-run.md`), non-fast-forward pull | stop before the refresh; `last-run.md` says why |
 | `/refresh-all` ended on plain-language exit 3 it could not restore, or `npm run build` failed | stop; last week's `dist/` and page stay live |
 | `npm test` fails | stop; report the failing check |
 | `pages.yml` fails after the push | reported, not retried; the previous deploy is still served, the commit is on `master` for Jake to look at |
