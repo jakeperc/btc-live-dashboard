@@ -15,7 +15,7 @@
 
 - MSCI-adopts-the-screen (AUG 19 → held 0.55) — **HIT, Brier 0.2025** (OCT 16). Lesson: a consulted screen with a provider-published deletion simulation proceeds — price ≥0.65.
 - The Nov 11 final list names Strategy — **0.80** (HELD OCT 24; no new MSCI document; MSTR $146 with BTC −2.5% — in line). Strategy's mNAV closes <1.00× by Nov 30 — **0.45 → 0.35** (OCT 24: mnav.com RESTATED its series — headline 1.18×, 52-week 0.98–1.37×; the row scores on the headline figure, so log the basis each run; equity-only cross-check ≈ 0.90×).
-- **OCT 24 note:** no MSCI development this week; `last updated` stays OCT 16 for the snapshot. Next pull: `app2.msci.com` on Nov 11 (the November Index Review announcement) — check the pub_key against the date.
+- **OCT 24 / NOV 2 notes:** no MSCI development; `last updated` stays OCT 16 for the snapshot. NOV 2: MSTR −10% on the Q3 (to ~$131; −27% YTD) with no ATM — the premium channel has already closed the issuance window before any index fund sells a share (contagion condition 3). The Nov 11 row HELD 0.80; the mNAV <1.0× row HELD 0.35 (mnav.com 1.12×, basis restated again). Next pull: `app2.msci.com` on Nov 11 — check the pub_key against the date.
 
 ## Open questions
 
