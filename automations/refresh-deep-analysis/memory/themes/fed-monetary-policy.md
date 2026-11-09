@@ -3,46 +3,47 @@
 - **Slug:** `fed-monetary-policy`
 - **Category:** Macro
 - **First tracked:** MAY 18, 2026 as a matrix row + `actors/fed.md`; theme file created SEP 13, 2026. `actors/fed.md` keeps the meeting-by-meeting record; this file carries the theme-level status, the thesis anchor and the matrix standalone.
-- **Last updated:** NOV 2, 2026
-- **Status (NOV 2):** Active, slot 2 — **HELD 10–2 WITH TWO VOTES TO RAISE; DECEMBER PRICED ~73%; THE DATA RAN HOT; STOCKS HAD THEIR WORST MONTH SINCE MARCH 2025.** Oct 28 FOMC: 3.75–4.00% held; **Cook and Hammack dissented for +25bp**; 'Economic activity is expanding at a strong pace'; inflation 'elevated'; 'The Committee will deliver price stability'. Warsh: 'If you think that we're tolerating some inflation target somewhere in the twos, let us disabuse you of it'; conditions 'tighter' but not 'tight'; the Fed to skip one rate vote in 2027, two in 2028. Oct 29 BEA: Q3 GDP +3.4% (Q2 +2.2%); PCE Q3 +2.1% / core +2.5%; **September PCE +0.5% m/m, 3.6% y/y; core +0.3%, 3.1%**. Pricing: CME 82.6% for December right after; CentralBank.watch Oct 30 **72.9%** (81.3% cumulative by Jan 27). Treasury par: Oct 28 4.67/5.05/5.37 → Oct 30 **4.56/4.94/5.31**. Nasdaq −2.9% Oct 30 (worst day since Jun 5; October −5.3%); gold −3.6% to $3,875 Oct 30 → $3,907 Nov 2; Brent $117.63 → **$108.35** (Nov 2, −4.5% on diplomacy signals). **Rows:** the HOLD row HIT at 0.75 (0.0625); the 30Y ≥5.80% row MISS at 0.40 (0.16); NEW: a Dec 8–9 HIKE ≥25bp **0.70** (theme standalone; matched to futures, not shaded — a hawkish-outcome row; the Nov 12–13 CPI/PPI and the equity rout are the softeners). Decision-day flows flat (+$137.3M / +$17.1M) — a priced decision's delivery is a flow non-event (3rd confirmation); the week's sign came from Oct 30. Set-piece record: five tough surprises, one as-expected hold with two hawkish dissents. The SEP 16 peak-hawkishness bull scores at Dec 9. [Fed statement](https://www.federalreserve.gov/newsevents/pressreleases/monetary20261028a.htm) · [BEA GDP](https://www.bea.gov/news/2026/gdp-advance-estimate-3rd-quarter-2026) · [BEA PCE](https://www.bea.gov/news/2026/personal-income-and-outlays-september-2026) · [Treasury par](https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?type=daily_treasury_yield_curve&field_tdr_date_value_month=202610) · [CentralBank.watch](https://centralbank.watch/federal-reserve/)
-- **Status (OCT 24 — condensed NOV 2; git):** Active, slot 2 — **THE RATE PATH EASED ON A GROWTH SCARE, NOT ON INFLATION — AND BITCOIN FELL ANYWAY.** Quiet period (no speeches Oct 16–31); FOMC Oct 27–28 (statement 2:00 p.m., presser 2:30 p.m. Oct 28); BEA: Q3 GDP advance + September PCE both Oct 29, 8:30 a.m. (the Oct 30 PCE date in prior notes was wrong). **Oct 22: the Nasdaq −2.60% (SOX −6.7%; Meta −7.0% on AI spending), the 10Y par 5.13 → 4.96 (first close <5% since Sep 22; −17bp par / −19bp market, the largest since Mar 2023), the 2Y 4.81 → 4.65, the 30Y 5.42 → 5.29; Oct-28 hike odds ~15%  … (condensed NOV 2; git)
-- **Status (OCT 16 — condensed OCT 24; git):** Active, slot 2 — **INFLATION CAME BACK, THE CHAIR WOULD NOT COMMIT, AND THE LONG END EASED: THE OCT 7 FRAME REVERSED.** Oct 7 minutes (Sep 15–16; 12–0): "most participants" judged "another increase in the target range for the federal funds rate would likely be appropriate by year end"; "open mind"; inflation risks "skewed to the upside"; energy "the longer … elevated, the greater the risk"; the Desk paused reserve-management purchases. Oct 14 BLS CPI: +0.6% m/m, **3.7% y/y** (from 3.4%), core +0.3% / 2.6% (from 2.4%); energy +5.2% m/m / +20.4% y/y; gasoline +9.1% m/m. … (condensed OCT 24; full text in git)
-- **Status (OCT 7 — condensed OCT 16; git):** the front end eased (Aug PCE 3.4%/3.0% Sep 30; Sep payrolls +29K Oct 2, Jul −10K; Jefferson "determined by … the data"; Oct hike odds 61.6% → 19.5%) while the long end tightened (30Y par 5.64–5.66; press 5.715% Oct 7, the highest since 2002; DXY 102.17; gold −5% to $4,070; Brent $101–106; heavy auctions; gilts >6%) — read as "the two rate signals point opposite ways"; HOLD row 0.35→0.70; the 30Y ≥5.80% row seeded 0.40; the long-end edge created at `medium`. The minutes were 404 at run time. [BEA](https://www.bea.gov/news/2026/personal-income-and-outlays-august-2026) · [BLS jobs](https://www.bls.gov/news.release/empsit.nr0.htm) · [Jefferson](https://www.federalreserve.gov/newsevents/speech/jefferson20261001a.htm)
-- **Statuses SEP 13 – SEP 26 (condensed; git):** the hike ~85–87% priced (Warsh Aug 28 → Waller Sep 3 → PPI/CPI + $100 oil Sep 10–11); delivered Sep 16 (+25bp to 3.75–4.00%, 12–0, a SERIES projection — end-2026 median 4.1%, 16 of 18 see at least one more; the one-and-done row MISS, set-pieces 0-for-5); the long end kept selling (10Y 5.10 Sep 24; 30Y 5.49 Sep 25) while Bitcoin rallied 11% — the `fed→flows` edge downgraded to medium.
+- **Last updated:** NOV 9, 2026
+- **Status (NOV 9):** Active, slot 2 (the card: 'Strong Jobs Report Makes a December Rate Rise Likely; Inflation Figures Tuesday') — **A HOT JOBS PRINT HARDENED THE PATH WHILE OIL FELL AND THE LONG END RALLIED ON SAFETY.** Nov 6 BLS: October payrolls **+165,000** vs 59,000 consensus and a 48,000 12-month average; Aug/Sep revised up 84,000 combined; unemployment 4.1%; AHE +0.4% m/m, +3.1% y/y. Pricing: CentralBank.watch (Nov 6) **Dec 9 hike 77.1%** (hold 22.9%); cumulative 82.6% by Jan 27; CME 76.8% vs 66.9% a week earlier. Treasury par: Nov 2 4.59/4.91/5.28 → Nov 5 4.46/4.84/5.25 → **Nov 6 4.51/4.86/5.26** (the 10Y 5.05 on Oct 28 — a flight-to-safety rally INTO a hardening path). Brent **~$94.50** (Nov 5, −9%, lowest since early September — Iran diplomacy hopes); gold **$4,087.60** (COMEX settle Nov 6; two-week high $4,146.63 Nov 5); DXY 101.48 (Nov 5). Nasdaq −5.5% Nov 5 (worst since April 2025; correction, −12% from the Oct 6 record), +1.09% Nov 6 to 24,579.42; −3.37% w/w, fourth weekly decline. No Fed speeches found Nov 2–8. **Rows:** the Dec 9 HIKE row **0.70 → 0.75** (exogenous: the jobs print; matched to futures — MACRO rule 4; not 0.80 because Brent's fall, the equity correction and the Nov 10 CPI are live softeners). **Edges:** `cpi-print-upside-surprise → odds` generalized — the JOBS print moved Dec odds +10 points; heuristics #4's MIRROR held (oil −9% bought no softening — the path hardened on jobs); `fed-rate-cut-signaling → flows` observation 17 (Nov 6: hawkish → −$411.9M with the Nasdaq UP — the Fed marginal, sign-consistent); the long-end edge took another counter-instance (the 10Y eased into the sell-off). The SEP 16 peak-hawkishness bull HELD 0.35 (scores Dec 9). Matrix final 0.75 (contagion: etfs transmitted −0.0105; rounded away; the Fed-DECISION exemption flag on its 6th run). [BLS jobs](https://www.bls.gov/news.release/empsit.nr0.htm) · [CentralBank.watch](https://centralbank.watch/federal-reserve/) · [Treasury par Nov](https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?type=daily_treasury_yield_curve&field_tdr_date_value_month=202611) · [BLS CPI schedule](https://www.bls.gov/schedule/news_release/cpi.htm) · [Bernama gold](https://bernama.com/en/news.php?id=2631055)
+- **Status (NOV 2 — condensed NOV 9; git):** slot 2 — HELD 10–2 with two votes to raise (Cook, Hammack); 'will deliver price stability'; Warsh 'let us disabuse you'; Q3 GDP +3.4%; Sept PCE 3.6% / core 3.1%; Dec 72.9%; par Oct 30 4.56/4.94/5.31; Nasdaq −2.9% Oct 30 (worst month since Mar 2025); gold −3.6% with BTC; Brent $117.6 → $108.35. Rows: the HOLD row HIT at 0.75; the 30Y ≥5.80% row MISS at 0.40; the Dec HIKE row NEW 0.70. [Fed statement](https://www.federalreserve.gov/newsevents/pressreleases/monetary20261028a.htm) · [BEA GDP](https://www.bea.gov/news/2026/gdp-advance-estimate-3rd-quarter-2026) · [BEA PCE](https://www.bea.gov/news/2026/personal-income-and-outlays-september-2026)
+- **Status (OCT 24 / OCT 16 / OCT 7 — condensed; git):** the Oct 22 equity rout eased the path on a growth scare (the 10Y par <5% first since Sep 22) and BTC fell anyway; the Oct 7 minutes ("most participants … another increase") + Sep CPI 3.7% / PPI 6.3% hardened December to ~90% while the chair's "I don't prejudge" softened October; the Oct 7 frame (the long end as the price-setter) reversed within a fortnight.
+- **Statuses SEP 13 – SEP 26 (condensed; git):** the hike ~85–87% priced; delivered Sep 16 (+25bp to 3.75–4.00%, 12–0, a SERIES projection — the one-and-done row MISS, set-pieces 0-for-5); the long end kept selling while Bitcoin rallied 11% — the `fed→flows` edge downgraded to medium.
 
 ## Key dated facts
 
-- **OCT 7–16, 2026** — see status (minutes; CPI; PPI; the officials; Warsh; the odds path; the par curve).
-- **SEP 30 – OCT 6, 2026** — Aug PCE; Jefferson; the +29K payrolls; the odds collapse; the 30Y high.
-- **SEP 16, 2026** — FOMC +25bp to 3.75–4.00% (12–0); SEP median 4.1 / 4.1 / 3.9. [Statement](https://www.federalreserve.gov/newsevents/pressreleases/monetary20260916a.htm) · [SEP](https://www.federalreserve.gov/monetarypolicy/fomcprojtabl20260916.htm)
-- **AUG 28 – SEP 11, 2026 (condensed)** — Jackson Hole ("Otherwise, we have work to do"); Waller's conditional hold; August payrolls +162K; PPI 5.4% / CPI 3.4% + $100 oil → 85–87%.
+- **NOV 5–6, 2026** — Brent −9% to ~$94.50; the Nasdaq −5.5%; October payrolls +165K; Dec odds 77.1%; the 10Y par 4.86.
+- **OCT 28–30, 2026** — the hold 10–2; GDP +3.4%; PCE 3.6%; Dec 72.9%.
+- **OCT 7–16, 2026** — the minutes; CPI 3.7% / PPI 6.3%; the officials; Warsh's "I don't prejudge".
+- **SEP 16, 2026** — FOMC +25bp to 3.75–4.00% (12–0); SEP median 4.1 / 4.1 / 3.9. [Statement](https://www.federalreserve.gov/newsevents/pressreleases/monetary20260916a.htm)
 
 ## Causal links
 
-- `fed-rate-cut-signaling → btc-correlated-equities-bid` (medium; the daily rule confirmed BOTH ways — dovish Oct 2/5/6, hawkish Oct 7/14)
-- `long-end-yield-shock → non-yielding-asset repricing` (DOWNGRADED OCT 16 to weak/medium — yields fell, BTC fell anyway, gold rose)
-- `cpi-print-upside-surprise → fed-odds` (strong upside — Oct 14: 22% → ~50% in hours; a chair's remark reversed it within the week)
-- `geopolitical-energy-shock → cpi-ppi-reacceleration` (strong; heuristics #4, 6th cycle — energy drove the September prints)
-- `non-sovereign-asset co-movement` (sign set by the driver — OCT 16 divergence: gold up, BTC down, on a BTC-specific driver)
-- `higher-for-longer-rates → corporate-treasury-financing-window-compression` (the ATM at $21.0M with Dec ~90%)
+- `fed-rate-cut-signaling → btc-correlated-equities-bid` (medium; Fed-marginal days only — observation 17 Nov 6 sign-consistent; the restart half failed its 2nd test because the Fed was not marginal for the week)
+- `cpi-print-upside-surprise → fed-odds` (strong upside — generalizes to any hot top-tier print: the Nov 6 jobs report moved Dec +10 points)
+- `geopolitical-energy-shock → cpi-ppi-reacceleration` (strong; heuristics #4 — the MIRROR held NOV 9: Brent −9% bought no softening)
+- `long-end-yield-shock → non-yielding-asset repricing` (weak/medium — another counter-instance: the 10Y eased into the sell-off)
+- `non-sovereign-asset co-movement` (sign set by the driver — NOV 9 divergence: gold up, BTC down)
+- `higher-for-longer-rates → corporate-treasury-financing-window-compression` (the cohort leg: Strive's SATS issuance slowed; Strategy reopened on its premium, not on rates)
+- `risk-asset-relative-performance → btc-etf-rotation` (STRONG from NOV 9 — the Nasdaq −5.5% / BTC −5.5% day)
 
 ## Open questions
 
-1. RESOLVED (Oct 28: a hold, two dissents for a rise — the series intact). NOW: does Dec 9 deliver the rise (row 0.70) — or does the equity rout / a soft Nov 12 CPI stay the majority's hand? (The SEP 16 bull scores here.)
-2. Does the post-decision week (Nov 6) bring fund money back (row 0.55) — with the theft and the Nasdaq, not the Fed, as the marginal narrative?
-3. Oil: does Hormuz (the GFS Pride sinking; IEA stock releases) keep Brent >$100 into the December meeting (the energy-shock heuristic's next cycle)?
-4. The long end: with buybacks ending Nov 4 and the next refunding, does the 30Y re-tighten INTO a Fed hold (the "second central bank" candidate's only valid revival)?
+1. Dec 9 (row 0.75): does the committee deliver the rise with a 12% equity correction and oil at $94 — and with what SEP path? (The SEP 16 bull scores here.)
+2. The Nov 10 CPI: does October's energy-price fall (Brent $108 → $94 over the month) soften the headline enough to stay the majority — or does core (2.6% in Sep) do the work? A hot print makes December near-certain; a soft one reopens the debate.
+3. The long end: the 10Y rallied on safety (5.05 → 4.86) — does the Nov 18 minutes' tone or the refunding push it back up INTO the hike?
+4. Does the AI-capex correction become a growth scare the Fed names (Warsh's Nov 16 AI task force)?
 
 ## Upcoming catalysts
 
 | Date / window | Catalyst | Why it matters |
 |---|---|---|
-| Nov 12–13 (expected) | October CPI / PPI | the energy-shock heuristic's 7th data cycle |
-| Nov 4 | Treasury buyback schedule ends | the long end loses its buyer |
+| Nov 10 | October CPI (8:30 ET) | the 7th energy-shock data cycle — in the MIRROR direction |
 | Nov 16 | Fed AI task force | Warsh's stated priority — not a rate signal |
-| Dec 8–9 | FOMC + SEP (a HIKE ≥25bp — row 0.70; futures ~73%) | the series test; the SEP 16 bull's scoring moment |
+| Nov 18 | Oct 28 minutes | the dissent count's texture; the December language |
+| Nov 25 | October PCE | the Fed's own gauge before Dec 9 |
+| Dec 8–9 | FOMC + SEP (a HIKE ≥25bp — row 0.75; futures 77%) | the series test; the SEP 16 bull's scoring moment; THESIS-008's cost-of-capital leg |
 
 ## Press / source bias notes
 
-- `federalreserve.gov` (minutes, calendar), `bls.gov` (CPI, PPI) and `home.treasury.gov` (par curve) all fetched by market-news this run — cite the table, not press, for yield levels (press 5.446% vs par 5.43 on Oct 15). CentralBank.watch's snapshot (Oct 15) lags the post-Warsh press figure (~15%) by a day — note the date.
-- Warsh quotes via AP (Yahoo / KIRO7) — consistent across two outlets; no Fed transcript of the fireside chat yet.
+- `bls.gov`, `home.treasury.gov` and `centralbank.watch` fetched by market-news this run — cite the table, not press, for yield levels. No Fed speech found for Nov 2–8 (search) — do not infer silence as a signal.
+- Gold via Bernama (COMEX settle), Brent/DXY via Equiti — levels only; TradingEconomics not pulled this run.
