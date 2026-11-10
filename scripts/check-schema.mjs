@@ -844,6 +844,7 @@ function checkForecastLedger(mod) {
     const mean = brierWeighted / countTotal;
     if (Math.abs(mean - s.aggregateBrier) > 0.02) fail(F, "summary.aggregateBrier", `${s.aggregateBrier}, but the count-weighted mean of resolved[].brier is ${mean.toFixed(3)}`);
   }
+  if (nResolved != null && countTotal === nResolved) checkLedgerArithmetic(F, L);
 
   // Every category summary.byCategory names must equal the actual sum of
   // resolved[].count for that category — a hand-updated summary can drift
@@ -870,6 +871,100 @@ function checkForecastLedger(mod) {
 // without deciding which one goes away (that's an editorial call for
 // /refresh-deep-analysis, not this gate).
 
+// ─────────────────────────────────────────────────────────────────────────────
+// FORECAST_LEDGER arithmetic, recomputed from the forecasts themselves
+// ─────────────────────────────────────────────────────────────────────────────
+// The checks above bound each number; these recompute it. Every published
+// score is derived from the individual forecasts (a grouped row contributes
+// one forecast per entry in `probabilities`), so a refresh that carries a
+// stale or mistyped figure fails here instead of reaching the page.
+//   aggregateBrier  = mean over all forecasts of (p − outcome)², to 2 decimals
+//   rolling20Brier  = the same over the 20 newest forecasts (skipped when the
+//                     cut falls inside a grouped row or inside a block of rows
+//                     resolved the same day, whose order is undefined)
+//   grouped brier   = mean of its forecasts' (p − outcome)²
+//   meanResidual    = per category, mean of (p − outcome), to 2 decimals
+//   bands           = decile bins by p, upper bound inclusive (memory/calibration.md):
+//                     n and hitRate per band
+// Tolerances are rounding only: 0.005 for 2-decimal scores, 0.01 for hit rates.
+
+function checkLedgerArithmetic(F, L) {
+  const s = L.summary;
+  const forecasts = []; // newest first, as the rows are
+  const rowEnds = new Set(); // forecast count at the end of each row
+  const residuals = new Map(); // category -> [p − outcome]
+  for (const r of L.resolved) {
+    if (!(r.outcome in OUTCOME_VALUE) || !isInt(r.count)) continue;
+    const ps = r.count === 1 ? [r.probability] : r.probabilities;
+    if (!isArr(ps) || !ps.every(isProbability)) return; // already reported
+    const o = OUTCOME_VALUE[r.outcome];
+    for (const p of ps) forecasts.push({ p, o, resolvedOn: r.resolvedOn });
+    if (!residuals.has(r.category)) residuals.set(r.category, []);
+    for (const p of ps) residuals.get(r.category).push(p - o);
+    if (r.count > 1) {
+      const exact = ps.reduce((a, p) => a + (p - o) ** 2, 0) / ps.length;
+      if (isNum(r.brier) && Math.abs(exact - r.brier) > 0.005 + 1e-9) {
+        fail(F, `resolved["${r.id}"].brier`, `${r.brier}, but the mean of its ${ps.length} forecasts' (p − outcome)² is ${exact.toFixed(4)}`);
+      }
+    }
+    rowEnds.add(forecasts.length);
+  }
+  if (!forecasts.length) return;
+  const brier = (xs) => xs.reduce((a, x) => a + (x.p - x.o) ** 2, 0) / xs.length;
+
+  const all = brier(forecasts);
+  if (isNum(s.aggregateBrier) && Math.abs(all - s.aggregateBrier) > 0.005 + 1e-9) {
+    fail(F, "summary.aggregateBrier", `${s.aggregateBrier}, but recomputed over ${forecasts.length} forecasts it is ${all.toFixed(4)}`);
+  }
+  if (isNum(s.rolling20Brier) && forecasts.length >= 20) {
+    // the 20-forecast window is well defined only where it ends on a row
+    // boundary AND between two resolution dates: rows resolved the same day
+    // have no defined order, so a cut inside such a block is not checked
+    const clean = rowEnds.has(20) && (forecasts.length === 20 || forecasts[19].resolvedOn !== forecasts[20].resolvedOn);
+    const last20 = brier(forecasts.slice(0, 20));
+    if (clean && Math.abs(last20 - s.rolling20Brier) > 0.005 + 1e-9) {
+      fail(F, "summary.rolling20Brier", `${s.rolling20Brier}, but recomputed over the 20 newest forecasts it is ${last20.toFixed(4)}`);
+    }
+  }
+
+  // the bias claims ("too optimistic about the Fed") rest on these
+  if (isArr(s.byCategory)) {
+    s.byCategory.forEach((c, i) => {
+      const xs = residuals.get(c?.category);
+      if (!xs?.length || !isNum(c.meanResidual)) return;
+      const m = xs.reduce((a, x) => a + x, 0) / xs.length;
+      if (Math.abs(m - c.meanResidual) > 0.005 + 1e-9) {
+        fail(F, `summary.byCategory[${i}].meanResidual`, `${c.meanResidual}, but the mean of p − outcome over its ${xs.length} forecasts is ${m.toFixed(4)}`);
+      }
+    });
+  }
+
+  if (isArr(s.bands)) {
+    // the lowest band (by its lower bound, wherever it sits in the array)
+    // also takes its lower edge; every other band is (lo, hi]
+    const lows = s.bands.map((b) => {
+      const m = isText(b?.range) && b.range.match(/^s*([d.]+)/);
+      return m ? Number(m[1]) : Infinity;
+    });
+    const lowest = lows.indexOf(Math.min(...lows));
+    s.bands.forEach((b, i) => {
+      const m = isText(b?.range) && b.range.match(/^\s*([\d.]+)\s*%?\s*[–-]\s*([\d.]+)\s*%?\s*$/);
+      if (!m) return fail(F, `summary.bands[${i}].range`, `cannot read ${show(b?.range)} as "a–b%"`);
+      const lo = Number(m[1]) / 100;
+      const hi = Number(m[2]) / 100;
+      const first = i === lowest;
+      // upper bound inclusive; the first band also takes its lower bound
+      const xs = forecasts.filter((x) => (first ? x.p >= lo - 1e-9 : x.p > lo + 1e-9) && x.p <= hi + 1e-9);
+      if (isInt(b.n) && b.n !== xs.length) {
+        fail(F, `summary.bands[${i}].n`, `${b.n}, but ${xs.length} forecasts have p in ${first ? "[" : "("}${lo}, ${hi}]`);
+      } else if (xs.length && isNum(b.hitRate)) {
+        const rate = xs.filter((x) => x.o === 1).length / xs.length;
+        if (Math.abs(rate - b.hitRate) > 0.01) fail(F, `summary.bands[${i}].hitRate`, `${b.hitRate}, but ${xs.filter((x) => x.o === 1).length} of ${xs.length} happened (${rate.toFixed(3)})`);
+      }
+    });
+  }
+}
+
 function checkLedgerCalibrationAgreement(deepMod, ledgerMod) {
   const cal = deepMod?.DEEP_ANALYSIS?.calibration;
   const summary = ledgerMod?.FORECAST_LEDGER?.summary;
@@ -880,6 +975,30 @@ function checkLedgerCalibrationAgreement(deepMod, ledgerMod) {
   }
   if (isNum(cal.aggregateBrier) && isNum(summary.aggregateBrier) && Math.abs(cal.aggregateBrier - summary.aggregateBrier) > 0.005) {
     fail(F, "calibration.aggregateBrier", `${cal.aggregateBrier}, but FORECAST_LEDGER.summary.aggregateBrier is ${summary.aggregateBrier} — the two summaries of the same track record must agree`);
+  }
+
+  // The plain-language lines restate the same figures in words ("Across 50
+  // scored calls ours is 0.19, and 0.14 over the last 20"). Every 2-decimal
+  // score they quote must be a published one (or 0.25, the coin-flip
+  // reference), and every count of scored calls must be nResolved, so the
+  // prose cannot drift from the numbers beside it.
+  const allowed = new Set([summary.aggregateBrier, summary.rolling20Brier, 0.25].filter(isNum).map((x) => x.toFixed(2)));
+  const texts = [
+    ["src/data/forecast-ledger.js", "summary.plain", summary.plain],
+    [F, "calibration.briefSummary", cal.briefSummary],
+  ];
+  for (const [file, where, text] of texts) {
+    if (!isText(text)) continue;
+    for (const m of text.matchAll(/(?<![\d.])0\.\d{2}(?!\d)/g)) {
+      if (!allowed.has(m[0])) fail(file, where, `quotes a score of ${m[0]}, but the published scores are ${[...allowed].join(", ")}`);
+    }
+    if (isInt(summary.nResolved)) {
+      for (const m of text.matchAll(/\b(\d+)\s+(scored|predictions|forecasts|calls)\b/g)) {
+        // "the last 20 calls" is the rolling window, not the total
+        if (/last\s*$/i.test(text.slice(0, m.index))) continue;
+        if (Number(m[1]) !== summary.nResolved) fail(file, where, `says ${m[1]} ${m[2]}, but nResolved is ${summary.nResolved}`);
+      }
+    }
   }
 }
 
