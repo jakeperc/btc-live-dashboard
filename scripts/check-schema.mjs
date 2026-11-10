@@ -880,7 +880,8 @@ function checkForecastLedger(mod) {
 // stale or mistyped figure fails here instead of reaching the page.
 //   aggregateBrier  = mean over all forecasts of (p − outcome)², to 2 decimals
 //   rolling20Brier  = the same over the 20 newest forecasts (skipped when the
-//                     20th falls inside a grouped row, whose order is unknown)
+//                     cut falls inside a grouped row or inside a block of rows
+//                     resolved the same day, whose order is undefined)
 //   grouped brier   = mean of its forecasts' (p − outcome)²
 //   meanResidual    = per category, mean of (p − outcome), to 2 decimals
 //   bands           = decile bins by p, upper bound inclusive (memory/calibration.md):
@@ -897,7 +898,7 @@ function checkLedgerArithmetic(F, L) {
     const ps = r.count === 1 ? [r.probability] : r.probabilities;
     if (!isArr(ps) || !ps.every(isProbability)) return; // already reported
     const o = OUTCOME_VALUE[r.outcome];
-    for (const p of ps) forecasts.push({ p, o });
+    for (const p of ps) forecasts.push({ p, o, resolvedOn: r.resolvedOn });
     if (!residuals.has(r.category)) residuals.set(r.category, []);
     for (const p of ps) residuals.get(r.category).push(p - o);
     if (r.count > 1) {
@@ -916,8 +917,10 @@ function checkLedgerArithmetic(F, L) {
     fail(F, "summary.aggregateBrier", `${s.aggregateBrier}, but recomputed over ${forecasts.length} forecasts it is ${all.toFixed(4)}`);
   }
   if (isNum(s.rolling20Brier) && forecasts.length >= 20) {
-    // the 20-forecast window must end on a row boundary to be well defined
-    const clean = rowEnds.has(20);
+    // the 20-forecast window is well defined only where it ends on a row
+    // boundary AND between two resolution dates: rows resolved the same day
+    // have no defined order, so a cut inside such a block is not checked
+    const clean = rowEnds.has(20) && (forecasts.length === 20 || forecasts[19].resolvedOn !== forecasts[20].resolvedOn);
     const last20 = brier(forecasts.slice(0, 20));
     if (clean && Math.abs(last20 - s.rolling20Brier) > 0.005 + 1e-9) {
       fail(F, "summary.rolling20Brier", `${s.rolling20Brier}, but recomputed over the 20 newest forecasts it is ${last20.toFixed(4)}`);
@@ -937,12 +940,19 @@ function checkLedgerArithmetic(F, L) {
   }
 
   if (isArr(s.bands)) {
+    // the lowest band (by its lower bound, wherever it sits in the array)
+    // also takes its lower edge; every other band is (lo, hi]
+    const lows = s.bands.map((b) => {
+      const m = isText(b?.range) && b.range.match(/^s*([d.]+)/);
+      return m ? Number(m[1]) : Infinity;
+    });
+    const lowest = lows.indexOf(Math.min(...lows));
     s.bands.forEach((b, i) => {
       const m = isText(b?.range) && b.range.match(/^\s*([\d.]+)\s*%?\s*[–-]\s*([\d.]+)\s*%?\s*$/);
       if (!m) return fail(F, `summary.bands[${i}].range`, `cannot read ${show(b?.range)} as "a–b%"`);
       const lo = Number(m[1]) / 100;
       const hi = Number(m[2]) / 100;
-      const first = i === 0;
+      const first = i === lowest;
       // upper bound inclusive; the first band also takes its lower bound
       const xs = forecasts.filter((x) => (first ? x.p >= lo - 1e-9 : x.p > lo + 1e-9) && x.p <= hi + 1e-9);
       if (isInt(b.n) && b.n !== xs.length) {
