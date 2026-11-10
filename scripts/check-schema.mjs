@@ -882,6 +882,7 @@ function checkForecastLedger(mod) {
 //   rolling20Brier  = the same over the 20 newest forecasts (skipped when the
 //                     20th falls inside a grouped row, whose order is unknown)
 //   grouped brier   = mean of its forecasts' (p − outcome)²
+//   meanResidual    = per category, mean of (p − outcome), to 2 decimals
 //   bands           = decile bins by p, upper bound inclusive (memory/calibration.md):
 //                     n and hitRate per band
 // Tolerances are rounding only: 0.005 for 2-decimal scores, 0.01 for hit rates.
@@ -890,12 +891,15 @@ function checkLedgerArithmetic(F, L) {
   const s = L.summary;
   const forecasts = []; // newest first, as the rows are
   const groupEnds = new Set(); // index just after each grouped row
+  const residuals = new Map(); // category -> [p − outcome]
   for (const r of L.resolved) {
     if (!(r.outcome in OUTCOME_VALUE) || !isInt(r.count)) continue;
     const ps = r.count === 1 ? [r.probability] : r.probabilities;
     if (!isArr(ps) || !ps.every(isProbability)) return; // already reported
     const o = OUTCOME_VALUE[r.outcome];
     for (const p of ps) forecasts.push({ p, o });
+    if (!residuals.has(r.category)) residuals.set(r.category, []);
+    for (const p of ps) residuals.get(r.category).push(p - o);
     if (r.count > 1) {
       const exact = ps.reduce((a, p) => a + (p - o) ** 2, 0) / ps.length;
       if (isNum(r.brier) && Math.abs(exact - r.brier) > 0.005 + 1e-9) {
@@ -917,6 +921,18 @@ function checkLedgerArithmetic(F, L) {
     if (clean && Math.abs(last20 - s.rolling20Brier) > 0.005 + 1e-9) {
       fail(F, "summary.rolling20Brier", `${s.rolling20Brier}, but recomputed over the 20 newest forecasts it is ${last20.toFixed(4)}`);
     }
+  }
+
+  // the bias claims ("too optimistic about the Fed") rest on these
+  if (isArr(s.byCategory)) {
+    s.byCategory.forEach((c, i) => {
+      const xs = residuals.get(c?.category);
+      if (!xs?.length || !isNum(c.meanResidual)) return;
+      const m = xs.reduce((a, x) => a + x, 0) / xs.length;
+      if (Math.abs(m - c.meanResidual) > 0.005 + 1e-9) {
+        fail(F, `summary.byCategory[${i}].meanResidual`, `${c.meanResidual}, but the mean of p − outcome over its ${xs.length} forecasts is ${m.toFixed(4)}`);
+      }
+    });
   }
 
   if (isArr(s.bands)) {
