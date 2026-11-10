@@ -976,6 +976,30 @@ function checkLedgerCalibrationAgreement(deepMod, ledgerMod) {
   if (isNum(cal.aggregateBrier) && isNum(summary.aggregateBrier) && Math.abs(cal.aggregateBrier - summary.aggregateBrier) > 0.005) {
     fail(F, "calibration.aggregateBrier", `${cal.aggregateBrier}, but FORECAST_LEDGER.summary.aggregateBrier is ${summary.aggregateBrier} — the two summaries of the same track record must agree`);
   }
+
+  // The plain-language lines restate the same figures in words ("Across 50
+  // scored calls ours is 0.19, and 0.14 over the last 20"). Every 2-decimal
+  // score they quote must be a published one (or 0.25, the coin-flip
+  // reference), and every count of scored calls must be nResolved, so the
+  // prose cannot drift from the numbers beside it.
+  const allowed = new Set([summary.aggregateBrier, summary.rolling20Brier, 0.25].filter(isNum).map((x) => x.toFixed(2)));
+  const texts = [
+    ["src/data/forecast-ledger.js", "summary.plain", summary.plain],
+    [F, "calibration.briefSummary", cal.briefSummary],
+  ];
+  for (const [file, where, text] of texts) {
+    if (!isText(text)) continue;
+    for (const m of text.matchAll(/(?<![\d.])0\.\d{2}(?!\d)/g)) {
+      if (!allowed.has(m[0])) fail(file, where, `quotes a score of ${m[0]}, but the published scores are ${[...allowed].join(", ")}`);
+    }
+    if (isInt(summary.nResolved)) {
+      for (const m of text.matchAll(/\b(\d+)\s+(scored|predictions|forecasts|calls)\b/g)) {
+        // "the last 20 calls" is the rolling window, not the total
+        if (/last\s*$/i.test(text.slice(0, m.index))) continue;
+        if (Number(m[1]) !== summary.nResolved) fail(file, where, `says ${m[1]} ${m[2]}, but nResolved is ${summary.nResolved}`);
+      }
+    }
+  }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
