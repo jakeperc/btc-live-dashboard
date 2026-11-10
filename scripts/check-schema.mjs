@@ -890,7 +890,7 @@ function checkForecastLedger(mod) {
 function checkLedgerArithmetic(F, L) {
   const s = L.summary;
   const forecasts = []; // newest first, as the rows are
-  const groupEnds = new Set(); // index just after each grouped row
+  const rowEnds = new Set(); // forecast count at the end of each row
   const residuals = new Map(); // category -> [p − outcome]
   for (const r of L.resolved) {
     if (!(r.outcome in OUTCOME_VALUE) || !isInt(r.count)) continue;
@@ -905,7 +905,8 @@ function checkLedgerArithmetic(F, L) {
       if (isNum(r.brier) && Math.abs(exact - r.brier) > 0.005 + 1e-9) {
         fail(F, `resolved["${r.id}"].brier`, `${r.brier}, but the mean of its ${ps.length} forecasts' (p − outcome)² is ${exact.toFixed(4)}`);
       }
-    } else groupEnds.add(forecasts.length);
+    }
+    rowEnds.add(forecasts.length);
   }
   if (!forecasts.length) return;
   const brier = (xs) => xs.reduce((a, x) => a + (x.p - x.o) ** 2, 0) / xs.length;
@@ -916,7 +917,7 @@ function checkLedgerArithmetic(F, L) {
   }
   if (isNum(s.rolling20Brier) && forecasts.length >= 20) {
     // the 20-forecast window must end on a row boundary to be well defined
-    const clean = forecasts.length === 20 || groupEnds.has(20) || L.resolved.every((r) => r.count === 1);
+    const clean = rowEnds.has(20);
     const last20 = brier(forecasts.slice(0, 20));
     if (clean && Math.abs(last20 - s.rolling20Brier) > 0.005 + 1e-9) {
       fail(F, "summary.rolling20Brier", `${s.rolling20Brier}, but recomputed over the 20 newest forecasts it is ${last20.toFixed(4)}`);
