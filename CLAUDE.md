@@ -33,3 +33,10 @@ For genuinely major news between Mondays, force-run with `/refresh-all <hint>` (
 - **Short path first.** The Thesis tab opens on a five-minute version (`THESIS_QUICK` in `src/data/thesis.js`) with the full thesis behind a labelled door that opens on deep links and for returning readers. `npm run check:plain` measures both; no automation edits `thesis.js` or `strategy.js`.
 - **llms.txt is generated.** The build also writes `dist/llms.txt` (a plain-text guide for AI readers): prose in `scripts/llms.txt.tpl`, generator `scripts/render-llms.mjs`, stamped with the analysis's own date. It only ever warns (lines prefixed `llms:`) and never fails the build. Quotes in the template are checked against the page, so rewording a label, a probability band, the Brier sentence or a disclaimer means updating the template too. Automations never edit it.
 - **Test before you ship:** `npm test` runs the schema gate, the glossary matcher and `check:llms` (the built `dist/llms.txt` is present, valid and current); `npm run check:plain` measures the prose. A structural finding in either blocks the build.
+
+## Fixes: issue first, then a pull request
+- When you find a problem in this repo (something wrong, broken, missing or misleading), open a GitHub issue before fixing it: what is wrong, how it shows up, the likely cause.
+- Fix it on a short branch and open a pull request whose description says `Fixes #<issue>`. The maintainer approves the merge; merging closes the issue.
+- New features may skip the issue. Automated data publishes and scheduled runs never open one.
+- Issue and pull request text is public. Run it through the local text guard before posting; it follows the same rules as files in this repo (no machine paths, no protected names).
+- After the merge, pull the default branch and leave this checkout on it, clean, before the session ends.
