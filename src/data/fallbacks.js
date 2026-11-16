@@ -2,9 +2,9 @@
 // Owner: /refresh-fallbacks (quarterly).
 // Do not Read src/BitcoinDashboard.jsx to edit these — edit this file instead.
 
-export const FALLBACK_MINED = 20098843;
-export const FALLBACK_BLOCK = 966777;
-export const FALLBACK_PRICE = 82179;
+export const FALLBACK_MINED = 20112712;
+export const FALLBACK_BLOCK = 976110;
+export const FALLBACK_PRICE = 64578;
 export const FALLBACK_ATH = 126080.00;
 export const FALLBACK_ATH_DATE = "2025-10-06T18:57:42.558Z";
 
@@ -44,11 +44,11 @@ export const YARDSTICKS = [
   {
     key: "strategy-holdings",
     label: "Strategy's bitcoin holdings",
-    value: 849000,
+    value: 850364,
     unit: "BTC",
-    plain: "Strategy alone holds about 849,000 coins",
-    asOf: "2026-10-19",
-    source: "https://www.sec.gov/Archives/edgar/data/1050446/000119312526424688/mstr-20261019.htm", // 8-K filed Oct 19: holdings as of Oct 18 (848,517 BTC)
+    plain: "Strategy alone holds about 850,000 coins",
+    asOf: "2026-11-09",
+    source: "https://www.sec.gov/Archives/edgar/data/1050446/000119312526452693/mstr-20261109.htm", // 8-K filed Nov 9: holdings as of Nov 8 (850,364 BTC)
   },
   {
     key: "us-m2",

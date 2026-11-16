@@ -4,12 +4,13 @@
 - **Category:** Macro / central bank
 - **Role:** Primary macro driver for the risk-asset correlation regime. (Theme-level status lives in `themes/fed-monetary-policy.md`.)
 - **First tracked:** MAY 18, 2026
-- **Last updated:** NOV 9, 2026
+- **Last updated:** NOV 16, 2026
 
 ## Snapshot
 
-- **NOV 9, 2026 — NO SPEECHES; THE DATA SPOKE: PAYROLLS +165K, DECEMBER 77%.** Nov 6 BLS: +165,000 (consensus 59,000; 12-month average 48,000); Aug/Sep +84,000 revised; unemployment 4.1%; AHE +0.4% / +3.1%. Pricing: CentralBank.watch Nov 6 **Dec 9 hike 77.1%**, cumulative 82.6% by Jan 27; CME 76.8% (66.9% a week earlier). Par Nov 6: 2Y 4.51 / 10Y 4.86 / 30Y 5.26 (the 10Y 5.05 on Oct 28 — a safety rally into a hardening path). Brent ~$94.50 (Nov 5); gold $4,087.60; the Nasdaq −5.5% Nov 5 / +1.1% Nov 6. No Fed speeches found Nov 2–8 (search). **Rows:** the Dec 9 HIKE row **0.70 → 0.75** (exogenous — the jobs print; matched to futures). Record: five tough surprises, one as-expected hold; Dec 9 is the seventh set-piece. Flow texture: Nov 6 hawkish → −$411.9M with the Nasdaq UP — the Fed marginal, sign-consistent (observation 17). [BLS](https://www.bls.gov/news.release/empsit.nr0.htm) · [CentralBank.watch](https://centralbank.watch/federal-reserve/) · [Treasury par](https://home.treasury.gov/resource-center/data-chart-center/interest-rates/TextView?type=daily_treasury_yield_curve&field_tdr_date_value_month=202611)
-- **NOV 2, 2026 (condensed NOV 9; git) — THE SIXTH SET-PIECE: AN AS-EXPECTED HOLD WITH TWO HAWKISH DISSENTS.** Oct 28: 3.75–4.00% held, **10–2 (Cook, Hammack for +25bp)** — the first dissents of the Warsh chair for a HIKE; 'expanding at a strong pace'; inflation 'elevated'; 'will deliver price stability'. Presser: 'let us disabuse you' on tolerating inflation 'in the twos'; conditions 'tighter' not 'tight'; one meeting in 2027 and two in 2028 without a rate vote. Oct 29: GDP +3.4%; PCE 3.6% / core 3.1% (Sept). Pricing: Dec 82.6% (CME, right after) → 72.9% (CentralBank.watch Oct 30; 81.3% cumulative by Jan 27). Par Oct 30: 2Y 4.56 / 10Y 4.94 / 30Y 5.31. **Rows:** HOLD HIT at 0.75 (0.0625); the 30Y ≥5.80% MISS at 0.40 (0.16); NEW Dec 9 HIKE ≥25bp **0.70** (matched to futures; hawkish-outcome). Record: five tough surprises, one as-expected hold. Decision-day flows flat (+$137.3M / +$17.1M). [Statement](https://www.federalreserve.gov/newsevents/pressreleases/monetary20261028a.htm) · [CNBC Warsh](https://www.cnbc.com/2026/10/29/kevin-warsh-fed-october-rate-decision-december-hike.html)
+- **NOV 16, 2026 — WALLER OPENED THE 50BP DOOR THE MORNING OF A HOT CPI; DECEMBER 97–100%.** Nov 10 (London, before the print): Waller leaning 25bp; a 50bp increase "should be considered" if October core CPI is around 0.3% or higher — "hiking only 25 basis points would put our credibility at risk"; labor market "stable". Nov 10 BLS: CPI +0.4% (consensus 0.3%); core +0.3% a third month; no 12-month rate (the shutdown gap; KPMG ~4.2%). Pricing: CentralBank.watch Nov 13 **Dec 9 hike 97–100%**; a further move 79% by Jan 27. Par Nov 13: 2Y 4.88 / 10Y 5.15 / 30Y 5.47 (from 4.51/4.86/5.26 — front-end-led). DXY >103. Other voices (late Oct / early Nov): Logan at least two more 25s then pause; Musalem early incremental moves; Hammack back to restrictive. Minutes ~Nov 18; PCE Nov 25; CPI Dec 10 (after the vote). **Rows:** the Dec 9 HIKE row **0.75 → 0.95** (matched to futures; the first use of the 0.90–1.00 band — rule 14); NEW 50bp row **0.25** (HOW MUCH). Record: five tough surprises, one as-expected hold; Dec 9 is the seventh set-piece — and the first where a 25 would be the DOVISH outcome relative to the debate. Flow texture: hawkish all week → five outflow days with the Nasdaq UP (observation 18). [Waller](https://www.federalreserve.gov/newsevents/speech/waller20261110a.htm) · [BLS CPI](https://www.bls.gov/news.release/archives/cpi_11102026.htm) · [CentralBank.watch](https://centralbank.watch/federal-reserve/) · [FOMC calendar](https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm)
+- **NOV 9, 2026 (condensed NOV 16; git) — NO SPEECHES; PAYROLLS +165K (vs 59K; revisions +84K; 4.1%) → DECEMBER 77.1%.** Par Nov 6: 4.51 / 4.86 / 5.26 (a safety rally into a hardening path); Brent ~$94.50; the Nasdaq −5.5% / +1.1%. The HIKE row 0.70 → 0.75. [BLS jobs](https://www.bls.gov/news.release/empsit.nr0.htm)
+- **NOV 2, 2026 (condensed NOV 16; git) — THE SIXTH SET-PIECE: AN AS-EXPECTED HOLD, 10–2 (Cook, Hammack for +25bp).** 'Will deliver price stability'; 'let us disabuse you' on tolerating inflation 'in the twos'. GDP +3.4%; Sept PCE 3.6% / 3.1%. Dec 72.9% (Oct 30). HOLD HIT at 0.75; the 30Y ≥5.80% MISS at 0.40; the Dec HIKE row NEW 0.70. [Statement](https://www.federalreserve.gov/newsevents/pressreleases/monetary20261028a.htm)
 - **OCT 24, 2026 (condensed NOV 2; git) — QUIET PERIOD; THE MARKET DID THE EASING FOR THEM.** No speeches Oct 16–31 (the calendar). The Oct 22 equity rout (Nasdaq −2.60%; SOX −6.7%) took the 10Y par to 4.96 (first <5% since Sep 22) and Oct-28 hike odds to 7.2% (CME) / 10.0% (CentralBank.watch Oct 23; hold 90.0%); Dec 89.8% → 72.5% fresh / 75.3% cumulative; ~67bp over nine meetings. Hawkish inputs unchanged-to-worse: Brent $116.72 (Oct 23); UMich  … (condensed NOV 2; git)
 - **OCT 16, 2026 (condensed OCT 24; git) — THE MINUTES SAID "ONE MORE", THE DATA SAID "HOT", THE CHAIR SAID NOTHING.** Oct 7 minutes (Sep 15–16; 12–0): "most participants" see another increase "likely … appropriate by year end"; "open mind"; inflation risks "skewed to the upside"; energy the driver; staff PCE 3.8% (Aug); the Desk paused reserve-management purchases. Oct 14 CPI 3.7% / core 2.6% (+0.6% m/m; gasoline +9.1%); Oct 15 PPI 6.3% (+1.3% m/m); Oct 14 Beige Book. Officials: Waller (Oct 8 Istanbul; Oct 13 New Delhi); Bowman (Oct 14–15, Bangkok: "sufficient time to wait"); Daly (another hike likely needed; no urgency); … (condensed OCT 24; full text in git)
 - **OCT 7, 2026 (condensed OCT 16; git) — the data did the talking:** Aug PCE 3.4% / 3.0% (Sep 30); Jefferson "determined by … the data" (Oct 1); payrolls +29K, Jul −10K (Oct 2) → Oct 28 odds 61.6% → 19.5% (Oct 6); the 30Y par 5.64–5.66 (press 5.715% Oct 7). HOLD row 0.35→0.70 (the weak-DATA carve-out fired). [Jefferson](https://www.federalreserve.gov/newsevents/speech/jefferson20261001a.htm)
@@ -39,18 +40,18 @@
 
 ## Open questions
 
-1. RESOLVED (a hold; the series intact; two dissents). NOW: Dec 9 — a hike (0.70) with what SEP path; does the equity rout or a soft Nov 12 CPI stay the majority?
-2. Does the Fed address the long end / Treasury-market functioning at the meeting (buybacks end Nov 4; the 30Y 5.43 now)?
-3. Does Warsh's AI focus (the Nov 16 task force; "most consequential change") become a disinflation argument in the December SEP?
+1. Dec 9 — 25 or 50 (rows 0.95 / 0.25), and what SEP path? Does any official rule OUT 50 before the blackout (the minutes Nov 18; speeches Nov 16–27)?
+2. Does the Fed address the front-end-led curve move (the 2Y +37bp in a week) or Treasury-market functioning at the meeting?
+3. Does Warsh's AI focus (the task force) or the crypto/metals flush become a financial-conditions argument in the December SEP?
 
 ## Upcoming catalysts
 
 | Date / window | Catalyst |
 |---|---|
-| Nov 12–13, 2026 | October CPI / PPI |
-| Nov 4, 2026 | Treasury buyback schedule ends; next refunding |
-| Nov 16, 2026 | Fed AI task force |
-| Dec 8–9, 2026 | FOMC + SEP (HIKE row 0.70; futures ~73%) |
+| Nov 18, 2026 | Oct 28 minutes |
+| Nov 25, 2026 | October PCE; Q3 GDP second estimate |
+| Dec 8–9, 2026 | FOMC + SEP (HIKE row 0.95; 50bp row 0.25) |
+| Dec 10, 2026 | November CPI |
 
 ## Source priority for this actor
 

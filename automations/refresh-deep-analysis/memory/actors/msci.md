@@ -15,13 +15,14 @@
 
 - MSCI-adopts-the-screen (AUG 19 → held 0.55) — **HIT, Brier 0.2025** (OCT 16). Lesson: a consulted screen with a provider-published deletion simulation proceeds — price ≥0.65.
 - The Nov 11 final list names Strategy — **0.80** (HELD OCT 24; no new MSCI document; MSTR $146 with BTC −2.5% — in line). Strategy's mNAV closes <1.00× by Nov 30 — **0.45 → 0.35** (OCT 24: mnav.com RESTATED its series — headline 1.18×, 52-week 0.98–1.37×; the row scores on the headline figure, so log the basis each run; equity-only cross-check ≈ 0.90×).
-- **NOV 9 note:** no MSCI development; the list is due **Nov 11 (evening)**. Context for the day: MSTR $129; mnav.com 1.16× (restated a third time); Strategy's ATM reopened ($164.0M) two days before the list — the premium channel is open INTO the deletion, so the forced-flow half (Nov 30; ~3.1%) is the next observable. Rows HELD: Nov 11 list 0.80; mNAV <1.0× 0.35. Pull `app2.msci.com` the day of; check the pub_key date; log Metaplanet.
+- **NOV 16, 2026 — THE FINAL LIST (Nov 11, 10:23 p.m. GMT; `pub_key=mRYGl6UqEfM=`): STRATEGY DELETED.** "MSCI announces final impact list of the non-operating companies methodology" — changes implemented in the November 2026 Index Review, effective as of the close of **Nov 30**; the list (xlsx on msci.com/index-consultations; Bitcoin Magazine's restatement): **Strategy (MSCI USA → World / ACWI), Metaplanet (Japan Small Cap), Yellow Cake (UK Small Cap), Skel Fjárfestingafélag (Iceland Frontier Small Cap), Upexi (USA Micro Cap)**; a watchlist of nearly two dozen names. MSTR $122.35 at the Nov 11 close, $120.50 after hours; ~$112 by Nov 16 premarket (−8%, with BTC −13%). Strategy's August line ("no meaningful impact on Strategy's business") stands; no post-decision statement found. **The Nov 11 row HIT at 0.80 (0.04) — lesson: a provider-published list on a stated date ≥0.85.** Next: the Nov 30 close (the passive flow ~13M shares / 3.1%); MSTR's Dec 1 open; the mNAV <1.0× row (0.35) scores on mnav.com's headline per its letter — but that headline rose to 1.20× while both inputs fell (a 4th restatement), so no new row rests on it.
+- **NOV 9 note (condensed NOV 16):** no development; the ATM reopened ($164.0M) two days before the list — the premium channel open INTO the deletion.
 - **OCT 24 / NOV 2 notes:** no MSCI development; `last updated` stays OCT 16 for the snapshot. NOV 2: MSTR −10% on the Q3 (to ~$131; −27% YTD) with no ATM — the premium channel has already closed the issuance window before any index fund sells a share (contagion condition 3). The Nov 11 row HELD 0.80; the mNAV <1.0× row HELD 0.35 (mnav.com 1.12×, basis restated again). Next pull: `app2.msci.com` on Nov 11 — check the pub_key against the date.
 
 ## Open questions
 
-1. Nov 11: does the final list keep Strategy AND Metaplanet (both fail in both annual periods on the face of it) — or does a buffer / the interim-filing clause give a reprieve?
-2. Does FTSE / S&P copy the screen (no sign yet)?
+1. RESOLVED (Nov 11): both deleted. NOW: how much of the ~13M-share flow prints on the Nov 30 close, and does MSTR's Dec 1 session show it absorbed (the contrarian's vindication signal) or not?
+2. Does FTSE / S&P copy the screen (no sign yet)? Does the May 2027 review catch Strive or Twenty One?
 3. Does Strategy respond — a MSTR buyback from the $1.0B authority, litigation, or the counterintuitive lever (shrinking the stack to raise the operating share)?
 4. The November Index Review's other deletions — any read-across to the DAT cohort's financing (Upexi, SharpLink).
 
