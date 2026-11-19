@@ -24,14 +24,14 @@ export const HISTORICAL_HIGHLIGHTS = [
 ];
 
 export const SIX_MONTH_HIGHLIGHTS = [
-  { date: "Sep 21", title: "Bitcoin tops $87,000 as U.S. Bitcoin ETFs take in $999 million in one day, the most since October 2025", source: "SoSoValue", tag: "ETFs", important: true },
-  { date: "Sep 16", title: "The Fed raises its key rate a quarter point to 3.75%–4%, the first rise since 2023, in a unanimous 12–0 vote", source: "Federal Reserve", tag: "FED", important: true },
-  { date: "Sep 15", title: "The Senate blocks the CLARITY Act, the crypto market rulebook, 49–50 on a vote that needed 60; no Democrat votes yes", source: "U.S. Senate", tag: "REGULATION", important: true },
-  { date: "Aug 19", title: "The Treasury says it will at least double its largest purchases of its own bonds to $4 billion; Bitcoin jumps back to $70,000 as over $1 billion of bets against it close", source: "U.S. Treasury", tag: "MARKETS", important: true },
-  { date: "Aug 18", title: "The SEC proposes new rules for selling crypto tokens to the public, letting projects raise up to $75 million a year exempt from full registration", source: "SEC", tag: "REGULATION", important: true },
-  { date: "Jun 25", title: "Bitcoin falls to about $58,100, its lowest in 21 months, after the Fed's favorite inflation gauge hits a three-year high; over $1 billion of bets are force-closed in a day, mostly bets on a rise", source: "Crypto Briefing", tag: "PRICE", important: true },
-  { date: "Jun 17", title: "The Fed holds its key rate at 3.50%–3.75%, but officials' typical forecast for year end rises to 3.8% from 3.4% in March, pointing to a rise, not a cut", source: "Federal Reserve", tag: "FED", important: true },
-  { date: "Jun 12", title: "SpaceX raises about $75 billion in the largest stock-market debut ever; its SEC filings show it holds 18,712 Bitcoin, bought at an average of about $35,300 each", source: "SEC EDGAR", tag: "CORPORATE", important: true },
-  { date: "Jun 5", title: "Bitcoin falls below $60,000, touching about $59,200, after a record 13 straight days of Bitcoin ETF withdrawals totaling $4.3 billion", source: "The Herald Business", tag: "PRICE", important: true },
-  { date: "Jun 1", title: "Strategy sells 32 Bitcoin to pay dividends it owes investors, its first sale since 2022; in the week to July 5 it sells 3,588 more for $216 million", source: "SEC EDGAR", tag: "CORPORATE", important: true },
+  { date: "Oct 29", title: "Strategy, the leading Bitcoin-holding company, reports it sold 5,552 Bitcoin in the quarter and 6,947 this year to pay dividends; its first sale, of 32 coins, came June 1", source: "SEC EDGAR", tag: "CORPORATE", important: true },
+  { date: "Oct 21", title: "The OCC, which supervises national banks, finishes its rules for stablecoins, digital tokens pegged to the dollar; they take effect January 18, 2027", source: "OCC", tag: "REGULATION", important: true },
+  { date: "Oct 12", title: "London's High Court rules Chinese law decides whether fraud victims have rights to about 61,000 Bitcoin seized by police, worth about £3.8 billion; the victims' lawyers are pursuing an appeal", source: "The Block", tag: "RESERVES", important: true },
+  { date: "Sep 21", title: "Bitcoin tops $87,000, its highest since January, as U.S. Bitcoin funds take in $999 million in one day, the most since October 2025", source: "SoSoValue", tag: "ETFs", important: true },
+  { date: "Sep 16", title: "The Federal Reserve, the U.S. central bank, raises its key rate a quarter point to 3.75%–4% under chair Kevin Warsh, the first rise since 2023, in a unanimous 12–0 vote", source: "Federal Reserve", tag: "FED", important: true },
+  { date: "Sep 15", title: "The Senate blocks the CLARITY Act, the crypto market rulebook, 49–50 on a vote that needed 60; every yes vote came from a Republican", source: "U.S. Senate", tag: "REGULATION", important: true },
+  { date: "Aug 19", title: "The U.S. Treasury says it will at least double its largest purchases of its own bonds to $4 billion; Bitcoin jumps back to $70,000 as over $1 billion of borrowed-money bets against it are force-closed", source: "U.S. Treasury; Bitcoin.com News", tag: "PRICE", important: true },
+  { date: "Aug 18", title: "The SEC, the U.S. market regulator, proposes new rules for selling crypto tokens to the public, letting projects raise up to $75 million a year without full registration", source: "SEC", tag: "REGULATION", important: true },
+  { date: "Jun 25", title: "Bitcoin falls to about $58,100, its lowest in 21 months, after the Fed's favorite inflation gauge hits a three-year high; over $1 billion of borrowed-money bets are force-closed in a day", source: "Crypto Briefing", tag: "PRICE", important: true },
+  { date: "Jun 12", title: "SpaceX raises about $75 billion in the largest stock-market debut ever; its SEC filing shows it holds 18,712 Bitcoin, bought for $661 million", source: "SEC EDGAR", tag: "CORPORATE", important: true },
 ];
