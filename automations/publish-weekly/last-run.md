@@ -1,5 +1,34 @@
 # publish-weekly — last run
 
+**2026-11-19 (Thursday) 05:48 UTC / 00:48 ET — owner-requested force-run of `headlines-archive`, in the same session as the 04:42 UTC run recorded below. Published.**
+
+- Pushed: **yes** — commit `74ac8f8` on `master`, `Weekly refresh (Nov 16): six-month archive re-curated with the stories that aged out since October; thesis 0.8, Brier 0.19 over 56`.
+- Deploy: pages.yml run 44467619070 — https://github.com/jakeperc/btc-live-dashboard/actions/runs/44467619070 — **success** (completed 05:48:30 UTC).
+- Site: `Last-Modified: Thu, 19 Nov 2026 05:48:23 GMT`.
+- Gates: `npm run build` exit 0; `npm test` exit 0 (schema clean, glossary 32 / 0, check:llms clean); `check:plain -- --verify` exit 1 (structural 0, hard 0, soft 24). Editor and cold-read not re-run (`headlines.js` is outside the Editor's fields).
+- Manifest: not bumped (force-run). headlines-archive stays at 2026-11-19T04:41:12Z; next due Dec 14.
+- Why: a review of the 04:42 run found playbook step 3 had been skipped. Stories that left `HISTORICAL_HIGHLIGHTS` since Oct 24 were never considered, because the agent was not shown them; the archive had nothing between Sep 22 and Oct 29 and five of ten items were from June.
+
+SIX_MONTH_HIGHLIGHTS after the force-run (10): Oct 29 Strategy sold 5,552 Bitcoin in the quarter and 6,947 this year, first sale June 1 (10-Q and 8-K on sec.gov) · Oct 21 OCC stablecoin rules, in force Jan 18, 2027 (OCC Bulletin 2026-50) · Oct 12 London High Court on 61,000 seized Bitcoin (The Block; judgment not located) · Sep 21 $999 million ETF day (CryptoSlate citing SoSoValue; Farside 403) · Sep 16 Fed rise, now naming chair Warsh (Fed press release) · Sep 15 CLARITY blocked 49–50 (Senate roll call 234) · Aug 19 Treasury buybacks (Treasury release sb0607; the $70,000 and liquidation figures from a secondary outlet seen in search results only) · Aug 18 SEC token-sale proposal (SEC release 2026-76) · Jun 25 21-month low (Crypto Briefing) · Jun 12 SpaceX, 18,712 Bitcoin bought for $661 million (S-1, note 7).
+
+- Promoted: Oct 29, Oct 21, Oct 12. Dropped: Jun 17 (Fed hold), Jun 5 (merged into Jun 25), Jun 1 (merged into Oct 29).
+- Orchestrator edit: removed "and buy back shares" from the Oct 29 title; the agent had it from a search summary only.
+- Left out, for the Dec 14 run or the owner: the Oct 29 Binance theft (judged an overlap with the Oct 30 item in the four-week list, which ages out around Nov 27, so the theft is absent from both lists until Dec 14 unless force-run again); Oct 15 MSCI rule and Oct 14 inflation (same themes as Nov 11 and Nov 10 items); Oct 28 Fed hold; Sep 30 best third quarter since 2017 and Oct 20 SpaceX–Tesla merger talk (not verified on an opened page).
+- Still secondary-only: "largest stock-market debut ever" and the $75 billion raise (Jun 12), "first rise since 2023" and "chair Warsh" (Sep 16), "leading Bitcoin-holding company" (The Block's phrase).
+
+Found by the review, not acted on (for Monday Nov 23):
+- Strategy's Nov 16 8-K: 485 Bitcoin for $33.4 million, holdings 850,849. The page says 850,364; the 0.55 watch row on this filing resolved as a hit and is unscored.
+- Fed minutes released Nov 18; secondary reports say almost all officials backed further rises and a couple floated more than a quarter point for December. Fed text not read.
+- Price about $63,300 at 05:30 UTC Nov 19, Nov 18 low near $62,400 against the Nov 15 low of about $62,000.
+- Unverified items from a weekly rollup: SEC and CFTC nominees named, Supreme Court rejects Custodia Bank's Fed-account bid, MARA sells Bitcoin to repay loans. Russian exchanges may organise trades from Nov 22.
+- `automations/refresh-all/README.md` still names 850K as Strategy's next milestone (crossed Nov 9).
+- Structural: the four-week list rolls weekly and the archive runs monthly, so a story aging out between archive runs is in neither list for up to 25 days.
+- The mid-week firing is unexplained: the task is set to Mondays, Monday's run succeeded, and the run history shows no failed run before this one.
+
+---
+
+## Earlier the same night — the scheduled firing
+
 **2026-11-19 (Thursday) 04:42 UTC / Wednesday Nov 18 23:42 ET — scheduled firing of `btc-publish-weekly`, two days after Monday's run. Published (archive only).**
 
 - Pushed: **yes** — commit `becf3e7` on `master`, `Weekly refresh (Nov 16): six-month headlines archive re-curated, market cards unchanged; thesis 0.8, Brier 0.19 over 56`. The subject keeps "Nov 16" because the form takes its date from `DEEP_ANALYSIS.asOf`, which did not change.

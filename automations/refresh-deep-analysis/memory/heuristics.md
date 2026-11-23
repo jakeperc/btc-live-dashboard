@@ -8,7 +8,12 @@ Each entry: rule statement, supporting evidence (cite run dates), counter-eviden
 
 ### Candidate
 
-_(none currently — the two seed candidates were resolved at the Q3 2026 consolidation: one retired below, one promoted below. Cross-current patterns below their 3-cycle floor stay in `cross-current-patterns.md` as candidates, not here.)_
+#### C1. Strategy's buying follows its share valve, not its cost basis (CANDIDATE — proposed NOV 23, 2026, replacing retired #3)
+
+- **Rule:** WHETHER Strategy buys in a week is governed by whether its common-stock ATM sold shares that week (the valve open by the issuer's OWN premium measure, read from the 8-K, never from mnav.com): 9 buys in the 10 filings with ATM proceeds since Aug 24 (the one idle filing, Oct 26, had ZERO ATM); the Sep 21 cash buy is the second valve. Price-vs-basis does NOT gate buying — Nov 16: 485 BTC at $68,887 vs a $75,452 basis. HOW MUCH = ATM proceeds minus the preferred-buyback claim (coins' share of ATM proceeds: 40% Nov 2 → 29% Nov 9 → 14% Nov 16 — trending to zero). SELLING keeps the old form (below basis + the premium gone by the issuer's measure + a dividend clock) — untested since August; the $4.75B reserve is the counter-weight.
+- **Evidence:** 1 cycle (NOV 23) plus the re-read #3 record. **Retire if:** two filings with ATM proceeds and no purchase; or a purchase with the ATM shut and USD Cash flat; or a coin sale with the ATM open.
+
+_Cross-current patterns below their 3-cycle floor stay in `cross-current-patterns.md` as candidates, not here._
 
 ## Promoted heuristics
 
@@ -29,12 +34,7 @@ _(promoted at the Q3 2026 consolidation — the first-ever consolidation pass, r
 - **Confidence:** high — the best-evidenced pattern in memory. Default frame before reaching for a single-pillar explanation.
 - **Retire if:** the two pillars move in lockstep on the SAME clock for 3+ consecutive cycles (would mean the independent-clocks premise has broken down).
 
-#### 3. Corporate treasury capital allocation is price-vs-basis gated, not doctrine
-
-- **Rule:** A leveraged-treasury company's BTC buy/sell/idle decision in any given week is governed by (a) spot price vs. its average cost basis and (b) whether its share premium (or cash reserve) makes issuance/deployment accretive — never by a stated "doctrine" (e.g., "never sell") and never durable enough to be called a settled "regime." Price above basis + an open valve (ATM premium >1.0 OR designated cash) → buy. Price below basis + a thin premium + a dividend date due → sell the underlying to fund it. Public statements/teases are anti-signals; only the filing counts.
-- **Evidence (6 cycles; re-derived 3×):** JUN–AUG ~6,948 BTC sold below basis in three dividend cycles → AUG 31 4,603 bought above basis (ATM) → SEP 21 950 from cash with the ATM shut (cash a real second valve). Cost of not having it sooner: the ledger's worst (0.7225) and second-worst (0.4225) scores.
-- **Confidence:** high, but rewritten 3× already (May 20 → Sep 13 → Sep 26) — expect a 4th refinement. Corporate bias (N=13, −0.35) tracks in `calibration.md`. ON NOTICE NOV 2 → CLEARED NOV 9 (the Nov 2 buy). **NOV 16: the Nov 9 8-K's 1,036 BTC were bought Nov 2–8 at $79,012 — ABOVE basis on the purchase days — so the WHETHER rule is 8-for-9 and the below-basis falsifier did NOT fire; but SIZE ($284M of ATM, $188M to STRC) shows the valve is the issuer's own premium reading, and mnav.com can no longer supply that reading (4th restatement). Refinement candidate for consolidation (the 4th rewrite): three variables — price-vs-basis (WHETHER), the issuer's own premium (the ATM valve's size), and the preferred buyback's competing claim (2–9× the coin spend). LIVE TEST NOV 16 / NOV 23 8-K: the Nov 9–15 week traded ENTIRELY below the $75,456 basis with the ATM open — a BUY is this heuristic's first falsifier ("a below-basis purchase") and retires it as written; an idle week or a sale confirms the cost line.**
-- **Retire if:** a below-basis purchase, an above-basis sale with no dividend due, or two consecutive above-basis filings with an open valve and no purchase.
+#### 3. Corporate treasury capital allocation is price-vs-basis gated, not doctrine — RETIRED NOV 23, 2026 (see Retired; successor: Candidate C1)
 
 #### 4. Energy re-shock hardens the Fed's rate path every time; de-escalation does not buy a pivot when core inflation binds
 
@@ -53,6 +53,12 @@ _(promoted at the Q3 2026 consolidation — the first-ever consolidation pass, r
 ## Retired heuristics
 
 _(kept for audit so a future run doesn't re-propose the same rule. Retired at the Q3 2026 consolidation unless noted.)_
+
+#### Corporate treasury capital allocation is price-vs-basis gated (#3 — RETIRED NOV 23, 2026 on its own pre-named falsifier)
+
+- **Original rule (rewritten 3×: May 20 → Sep 13 → Sep 26):** buy/sell/idle is governed by spot vs the average cost basis plus an open valve — above basis + the ATM at a premium or designated cash → buy; below basis + a thin premium + a dividend due → sell coins. Evidence: JUN–AUG ~6,948 sold below basis; AUG 31 – NOV 9 eight buys in nine above-basis filings; the Sep 21 cash buy.
+- **Retirement trigger:** the Nov 16 8-K — 485 BTC bought Nov 9–15 at $68,887 against a $75,452 basis, the first fully below-basis week since August, with the ATM selling $244.7M (84% to STRC buybacks). The NOV 16 run pre-committed: "a BUY retires it as written." Hygiene rule 4.
+- **Lesson:** the rule confused a correlate (price above basis) with the mechanism (the ATM valve open by the issuer's own measure). Above-basis weeks and ATM-open weeks coincided Aug–Nov; the first week they diverged, the valve won. Successor: Candidate C1 (the valve gates WHETHER; the buyback claim sizes HOW MUCH; the old three-condition form survives for SELLING only). Ledger cost of the old frame: the 0.55 row scored 0.2025 (Corporate N=14, −0.36 — twelve of fourteen under-priced).
 
 #### Float scarcity buffers ETF outflows unconditionally (RETIRED — decisive contradiction JUN 5, 2026; formally closed at Q3 consolidation)
 

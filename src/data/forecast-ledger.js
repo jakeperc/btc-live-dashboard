@@ -46,12 +46,12 @@
 // Check: npm run check:plain -- --file src/data/forecast-ledger.js
 
 export const FORECAST_LEDGER = {
-  asOf: "NOV 16, 2026",
+  asOf: "NOV 23, 2026",
   summary: {
-    nResolved: 56,
+    nResolved: 59,
     aggregateBrier: 0.19,
-    rolling20Brier: 0.18,
-    plain: "A Brier score grades forecasts from 0 (perfect) to 1; coin-flipping scores 0.25. Across 56 scored calls ours is 0.19, and 0.18 over the last 20. Our biggest errors: expecting a gentler central bank, and doubting the biggest Bitcoin-holding company's buying.",
+    rolling20Brier: 0.16,
+    plain: "A Brier score grades forecasts from 0 (perfect) to 1; coin-flipping scores 0.25. Across 59 scored calls ours is 0.19, and 0.16 over the last 20. Our biggest errors: expecting a gentler central bank, and doubting the biggest Bitcoin-holding company's buying.",
     byCategory: [
       {
         category: "macro",
@@ -61,15 +61,15 @@ export const FORECAST_LEDGER = {
       },
       {
         category: "corporate",
-        n: 13,
-        meanResidual: -0.35,
-        plain: "We keep doubting Strategy, the biggest Bitcoin-holding company: eleven of thirteen times it did more than we expected. Its next filing, with Bitcoin below cost, tests whether it still buys.",
+        n: 14,
+        meanResidual: -0.36,
+        plain: "We keep doubting Strategy, the biggest Bitcoin-holding company: twelve of fourteen times it did more than we expected, most recently buying with Bitcoin below its own cost.",
       },
       {
         category: "etf",
-        n: 11,
-        meanResidual: 0.15,
-        plain: "Too hopeful, four times, that fund money keeps coming, and too quick to expect its return after a Fed meeting. This month even modest odds on it were too high.",
+        n: 12,
+        meanResidual: 0.17,
+        plain: "Too hopeful, four times, that fund money keeps coming, and too quick to expect it back after a Fed meeting. Twice this month, even modest odds on that ran high.",
       },
       {
         category: "regulation",
@@ -85,20 +85,62 @@ export const FORECAST_LEDGER = {
       },
       {
         category: "market-structure",
-        n: 6,
-        meanResidual: -0.21,
-        plain: "Two crashes we called unlikely never came; an index rule, MSCI's final list and a Friday below $75,000 all landed. We have been too cautious on scheduled decisions.",
+        n: 7,
+        meanResidual: -0.26,
+        plain: "Two crashes we called unlikely never came; an index rule, MSCI's final list and Fridays below $75,000 and $62,000 all happened. We were too cautious on scheduled decisions and falls.",
       },
     ],
     bands: [
       { range: "0–10%", n: 11, hitRate: 0 },
-      { range: "10–30%", n: 10, hitRate: 0.5 },
-      { range: "30–50%", n: 12, hitRate: 0.25 },
-      { range: "50–70%", n: 18, hitRate: 0.44 },
+      { range: "10–30%", n: 11, hitRate: 0.45 },
+      { range: "30–50%", n: 13, hitRate: 0.31 },
+      { range: "50–70%", n: 19, hitRate: 0.47 },
       { range: "70–90%", n: 5, hitRate: 1 },
     ],
   },
   resolved: [
+    {
+      id: "2026-11-23-strategy-purchase-below-cost",
+      made: "NOV 16, 2026",
+      window: "by Nov 23, 2026",
+      resolvedOn: "NOV 23, 2026",
+      category: "corporate",
+      event: "Strategy, the firm that holds more Bitcoin than any other, reports at least one Bitcoin purchase in its weekly filing of November 16 or November 23, with Bitcoin below its average cost.",
+      probability: 0.55,
+      outcome: "hit",
+      brier: 0.2025,
+      count: 1,
+      lesson: "The November 16 filing showed 485 coins bought at about $68,900, below the company's $75,452 average cost. We gave a purchase 55% odds, our lowest for this company since August, because last summer, below cost, it had sold. It bought anyway; that rule is retired.",
+      source: { label: "SEC EDGAR — Strategy Form 8-K filed November 16, 2026: 485 BTC bought Nov 9–15 for $33.4M at $68,887 average, funded by MSTR stock sales; holdings 850,849 BTC at $75,452 average", url: "https://www.sec.gov/Archives/edgar/data/1050446/000119312526462151/mstr-20261116.htm" },
+    },
+    {
+      id: "2026-11-23-friday-close-below-62k",
+      made: "NOV 16, 2026",
+      window: "by Dec 11, 2026",
+      resolvedOn: "NOV 23, 2026",
+      category: "market-structure",
+      event: "Bitcoin's Friday closing price, measured on CoinGecko at midnight Greenwich time the next day, is below $62,000 on any Friday from November 20 to December 11.",
+      probability: 0.45,
+      outcome: "hit",
+      brier: 0.3025,
+      count: 1,
+      lesson: "Friday November 20 closed at $58,818, the first Friday in the window, after the worst week for technology shares in years. We gave this close-to-even odds with Bitcoin at $64,600. Twice running, Friday's close fell below our line; in a falling market we lean hopeful.",
+      source: { label: "CoinGecko API — daily prices at 00:00 UTC: Nov 21 $58,818 (Friday Nov 20's close) · Nov 14 $68,314 (Friday Nov 13's close)", url: "https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=9&interval=daily" },
+    },
+    {
+      id: "2026-11-23-etf-week-to-nov-20",
+      made: "NOV 16, 2026",
+      window: "by Nov 20, 2026",
+      resolvedOn: "NOV 23, 2026",
+      category: "etf",
+      event: "More money comes into the U.S. Bitcoin funds than leaves in the week ending November 20.",
+      probability: 0.3,
+      outcome: "miss",
+      brier: 0.09,
+      count: 1,
+      lesson: "About $1.79 billion left, the third-largest weekly exit on record, with BlackRock's fund setting one-day records on Thursday and Friday. We leaned no at 30% odds. Four weeks running the money has left, and each time our modest odds on a return were too high.",
+      source: { label: "TFTC (Farside Investors data) — U.S. spot Bitcoin ETF daily flows, November 2026: Nov 16 +$8.0M · Nov 17 −$239.9M · Nov 18 −$306.4M · Nov 19 −$582.2M · Nov 20 −$669.2M; week −$1,789.7M", url: "https://www.tftc.io/bitcoin-etf-flows/november-2026" },
+    },
     {
       id: "2026-11-16-msci-final-list-strategy",
       made: "OCT 16, 2026",
@@ -110,7 +152,7 @@ export const FORECAST_LEDGER = {
       outcome: "hit",
       brier: 0.04,
       count: 1,
-      lesson: "MSCI confirmed the removal on November 11, along with Metaplanet and three others. We gave this 80% odds, since the draft list already named Strategy; a published list on a stated date deserved even more confidence.",
+      lesson: "MSCI confirmed the removal on November 11, along with Japan's Metaplanet and three others. We gave this 80% odds, since the draft list already named Strategy; a published list on a stated date deserved even more confidence.",
       source: { label: "MSCI — 'MSCI announces final impact list of the non-operating companies methodology', November 11, 2026: changes effective as of the close of November 30; the impacted constituents listed on the consultation page", url: "https://app2.msci.com/webapp/index_ann/DocGet?pub_key=mRYGl6UqEfM%3D&lang=en&format=html" },
     },
     {
@@ -152,7 +194,7 @@ export const FORECAST_LEDGER = {
       outcome: "hit",
       brier: 0.3025,
       count: 1,
-      lesson: "Friday November 13 closed at $68,314, far below the line, after the hot inflation report. We gave this close-to-even odds with Bitcoin at $77,800 and, by our own rule, did not raise them as the price fell. The market moved faster than the rule allows.",
+      lesson: "Friday November 13 closed at $68,314, far below the line, after the hot inflation report. We gave this close-to-even odds with Bitcoin at $77,800 and, by our own rule, did not raise them just because the price neared the line. The market moved faster.",
       source: { label: "CoinGecko API — daily prices at 00:00 UTC: Nov 14 $68,314 (Friday Nov 13's close) · Nov 7 $75,775 (Friday Nov 6's close)", url: "https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=9&interval=daily" },
     },
     {
@@ -831,3 +873,4 @@ export const FORECAST_LEDGER = {
   ],
   openCount: 13,
 };
+// openCount: 6 rendered watch rows (Nov 23) + 7 memory-only rows (Strategy sale by Dec 7; Trump Media sale by Dec 15; mNAV below 1.0x by Nov 30; BBIT listing by Nov 30; H.R. 8957 by Dec 31; CFTC NPRM by Dec 31; second IPO by Dec 31).
