@@ -63,7 +63,17 @@ export const PriceChart = memo(({ sevenDay, mediumTerm, longTerm }) => {
   const isMobile = useIsMobile();
 
   // Source selection: seven=7D sparkline, medium=CoinGecko 90d hourly, long=blockchain.info all-time (one close every 4 days).
-  const sourceData = cfg.source === "seven" ? sevenDay : cfg.source === "medium" ? mediumTerm : longTerm;
+  // 7D normally comes from CoinGecko's sparkline. If that request failed but
+  // the 90-day hourly series is here (fetched separately, and cached), its
+  // last seven days are the same data — better than "Loading chart…" forever.
+  const sevenFromMedium = useMemo(() => {
+    if (cfg.source !== "seven" || (Array.isArray(sevenDay) && sevenDay.length > 0)) return null;
+    if (!Array.isArray(mediumTerm) || mediumTerm.length === 0) return null;
+    const cutoff = Date.now() - 7 * 24 * 3600 * 1000;
+    const recent = mediumTerm.filter((p) => p.t >= cutoff);
+    return recent.length > 1 ? recent : null;
+  }, [cfg.source, sevenDay, mediumTerm]);
+  const sourceData = cfg.source === "seven" ? (sevenFromMedium || sevenDay) : cfg.source === "medium" ? mediumTerm : longTerm;
   // The window/downsample/min-max pass walks the full history (~1,600
   // points on ALL), so it only re-runs when the source array or range changes —
   // not on the 30 s price polls that re-render the Dashboard around this chart.

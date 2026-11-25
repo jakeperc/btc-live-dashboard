@@ -244,7 +244,11 @@ export const useBitcoinData = () => {
 
       try {
         const [cgRes, blockRes, hashRes, feesRes, mempoolRes, globalRes] = await Promise.all([
-          fetch(COINGECKO_MARKET_URL, { signal: ac.signal, cache: "no-store" }),
+          // Caught like its neighbours: a CoinGecko failure (its free tier
+          // rate-limits by IP, and a 429 arrives without CORS headers, i.e. as
+          // a rejected fetch) used to reject the whole batch and throw away
+          // the mempool.space answers that had nothing to do with it.
+          fetch(COINGECKO_MARKET_URL, { signal: ac.signal, cache: "no-store" }).catch((e) => { if (e?.name === "AbortError") throw e; return null; }),
           fetch(MEMPOOL_BLOCK_URL, { signal: ac.signal }).catch(() => null),
           fetch(MEMPOOL_HASHRATE_URL, { signal: ac.signal }).catch(() => null),
           fetch(MEMPOOL_FEES_URL, { signal: ac.signal }).catch(() => null),
@@ -252,9 +256,15 @@ export const useBitcoinData = () => {
           fetch(COINGECKO_GLOBAL_URL, { signal: ac.signal, cache: "no-store" }).catch(() => null),
         ]);
 
-        if (!cgRes.ok) throw new Error(`CoinGecko HTTP ${cgRes.status}`);
-        const cg = await cgRes.json();
-        const md = cg.market_data;
+        let md = null;
+        let cgError = null;
+        if (!cgRes) cgError = "CoinGecko unreachable";
+        else if (!cgRes.ok) cgError = `CoinGecko HTTP ${cgRes.status}`;
+        else {
+          const cg = await cgRes.json().catch(() => null);
+          md = cg?.market_data ?? null;
+          if (!md) cgError = "CoinGecko returned no market data";
+        }
 
         let blockHeight = null;
         if (blockRes && blockRes.ok) {
@@ -297,6 +307,25 @@ export const useBitcoinData = () => {
         }
 
         if (cancelled) return;
+
+        // CoinGecko failed: keep whatever market figures are on screen, but
+        // still apply the network figures that did arrive, then report the
+        // failure so the poller backs off as before.
+        if (!md) {
+          setData((prev) => ({
+            ...prev,
+            blockHeight: blockHeight ?? prev.blockHeight,
+            hashrate: hashrate ?? prev.hashrate,
+            difficulty: difficulty ?? prev.difficulty,
+            fastFee: fastFee ?? prev.fastFee,
+            hourFee: hourFee ?? prev.hourFee,
+            mempoolCount: mempoolCount ?? prev.mempoolCount,
+            dominance: dominance ?? prev.dominance,
+            loading: false,
+            error: prev.price == null ? cgError : prev.error,
+          }));
+          return false;
+        }
 
         const price = md.current_price?.usd ?? null;
         const sparkline = md.sparkline_7d?.price ?? [];
