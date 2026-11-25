@@ -62,7 +62,9 @@ const plainCheck = join(repoRoot, "scripts", "check-plain.mjs");
 if (existsSync(plainCheck)) {
   console.log("build: running scripts/check-plain.mjs");
   const result = spawnSync(process.execPath, [plainCheck], { cwd: repoRoot, stdio: "inherit" });
-  const code = result.status ?? 1;
+  // No exit status means the checker was killed or could not start: that is
+  // a gate that did not run, so it blocks like a STRUCTURAL finding does.
+  const code = result.status ?? 3;
   if (code === 3) {
     console.error("build: check-plain reported a STRUCTURAL finding (exit 3); aborting before Vite. Fix it, or restore the pre-edit snapshot, then rebuild.");
     process.exit(3);
