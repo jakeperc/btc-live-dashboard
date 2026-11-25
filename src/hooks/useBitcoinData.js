@@ -54,6 +54,31 @@ const writeChartCache = (key, points) => {
   } catch { /* quota or private mode: the cache is only an optimisation */ }
 };
 
+// fetch() with a deadline. A request that connects and then never answers
+// would otherwise keep its batch pending forever — and because each fetcher
+// refuses to start while its previous run is "in flight", that one stalled
+// request silently stopped every later refresh of the same data. On timeout
+// it rejects with a plain Error (not an AbortError), so callers treat it as an
+// ordinary failure and the poller backs off; a real unmount abort still
+// surfaces as AbortError.
+const REQUEST_TIMEOUT_MS = 15000;
+const fetchWithDeadline = (url, { signal, ...init } = {}) => {
+  const ctl = new AbortController();
+  let timedOut = false;
+  const onParentAbort = () => ctl.abort();
+  if (signal) {
+    if (signal.aborted) ctl.abort();
+    else signal.addEventListener("abort", onParentAbort, { once: true });
+  }
+  const timer = setTimeout(() => { timedOut = true; ctl.abort(); }, REQUEST_TIMEOUT_MS);
+  return fetch(url, { ...init, signal: ctl.signal })
+    .catch((e) => { throw timedOut ? new Error(`Timed out after ${REQUEST_TIMEOUT_MS / 1000}s`) : e; })
+    .finally(() => {
+      clearTimeout(timer);
+      if (signal) signal.removeEventListener("abort", onParentAbort);
+    });
+};
+
 // Every fetcher below resolves to true (success), false (failure) or
 // undefined (did nothing: already in flight, or aborted on unmount). The
 // pollers use that to pause while the tab is hidden and to back off after
@@ -206,7 +231,7 @@ export const useBitcoinData = () => {
       liveInFlight = true;
 
       try {
-        const res = await fetch(COINBASE_TICKER_URL, { signal: ac.signal, cache: "no-store" });
+        const res = await fetchWithDeadline(COINBASE_TICKER_URL, { signal: ac.signal, cache: "no-store" });
         if (!res.ok) throw new Error(`Coinbase HTTP ${res.status}`);
 
         const ticker = await res.json();
@@ -251,12 +276,12 @@ export const useBitcoinData = () => {
           // rate-limits by IP, and a 429 arrives without CORS headers, i.e. as
           // a rejected fetch) used to reject the whole batch and throw away
           // the mempool.space answers that had nothing to do with it.
-          fetch(COINGECKO_MARKET_URL, { signal: ac.signal, cache: "no-store" }).catch((e) => { if (e?.name === "AbortError") throw e; return null; }),
-          fetch(MEMPOOL_BLOCK_URL, { signal: ac.signal }).catch(() => null),
-          fetch(MEMPOOL_HASHRATE_URL, { signal: ac.signal }).catch(() => null),
-          fetch(MEMPOOL_FEES_URL, { signal: ac.signal }).catch(() => null),
-          fetch(MEMPOOL_MEMPOOL_URL, { signal: ac.signal }).catch(() => null),
-          fetch(COINGECKO_GLOBAL_URL, { signal: ac.signal, cache: "no-store" }).catch(() => null),
+          fetchWithDeadline(COINGECKO_MARKET_URL, { signal: ac.signal, cache: "no-store" }).catch((e) => { if (e?.name === "AbortError") throw e; return null; }),
+          fetchWithDeadline(MEMPOOL_BLOCK_URL, { signal: ac.signal }).catch(() => null),
+          fetchWithDeadline(MEMPOOL_HASHRATE_URL, { signal: ac.signal }).catch(() => null),
+          fetchWithDeadline(MEMPOOL_FEES_URL, { signal: ac.signal }).catch(() => null),
+          fetchWithDeadline(MEMPOOL_MEMPOOL_URL, { signal: ac.signal }).catch(() => null),
+          fetchWithDeadline(COINGECKO_GLOBAL_URL, { signal: ac.signal, cache: "no-store" }).catch(() => null),
         ]);
 
         let md = null;
@@ -388,9 +413,9 @@ export const useBitcoinData = () => {
 
       try {
         const [fgRes, diffRes, lnRes] = await Promise.all([
-          fetch(FEAR_GREED_URL, { signal: ac.signal }).catch(() => null),
-          fetch(MEMPOOL_DIFFICULTY_URL, { signal: ac.signal }).catch(() => null),
-          fetch(MEMPOOL_LIGHTNING_URL, { signal: ac.signal }).catch(() => null),
+          fetchWithDeadline(FEAR_GREED_URL, { signal: ac.signal }).catch(() => null),
+          fetchWithDeadline(MEMPOOL_DIFFICULTY_URL, { signal: ac.signal }).catch(() => null),
+          fetchWithDeadline(MEMPOOL_LIGHTNING_URL, { signal: ac.signal }).catch(() => null),
         ]);
 
         let fearGreed = null;
@@ -465,7 +490,7 @@ export const useBitcoinData = () => {
       lastBlockInFlight = true;
 
       try {
-        const res = await fetch(MEMPOOL_BLOCKS_URL, { signal: ac.signal });
+        const res = await fetchWithDeadline(MEMPOOL_BLOCKS_URL, { signal: ac.signal });
         if (!res.ok) return false;
         const blocks = await res.json().catch(() => null);
         const b = Array.isArray(blocks) && blocks.length > 0 ? blocks[0] : null;
@@ -499,7 +524,7 @@ export const useBitcoinData = () => {
       longFreshUntil = 0;
       longTermInFlight = true;
       try {
-        const res = await fetch(LONG_TERM_CHART_URL, { signal: ac.signal, cache: "no-store" });
+        const res = await fetchWithDeadline(LONG_TERM_CHART_URL, { signal: ac.signal, cache: "no-store" });
         if (!res.ok) throw new Error(`blockchain.info market-price HTTP ${res.status}`);
         const json = await res.json();
         const downsampled = downsampleLongTerm(json?.values);
@@ -523,7 +548,7 @@ export const useBitcoinData = () => {
       mediumFreshUntil = 0;
       mediumTermInFlight = true;
       try {
-        const res = await fetch(MEDIUM_TERM_CHART_URL, { signal: ac.signal, cache: "no-store" });
+        const res = await fetchWithDeadline(MEDIUM_TERM_CHART_URL, { signal: ac.signal, cache: "no-store" });
         if (!res.ok) throw new Error(`CoinGecko market_chart HTTP ${res.status}`);
         const json = await res.json();
         const processed = downsampleMediumTerm(json?.prices);

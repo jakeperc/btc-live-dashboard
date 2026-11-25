@@ -193,7 +193,11 @@ export const PriceChart = memo(({ sevenDay, mediumTerm, longTerm, sevenDaySettle
       </div>
 
       {data.length === 0 ? (
-        <div style={{ height: isMobile ? 180 : 380, display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-dim)", fontFamily: "var(--font-mono)", fontSize: "var(--fs-sm)" }}>Loading chart…</div>
+        <div style={{ height: isMobile ? 180 : 380, display: "flex", alignItems: "center", justifyContent: "center", textAlign: "center", padding: "0 16px", color: "var(--text-dim)", fontFamily: "var(--font-mono)", fontSize: "var(--fs-sm)" }}>
+          {/* Once the 7-day request has failed and there is no current
+              fallback, say so — "Loading…" would never come true. */}
+          {cfg.source === "seven" && sevenDaySettled ? "7-day chart unavailable right now — try 1Y or ALL" : "Loading chart…"}
+        </div>
       ) : (
         <ResponsiveContainer width="100%" height={isMobile ? 180 : 380}>
           <AreaChart data={data} margin={{ top: 12, right: isMobile ? 4 : 8, left: isMobile ? 2 : 0, bottom: 0 }}>
