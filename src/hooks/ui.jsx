@@ -302,8 +302,14 @@ export const useSwipeNavigation = (activeTab, setActiveTab, tabCount, enabled = 
       return false;
     };
 
+    // A horizontal drag that starts on a chart is the reader scrubbing along
+    // it to read values, and one on a form control is adjusting that control —
+    // neither is "next tab". Any element can opt out with data-no-swipe.
+    const ownsHorizontalDrag = (el) =>
+      !!(el && el.closest && el.closest('.recharts-wrapper, input, select, textarea, [role="slider"], [data-no-swipe]'));
+
     const onStart = (e) => {
-      if (isScrollable(e.target)) { startRef.current = null; return; }
+      if (ownsHorizontalDrag(e.target) || isScrollable(e.target)) { startRef.current = null; return; }
       startRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
     };
     const onEnd = (e) => {
