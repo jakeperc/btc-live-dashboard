@@ -72,3 +72,27 @@ export const computeMaxDrawdown = (longTermChart) => {
   }
   return { drawdownPct: worst.drawdownPct * 100, peakDate: worst.peakDate, troughDate: worst.troughDate };
 };
+
+// Consecutive up (+n) or down (−n) DAYS, from the 7-day hourly series. The
+// series is hourly, so it is first reduced to one close per 24 h, counted back
+// from the latest point — comparing neighbouring points directly counted
+// hours and labelled them days.
+const POINTS_PER_DAY = 24;
+export const dailyStreak = (hourly) => {
+  if (!Array.isArray(hourly) || hourly.length < POINTS_PER_DAY + 1) return null;
+  const closes = [];
+  for (let i = hourly.length - 1; i >= 0; i -= POINTS_PER_DAY) {
+    const price = hourly[i]?.price;
+    if (typeof price !== "number" || !Number.isFinite(price)) break;
+    closes.push(price); // newest first
+  }
+  let dir = null, count = 0;
+  for (let i = 0; i < closes.length - 1; i++) {
+    const delta = closes[i] - closes[i + 1];
+    const d = delta > 0 ? 1 : delta < 0 ? -1 : 0;
+    if (d === 0) break;
+    if (dir == null) { dir = d; count = 1; continue; }
+    if (d === dir) count++; else break;
+  }
+  return dir != null ? dir * count : null;
+};

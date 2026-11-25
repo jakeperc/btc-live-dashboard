@@ -170,6 +170,12 @@
          interactive users never see it — but it lives in the raw served HTML
          for bots, AI crawlers, and the no-JavaScript case. */
       .seo-static {
+        /* ~110 kB of text and tables that React removes the moment it mounts.
+           It sits below the full-height loader, so let the browser skip its
+           layout and paint until it is actually scrolled to (no-JavaScript
+           readers) — the text stays in the HTML for crawlers either way. */
+        content-visibility: auto;
+        contain-intrinsic-size: auto 6000px;
         max-width: 820px;
         margin: 0 auto;
         padding: 40px 24px;
