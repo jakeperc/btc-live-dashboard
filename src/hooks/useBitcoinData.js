@@ -296,7 +296,7 @@ export const useBitcoinData = () => {
 
         let blockHeight = null;
         if (blockRes && blockRes.ok) {
-          const txt = await blockRes.text();
+          const txt = await blockRes.text().catch(() => ""); // like its neighbours: one bad body must not sink the batch
           const n = parseInt(txt, 10);
           if (Number.isFinite(n)) blockHeight = n;
         }
