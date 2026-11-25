@@ -32,14 +32,11 @@ export const computeDcaOutcome = (longTermChart, weeklyAmount, currentPrice) => 
       value: Math.round(cumulativeBtc * point.price),
     });
   }
-  // Final point uses current spot price to reflect today's value.
+  // The series is historical closes only. It used to end on the live spot
+  // price, which meant either rebuilding (and re-animating) the chart on every
+  // price tick or letting its last point drift away from the "Value today"
+  // figure; the live price now belongs to that figure alone.
   const currentValue = cumulativeBtc * currentPrice;
-  if (series.length > 0) {
-    series[series.length - 1] = {
-      ...series[series.length - 1],
-      value: Math.round(currentValue),
-    };
-  }
   const roi = cumulativeInvested > 0 ? (currentValue - cumulativeInvested) / cumulativeInvested : 0;
   return {
     totalInvested: cumulativeInvested,

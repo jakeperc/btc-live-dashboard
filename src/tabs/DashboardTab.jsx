@@ -30,7 +30,7 @@ const CURATED_SEGMENTS = CURATED_MARKET_UPDATES.map(
 // while this module is still being evaluated, so it runs in parallel with
 // React's first render instead of waiting for it.
 const loadCharts = once(() => import("../components/DashboardCharts.jsx"));
-loadCharts().catch(() => {}); // warm-up only; a failure is retried on render
+loadCharts().catch(() => {}); // warm-up only; a failed warm-up is tried again on first render
 const PriceChart = lazyNamed(loadCharts, "PriceChart");
 const PowerLawChart = lazyNamed(loadCharts, "PowerLawChart");
 

@@ -160,7 +160,9 @@ export const PriceChart = memo(({ sevenDay, mediumTerm, longTerm }) => {
         </div>
         <div role="radiogroup" aria-label="Chart time range" className="segmented-pill" onKeyDown={radioGroupKeyDown}>
           {PRICE_CHART_RANGES.map((r) => {
-            const active = range === r.id;
+            // cfg, not the stored value: an unknown stored range falls back to
+            // the first option, and that option must be the checked, tabbable one.
+            const active = cfg.id === r.id;
             return (
               <button
                 key={r.id}

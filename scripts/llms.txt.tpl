@@ -50,5 +50,5 @@
 
 ## Optional
 
-- [blockchain.info price history]({{longTermUrl}}): all-time daily prices for the long price chart and the power-law trend, read {{everyLong}}
+- [blockchain.info price history]({{longTermUrl}}): all-time closing prices (one every four days) for the long price chart and the power-law trend, read {{everyLong}}
 - [CoinGecko 90-day chart]({{mediumUrl}}): hourly prices behind the 1-month and 3-month chart ranges, read {{everyMedium}}

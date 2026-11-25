@@ -18,12 +18,12 @@ const MONTH_LABEL = new Intl.DateTimeFormat("en-US", { month: "short", year: "nu
 // after two more API round trips, and a reload inside the freshness window
 // does not spend the requests at all (CoinGecko's free tier rate-limits by IP).
 //   · younger than its poll interval → used as-is, the first fetch is skipped
-//   · older, up to CHART_CACHE_MAX_AGE_MS → shown at once, refreshed behind it
+//   · older, up to CHART_CACHE_MAX_AGE_MS (a day) → shown at once, refreshed behind it
 //   · older still, unreadable, or storage unavailable → ignored
 // Stored compactly as [[t, price], …]; labels are rebuilt on read.
 const CHART_CACHE_LONG = "btc-dashboard.chart.long.v1";
 const CHART_CACHE_MEDIUM = "btc-dashboard.chart.medium.v1";
-const CHART_CACHE_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
+const CHART_CACHE_MAX_AGE_MS = 24 * 60 * 60 * 1000;
 
 const readChartCache = (key, labelFmt) => {
   try {
@@ -47,7 +47,9 @@ const writeChartCache = (key, points) => {
   try {
     localStorage.setItem(key, JSON.stringify({
       ts: Date.now(),
-      p: points.map((d) => [d.t, Math.round(d.price * 100) / 100]),
+      // Exact values: the earliest closes are a few cents, and rounding them
+      // would nudge the power-law fit between a cached and a fresh load.
+      p: points.map((d) => [d.t, d.price]),
     }));
   } catch { /* quota or private mode: the cache is only an optimisation */ }
 };
@@ -456,7 +458,9 @@ export const useBitcoinData = () => {
 
     const fetchLongTermChart = async () => {
       if (longTermInFlight) return;
-      if (Date.now() < longFreshUntil) return true;
+      // undefined = "did nothing": the poller's clock is left alone and the
+      // one-off timer below fetches the moment the cached copy expires.
+      if (Date.now() < longFreshUntil) return;
       longFreshUntil = 0;
       longTermInFlight = true;
       try {
@@ -480,7 +484,7 @@ export const useBitcoinData = () => {
 
     const fetchMediumTermChart = async () => {
       if (mediumTermInFlight) return;
-      if (Date.now() < mediumFreshUntil) return true;
+      if (Date.now() < mediumFreshUntil) return;
       mediumFreshUntil = 0;
       mediumTermInFlight = true;
       try {
@@ -512,12 +516,21 @@ export const useBitcoinData = () => {
       mediumTerm: createPoller({ run: fetchMediumTermChart, intervalMs: MEDIUM_TERM_POLL_MS, backoffCapMs: POLL_BACKOFF_CAP_MS }),
     };
     fetchersRef.current = pollers;
+    // A cached series stood in for the first fetch: refresh it when it expires
+    // instead of a whole poll interval later. (Skipped while the tab is
+    // hidden — the poller fetches at once when it becomes visible again.)
+    const expiryTimers = [
+      [longFreshUntil, pollers.longTerm],
+      [mediumFreshUntil, pollers.mediumTerm],
+    ].filter(([until]) => until > Date.now()).map(([until, poller]) =>
+      setTimeout(() => { if (typeof document === "undefined" || !document.hidden) poller.now(); }, until - Date.now() + 50));
     Object.values(pollers).forEach((p) => p.start());
 
     return () => {
       cancelled = true;
       ac.abort();
       Object.values(pollers).forEach((p) => p.stop());
+      expiryTimers.forEach(clearTimeout);
     };
   }, []);
 

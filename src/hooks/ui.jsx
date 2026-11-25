@@ -279,6 +279,8 @@ export const usePullToRefresh = (onRefresh, enabled = true) => {
       document.removeEventListener("touchcancel", onTouchEnd);
       if (doneTimer) window.clearTimeout(doneTimer);
       refreshingRef.current = false;
+      setRefreshing(false);
+      setDistance(0);
     };
   }, [enabled]);
 
