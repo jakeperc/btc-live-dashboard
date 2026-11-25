@@ -31,7 +31,7 @@ const TAB_ICONS = [
 
 // Mobile tab bar. Each item is a real link to the tab's route; the click
 // handler only adds haptics and the scroll-to-top, then lets the hash change.
-const BottomNav = ({ activeTab, onIntent }) => (
+const BottomNav = ({ activeTab }) => (
   <nav className="bottom-nav" aria-label="Tab navigation">
     {TABS.map((tab, i) => (
       <a
@@ -41,8 +41,6 @@ const BottomNav = ({ activeTab, onIntent }) => (
         aria-label={tab}
         aria-current={activeTab === i ? "page" : undefined}
         style={{ textDecoration: "none" }}
-        onTouchStart={() => onIntent(i)}
-        onFocus={() => onIntent(i)}
         onClick={() => {
           if (navigator.vibrate) navigator.vibrate(10);
           window.scrollTo({ top: 0, behavior: "auto" });
@@ -119,15 +117,38 @@ export default function BitcoinDashboard() {
     setVisitedTabs(prev => { if (prev.has(activeTab)) return prev; const next = new Set(prev); next.add(activeTab); return next; });
   }, [activeTab]);
 
-  // "About to open a tab": hover, keyboard focus or touch on its link. Starts
-  // the tab's chunk downloading so the click usually finds it ready, and for
-  // Headlines also starts the feeds. Honors the browser's data-saver setting.
+  // "About to open a tab": hover, keyboard focus or touch on ANY link to a
+  // route — the header tabs, the mobile tab bar, and every in-page chip or
+  // inline link ("New to BTC? → Thesis", "Track record"). Starts that tab's
+  // chunk downloading so the click usually finds it ready, and for Headlines
+  // also starts the feeds. One delegated listener on the document covers them
+  // all, including links rendered later. Honors the browser's data-saver setting.
   const [newsIntent, setNewsIntent] = useState(false);
   const onTabIntent = useCallback((i) => {
     if (typeof navigator !== "undefined" && navigator.connection && navigator.connection.saveData) return;
     prefetchTab(i);
     if (i === HEADLINES_TAB) setNewsIntent(true);
   }, []);
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    const seen = new Set();
+    const onIntent = (e) => {
+      const link = e.target && e.target.closest ? e.target.closest('a[href^="#/"]') : null;
+      if (!link) return;
+      const { tab } = parseHash(link.getAttribute("href"));
+      if (tab == null || seen.has(tab)) return;
+      seen.add(tab);
+      onTabIntent(tab);
+    };
+    document.addEventListener("pointerover", onIntent, { passive: true });
+    document.addEventListener("focusin", onIntent);
+    document.addEventListener("touchstart", onIntent, { passive: true });
+    return () => {
+      document.removeEventListener("pointerover", onIntent);
+      document.removeEventListener("focusin", onIntent);
+      document.removeEventListener("touchstart", onIntent);
+    };
+  }, [onTabIntent]);
   // Headlines are fetched only once that tab is wanted (see useBitcoinNews).
   const news = useBitcoinNews(newsIntent || activeTab === HEADLINES_TAB || visitedTabs.has(HEADLINES_TAB));
 
@@ -222,8 +243,6 @@ export default function BitcoinDashboard() {
                       role="tab"
                       href={tabHref(i)}
                       aria-selected={activeTab === i}
-                      onPointerEnter={() => onTabIntent(i)}
-                      onFocus={() => onTabIntent(i)}
                       onClick={(e) => {
                         if (!isPlainClick(e)) return;
                         if (navigator.vibrate) navigator.vibrate(10);
@@ -322,7 +341,7 @@ export default function BitcoinDashboard() {
         >↑</button>
       )}
 
-      {isMobileNav && <BottomNav activeTab={activeTab} onIntent={onTabIntent} />}
+      {isMobileNav && <BottomNav activeTab={activeTab} />}
     </div>
   );
 }

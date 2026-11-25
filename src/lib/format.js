@@ -143,7 +143,12 @@ export const readPriceCache = () => {
     const raw = localStorage.getItem(BTC_CACHE_KEY);
     if (!raw) return null;
     const c = JSON.parse(raw);
-    if (Date.now() - c.ts > 86400000) return null;
+    // A damaged entry (non-numeric price, missing or future timestamp) is
+    // ignored rather than painted into the header until the first fetch lands.
+    if (!c || !Number.isFinite(c.price) || c.price <= 0 || !Number.isFinite(c.ts)) return null;
+    const age = Date.now() - c.ts;
+    if (age > 86400000 || age < -60000) return null;
+    if (c.change24h != null && !Number.isFinite(c.change24h)) c.change24h = null;
     return c;
   } catch { return null; }
 };

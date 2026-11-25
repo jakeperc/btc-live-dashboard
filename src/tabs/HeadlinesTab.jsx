@@ -195,7 +195,7 @@ export const HeadlinesTab = ({ news }) => {
             </div>
           </div>
 
-          <SectionHeading title="Most Important Headlines • Past 48 Hours" subtitle={`Top ${latestFiltered.length} stor${latestFiltered.length === 1 ? "y" : "ies"} • ★ marks key stories`} />
+          <SectionHeading title={hasLive ? "Most Important Headlines • Past 48 Hours" : "Most Important Headlines • Latest Curated"} subtitle={`Top ${latestFiltered.length} stor${latestFiltered.length === 1 ? "y" : "ies"} • ★ marks key stories`} />
           {latestFiltered.length === 0 ? (
             <div style={{ fontSize: 12, color: "var(--text-dim)", fontFamily: "'JetBrains Mono', monospace", padding: "12px 4px" }}>No stories match this filter.</div>
           ) : (

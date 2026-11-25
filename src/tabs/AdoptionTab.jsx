@@ -212,7 +212,7 @@ export const CompaniesTab = ({ price }) => {
         Public Company Bitcoin Holdings
       </div>
       <div className="page-subtitle" style={{ fontSize: 13, color: "var(--text-dim)", fontFamily: "'JetBrains Mono', monospace", marginBottom: 4 }}>
-        Top publicly traded companies by BTC on balance sheet — July 2026
+        Top publicly traded companies by BTC on balance sheet
       </div>
       <div className="holdings-summary" style={{ fontSize: 12, color: "var(--text-muted)", fontFamily: "'JetBrains Mono', monospace", marginBottom: 20, padding: "10px 14px", background: "var(--bg-card)", borderRadius: 10, border: "1px solid var(--border-subtle)" }}>
         Tracked corporate BTC: <span style={{ color: "#f7931a", fontWeight: 700 }}>{fmt(totalBtc)} BTC</span> across <span style={{ color: "#f7931a", fontWeight: 700 }}>{COMPANY_HOLDINGS.length} companies</span> — worth ~<span style={{ color: "#22c55e", fontWeight: 700 }}>${(totalBtc * safePrice / 1e9).toFixed(1)}B</span>
@@ -301,7 +301,7 @@ export const HoldingsTab = ({ price }) => {
         Government Bitcoin Holdings
       </div>
       <div className="page-subtitle" style={{ fontSize: 13, color: "var(--text-dim)", fontFamily: "'JetBrains Mono', monospace", marginBottom: 4 }}>
-        Nation-state BTC reserves as of July 2026
+        Nation-state BTC reserves
       </div>
       <div className="holdings-summary" style={{ fontSize: 12, color: "var(--text-muted)", fontFamily: "'JetBrains Mono', monospace", marginBottom: 20, padding: "10px 14px", background: "var(--bg-card)", borderRadius: 10, border: "1px solid var(--border-subtle)" }}>
         Total government-held BTC: <span style={{ color: "#f7931a", fontWeight: 700 }}>{fmt(totalGovBtc)} BTC</span> across <span style={{ color: "#f7931a", fontWeight: 700 }}>{govEntities} entities</span> — worth ~<span style={{ color: "#22c55e", fontWeight: 700 }}>${(totalGovBtc * safePrice / 1e9).toFixed(1)}B</span>
