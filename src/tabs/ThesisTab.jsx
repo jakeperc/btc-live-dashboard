@@ -1069,14 +1069,15 @@ export const ThesisScrolly = () => {
   const blockProgress = useScrollProgress(wrapRef);
   return (
     <div className="thesis-scrolly" ref={wrapRef}>
-      <div className="thesis-pillbar" role="tablist" aria-label="Four-move case">
+      {/* In-page links that follow the scroll position: navigation, not tabs.
+          (They used to claim role=tab with no panels and no arrow keys.) */}
+      <div className="thesis-pillbar" role="navigation" aria-label="Four-move case">
         {THESIS_FLOW.map((item, i) => (
           <a
             key={item.step}
             href={tabHref(1, ANCHORS.thesisMove(i))}
             className={`thesis-pill${i === activeIndex ? " active" : ""}`}
-            role="tab"
-            aria-selected={i === activeIndex}
+            aria-current={i === activeIndex ? "location" : undefined}
           >
             <span className="thesis-pill-step">{item.step}</span>
             <span className="thesis-pill-label">{item.eyebrow}</span>
