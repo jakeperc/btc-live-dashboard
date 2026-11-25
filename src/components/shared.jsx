@@ -420,7 +420,14 @@ export const SectionGroup = ({ title, children, collapsible = false, defaultExpa
           maxHeight: expanded ? 600 : 0,
           overflow: "hidden",
           opacity: expanded ? 1 : 0,
-          transition: "max-height 0.3s ease, opacity 0.2s ease",
+          // Collapsed content was only squashed to zero height, so screen
+          // readers and the Tab key still reached it while the header said
+          // "collapsed". visibility:hidden takes it out of both; the delay
+          // lets the closing animation finish first.
+          visibility: expanded ? "visible" : "hidden",
+          transition: expanded
+            ? "max-height 0.3s ease, opacity 0.2s ease, visibility 0s"
+            : "max-height 0.3s ease, opacity 0.2s ease, visibility 0s linear 0.3s",
         } : {}),
       }}>{children}</div>
     </div>
