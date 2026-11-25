@@ -15,7 +15,7 @@ import { DashboardTab, BitcoinThesisTab, StrategyTab, HeadlinesTab, AdoptionTab,
 import { Skeleton, DataStatus, ThemeToggle, ErrorBoundary, isPlainClick } from "./components/shared.jsx";
 import { TABS } from "./lib/constants.js";
 import { tabHref, parseHash } from "./lib/routes.js";
-import { fmtUSD } from "./lib/format.js";
+import { fmtUSD, formatAge } from "./lib/format.js";
 import { useBitcoinData } from "./hooks/useBitcoinData.js";
 import { useBitcoinNews } from "./hooks/useBitcoinNews.js";
 import { useHashRoute, useScrolled, useIsMobile, useOnlineStatus, usePullToRefresh, useSwipeNavigation, Pulse, PageScrollProgressBar } from "./hooks/ui.jsx";
@@ -55,7 +55,7 @@ const BottomNav = ({ activeTab }) => (
 
 const OfflineBanner = ({ online, lastUpdate }) => {
   if (online) return null;
-  const ageMin = lastUpdate ? Math.floor((Date.now() - lastUpdate.getTime()) / 60000) : null;
+  const age = lastUpdate ? formatAge(Date.now() - lastUpdate.getTime()) : null;
   return (
     <div className="offline-banner" style={{
       background: "var(--status-warn-soft)", border: "1px solid var(--status-warn)",
@@ -65,7 +65,7 @@ const OfflineBanner = ({ online, lastUpdate }) => {
       fontWeight: 600, letterSpacing: 0.5,
     }}>
       <span style={{ fontSize: 16 }}>⚡</span>
-      Offline{ageMin != null ? ` — showing data from ${ageMin}m ago` : ""}
+      Offline{age ? ` — showing data from ${age} ago` : ""}
     </div>
   );
 };

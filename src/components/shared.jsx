@@ -2,7 +2,7 @@ import { Component, useState, useEffect, useLayoutEffect, useRef, useMemo, useId
 import { createPortal } from "react-dom";
 import { DIP_EXPLAINER } from "../data/explainer.js";
 import { GLOSSARY } from "../data/glossary.js";
-import { fmt, fmtUSD } from "../lib/format.js";
+import { fmt, fmtUSD, formatAge } from "../lib/format.js";
 import { ANCHORS, tabHref } from "../lib/routes.js";
 import { Pulse, prefersReducedMotion, useIsMobile, Reveal } from "../hooks/ui.jsx";
 
@@ -773,7 +773,11 @@ export const PriceDisplay = ({ price, change24h, lastUpdate, loading, fearGreedV
         )}
         {lastUpdate && (
           <span style={{ fontSize: "var(--fs-xs)", color: "var(--text-dim)", fontFamily: "var(--font-mono)" }}>
-            Updated {lastUpdate.toLocaleTimeString()}
+            {/* A cached price can be from yesterday: a bare clock time would
+                read as today's, so anything older than 12 hours carries its date. */}
+            Updated {Date.now() - lastUpdate.getTime() > 12 * 3600 * 1000
+              ? lastUpdate.toLocaleString([], { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })
+              : lastUpdate.toLocaleTimeString()}
           </span>
         )}
       </div>
@@ -783,7 +787,7 @@ export const PriceDisplay = ({ price, change24h, lastUpdate, loading, fearGreedV
 
 export const ErrorBanner = ({ message, lastUpdate }) => {
   if (!message) return null;
-  const ageMin = lastUpdate ? Math.floor((Date.now() - lastUpdate.getTime()) / 60000) : null;
+  const age = lastUpdate ? formatAge(Date.now() - lastUpdate.getTime()) : null;
   return (
     <div role="status" aria-live="polite" style={{
       background: "var(--status-down-soft)",
@@ -795,7 +799,7 @@ export const ErrorBanner = ({ message, lastUpdate }) => {
     }}>
       <span aria-hidden="true">⚠</span>
       <span>
-        Live data fetch failed{lastUpdate ? ` — showing cached values from ${ageMin}m ago` : ""}. Will retry shortly.
+        Live data fetch failed{age ? ` — showing cached values from ${age} ago` : ""}. Will retry shortly.
       </span>
     </div>
   );

@@ -23,6 +23,18 @@ export const formatRemainingTime = (ms) => {
   return `${minutes} min`;
 };
 
+// Age of cached data, for the offline and fetch-failed notices: "12m", "3h",
+// "1d 2h". The cached price can be up to a day old, and "1380m ago" is not a
+// figure anyone should have to divide by sixty.
+export const formatAge = (ms) => {
+  if (!Number.isFinite(ms) || ms < 0) return null;
+  const min = Math.floor(ms / 60000);
+  if (min < 60) return `${min}m`;
+  const h = Math.floor(min / 60);
+  if (h < 24) return `${h}h${min % 60 ? ` ${min % 60}m` : ""}`;
+  return `${Math.floor(h / 24)}d${h % 24 ? ` ${h % 24}h` : ""}`;
+};
+
 // "X min Y sec ago" style — used for time-since-last-block ticker.
 export const formatElapsed = (seconds) => {
   if (!Number.isFinite(seconds) || seconds < 0) return "just now";
