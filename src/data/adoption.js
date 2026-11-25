@@ -66,7 +66,7 @@ export const COUNTRY_HOLDINGS = [
 ];
 
 export const COMPANY_HOLDINGS = [
-  { company: "Strategy",          ticker: "MSTR", country: "🇺🇸", btc: 850849, method: "Treasury reserve (funded by stock and debt sales)", status: "Active accumulation — purchased 851 BTC in October" },
+  { company: "Strategy",          ticker: "MSTR", country: "🇺🇸", btc: 850849, method: "Treasury reserve (funded by stock and debt sales)", status: "Active accumulation — bought 485 BTC in the week to November 15" },
   { company: "Metaplanet",        ticker: "3350", country: "🇯🇵", btc: 44000,  method: "Treasury — equity / bond financed",            status: "Second-largest corporate holder — added a net 1,000 BTC in July–September" },
   { company: "Twenty One Capital", ticker: "XXI", country: "🇺🇸", btc: 43514,  method: "Bitcoin-only treasury (Tether / SoftBank / Bitfinex)", status: "Cantor-backed Bitcoin holding company" },
   { company: "Strive",            ticker: "ASST", country: "🇺🇸", btc: 43000,  method: "Treasury (Asset Entities merger)",             status: "Held 43,000 BTC on Oct 23 after buying 6,182 that week — fourth-largest" },

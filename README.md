@@ -20,9 +20,11 @@ src/
   main.jsx                 mount
   BitcoinDashboard.jsx     the shell: header, tab bar, hash router, shared state
   tabs/                    one component per tab: Dashboard, Thesis, Strategy, Headlines, Adoption, Analysis
-  components/shared.jsx    cards, Term (glossary popover), StaleNotice, …
+  components/              shared.jsx (cards, Term glossary popover, StaleNotice, …) and
+                           DashboardCharts.jsx (the two Dashboard charts, their own lazy chunk)
   hooks/                   useBitcoinData (prices, mempool), useBitcoinNews (RSS via rss2json), ui
-  lib/                     constants (API URLs, TABS), routes (hash scheme), format, market-math, glossary-match
+  lib/                     constants (API URLs, TABS), routes (hash scheme), format, market-math,
+                           glossary-match, lazy-named (code-splitting helper)
   data/                    the content — the only directory the refresh automations edit
   styles.css               tokens (--elev-*, --fs-*) and the elevation material system
 scripts/                   build and check scripts (Node ESM, no dependencies)

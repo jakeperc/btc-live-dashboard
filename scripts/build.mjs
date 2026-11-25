@@ -63,8 +63,13 @@ if (existsSync(plainCheck)) {
   console.log("build: running scripts/check-plain.mjs");
   const result = spawnSync(process.execPath, [plainCheck], { cwd: repoRoot, stdio: "inherit" });
   // No exit status means the checker was killed or could not start: that is
-  // a gate that did not run, so it blocks like a STRUCTURAL finding does.
-  const code = result.status ?? 3;
+  // a gate that did not run, so it blocks — with its own message, so nobody
+  // goes hunting for a prose problem that does not exist.
+  if (result.status == null) {
+    console.error(`build: check-plain did not run (${result.error?.message ?? result.signal ?? "no exit status"}); aborting before Vite. This is the checker failing to start, not a prose finding.`);
+    process.exit(3);
+  }
+  const code = result.status;
   if (code === 3) {
     console.error("build: check-plain reported a STRUCTURAL finding (exit 3); aborting before Vite. Fix it, or restore the pre-edit snapshot, then rebuild.");
     process.exit(3);

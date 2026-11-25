@@ -57,22 +57,27 @@ export const ChartTooltipBody = ({ active, payload, prevPrice }) => {
   );
 };
 
-export const PriceChart = memo(({ sevenDay, mediumTerm, longTerm }) => {
+export const PriceChart = memo(({ sevenDay, mediumTerm, longTerm, sevenDaySettled = false }) => {
   const [range, setRange] = usePersistedState("btc-dashboard.chartRange", "7D");
   const cfg = PRICE_CHART_RANGES.find((r) => r.id === range) || PRICE_CHART_RANGES[0];
   const isMobile = useIsMobile();
 
   // Source selection: seven=7D sparkline, medium=CoinGecko 90d hourly, long=blockchain.info all-time (one close every 4 days).
-  // 7D normally comes from CoinGecko's sparkline. If that request failed but
-  // the 90-day hourly series is here (fetched separately, and cached), its
+  // 7D normally comes from CoinGecko's sparkline. If that request has FAILED
+  // (not merely "not answered yet" — hence sevenDaySettled, so a healthy load
+  // never draws the chart twice) and the 90-day hourly series is here, its
   // last seven days are the same data — better than "Loading chart…" forever.
+  // Only when that series is itself current: a cached copy that ends hours
+  // ago would pass for a live 7-day chart, so it is not used.
   const sevenFromMedium = useMemo(() => {
-    if (cfg.source !== "seven" || (Array.isArray(sevenDay) && sevenDay.length > 0)) return null;
+    if (cfg.source !== "seven" || !sevenDaySettled) return null;
+    if (Array.isArray(sevenDay) && sevenDay.length > 0) return null;
     if (!Array.isArray(mediumTerm) || mediumTerm.length === 0) return null;
-    const cutoff = Date.now() - 7 * 24 * 3600 * 1000;
-    const recent = mediumTerm.filter((p) => p.t >= cutoff);
+    const now = Date.now();
+    if (now - mediumTerm[mediumTerm.length - 1].t > 3 * 3600 * 1000) return null;
+    const recent = mediumTerm.filter((p) => p.t >= now - 7 * 24 * 3600 * 1000);
     return recent.length > 1 ? recent : null;
-  }, [cfg.source, sevenDay, mediumTerm]);
+  }, [cfg.source, sevenDay, mediumTerm, sevenDaySettled]);
   const sourceData = cfg.source === "seven" ? (sevenFromMedium || sevenDay) : cfg.source === "medium" ? mediumTerm : longTerm;
   // The window/downsample/min-max pass walks the full history (~1,600
   // points on ALL), so it only re-runs when the source array or range changes —

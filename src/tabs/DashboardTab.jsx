@@ -126,7 +126,7 @@ export const DashboardTab = ({ btc, setActiveTab }) => {
     marketCap, circulatingSupply, ath, athDate,
     chartData, longTermChart, mediumTermChart, blockHeight, hashrate, fastFee, hourFee, mempoolCount,
     dominance, fearGreed, difficultyAdjust, lastBlock, lightning,
-    slowSettled, lastBlockSettled,
+    slowSettled, lastBlockSettled, marketSettled,
     loading, error,
   } = btc;
 
@@ -220,7 +220,7 @@ export const DashboardTab = ({ btc, setActiveTab }) => {
             <span className="group-title-rule" aria-hidden="true" />
           </div>
           <ChartSlot title="Price History" mobileHeight={236} desktopHeight={438}>
-            <PriceChart sevenDay={chartData} mediumTerm={mediumTermChart} longTerm={longTermChart} />
+            <PriceChart sevenDay={chartData} mediumTerm={mediumTermChart} longTerm={longTermChart} sevenDaySettled={marketSettled} />
           </ChartSlot>
           <ChartSlot title="Power-Law Trend · Log Scale" mobileHeight={236} desktopHeight={416}>
             <PowerLawChart longTerm={longTermChart} />

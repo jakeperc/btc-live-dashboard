@@ -105,6 +105,9 @@ export const useBitcoinData = () => {
     // it a source that is down left them shimmering forever instead of "—".
     slowSettled: false,
     lastBlockSettled: false,
+    // True once the first market-data attempt has finished either way; the
+    // 7-day chart only falls back to the 90-day series after that.
+    marketSettled: false,
     lastUpdate: cached ? new Date(cached.ts) : null,
     loading: !cached,
     error: null,
@@ -321,6 +324,7 @@ export const useBitcoinData = () => {
             hourFee: hourFee ?? prev.hourFee,
             mempoolCount: mempoolCount ?? prev.mempoolCount,
             dominance: dominance ?? prev.dominance,
+            marketSettled: true,
             loading: false,
             error: prev.price == null ? cgError : prev.error,
           }));
@@ -356,6 +360,7 @@ export const useBitcoinData = () => {
             mempoolCount: mempoolCount ?? prev.mempoolCount,
             dominance: dominance ?? prev.dominance,
             lastUpdate: prev.lastUpdate ?? new Date(),
+            marketSettled: true,
             loading: false,
             error: prev.error?.startsWith("Coinbase") ? prev.error : null,
           };
@@ -365,6 +370,7 @@ export const useBitcoinData = () => {
         if (e.name === "AbortError" || cancelled) return;
         setData((prev) => ({
           ...prev,
+          marketSettled: true,
           loading: false,
           error: prev.price == null ? e.message || "Network error" : prev.error,
         }));
