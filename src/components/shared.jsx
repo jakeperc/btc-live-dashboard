@@ -13,6 +13,23 @@ import { Pulse, prefersReducedMotion, useIsMobile, Reveal } from "../hooks/ui.js
 export const isPlainClick = (e) =>
   e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey;
 
+// Keyboard behaviour for a role="radiogroup" of role="radio" buttons: the
+// arrow keys (and Home/End) move to the neighbouring option and select it,
+// which is what the radio role promises a keyboard or screen-reader user.
+// Put it on the group's onKeyDown and give each option
+// tabIndex={checked ? 0 : -1} so Tab enters the group once, on the chosen one.
+export const radioGroupKeyDown = (e) => {
+  const step = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
+  if (step == null && e.key !== "Home" && e.key !== "End") return;
+  const radios = Array.from(e.currentTarget.querySelectorAll('[role="radio"]'));
+  const at = radios.indexOf(document.activeElement);
+  if (at === -1 || radios.length === 0) return;
+  e.preventDefault();
+  const to = e.key === "Home" ? 0 : e.key === "End" ? radios.length - 1 : (at + step + radios.length) % radios.length;
+  radios[to].focus();
+  radios[to].click();
+};
+
 // Renders null while a briefing is fresh. Past `thresholdDays` it shows one
 // quiet recessed line so a reader knows the weekly refresh is late without
 // mistaking the live price or headlines for stale data.

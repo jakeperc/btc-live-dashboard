@@ -7,7 +7,7 @@ import { useMemo, memo } from "react";
 import { XAxis, YAxis, Tooltip, ResponsiveContainer, AreaChart, Area, ComposedChart, Line, ReferenceLine } from "recharts";
 import { fmt, fmtUSD } from "../lib/format.js";
 import { useIsMobile, usePersistedState } from "../hooks/ui.jsx";
-import { SourceLink } from "./shared.jsx";
+import { SourceLink, radioGroupKeyDown } from "./shared.jsx";
 
 // ─── PRICE CHART (unified, time-range selector) ─────────────────
 // target = number of visual data points to render for each range (uniform density)
@@ -158,14 +158,16 @@ export const PriceChart = memo(({ sevenDay, mediumTerm, longTerm }) => {
             </div>
           )}
         </div>
-        <div role="radiogroup" aria-label="Chart time range" className="segmented-pill">
+        <div role="radiogroup" aria-label="Chart time range" className="segmented-pill" onKeyDown={radioGroupKeyDown}>
           {PRICE_CHART_RANGES.map((r) => {
             const active = range === r.id;
             return (
               <button
                 key={r.id}
+                type="button"
                 role="radio"
                 aria-checked={active}
+                tabIndex={active ? 0 : -1}
                 onClick={() => setRange(r.id)}
               >{r.label}</button>
             );

@@ -250,7 +250,7 @@
 :root[data-theme="light"] :is(.thesis-problem-section,.thesis-history-section,.thesis-hardness-section,.thesis-matrix-section,.thesis-tp-section,.thesis-lenses-section) :is([style*="rgb(255, 255, 255)"],[style*="text-tertiary"],[style*="text-secondary"]) {
   color: var(--text-secondary) !important;
 }
-:root[data-theme="light"] :is(.thesis-problem-card,.thesis-history-card,.thesis-hardness-chart,.thesis-matrix-table,.thesis-tp-col,.thesis-trait-card,.thesis-lens-card,.thesis-metric-card,.thesis-basic-card) :is([style*="rgb(255, 255, 255)"],[style*="text-tertiary"],[style*="text-secondary"],[style*="text-primary"]) {
+:root[data-theme="light"] :is(.thesis-problem-card,.thesis-history-card,.thesis-hardness-chart,.thesis-matrix-table,.thesis-tp-col,.thesis-lens-card,.thesis-metric-card) :is([style*="rgb(255, 255, 255)"],[style*="text-tertiary"],[style*="text-secondary"],[style*="text-primary"]) {
   color: var(--text-primary) !important;
 }
 :root[data-theme="light"] .thesis-footnote,
@@ -296,21 +296,13 @@
 :root[data-theme="light"] .thesis-scene,
 :root[data-theme="light"] .thesis-problem-card,
 :root[data-theme="light"] .strategy-principle-card,
-:root[data-theme="light"] .thesis-trait-card,
 :root[data-theme="light"] .thesis-lens-card,
 :root[data-theme="light"] .thesis-metric-card,
-:root[data-theme="light"] .thesis-basic-card,
 :root[data-theme="light"] .thesis-history-card,
 :root[data-theme="light"] .thesis-pinned-fallback-chapter,
 :root[data-theme="light"] .strategy-mistake-card,
-:root[data-theme="light"] .strategy-volatility-card,
-:root[data-theme="light"] .strategy-allocation-card,
 :root[data-theme="light"] .strategy-sources-card,
-:root[data-theme="light"] .strategy-dca-card,
-:root[data-theme="light"] .strategy-dca-stat-card,
 :root[data-theme="light"] .curated-card,
-:root[data-theme="light"] .tier2-card,
-:root[data-theme="light"] .holdings-card,
 :root[data-theme="light"] .strategy-worked-step,
 :root[data-theme="light"] .strategy-reality-inv-card,
 :root[data-theme="light"] .strategy-cadence-chart,
@@ -508,7 +500,7 @@
 
 /* ── Light-mode elevation — white cards lift off the grey page on a soft,
       cool shadow rather than the dark-mode's near-black drop. ── */
-:root[data-theme="light"] :is(.tier1-card,.tier2-card,.chart-card,.price-display,.market-pulse-card,.curated-card,.holdings-card,.lede-card,.power-law-card) {
+:root[data-theme="light"] :is(.chart-card,.price-display,.market-pulse-card,.curated-card,.lede-card) {
   box-shadow: 0 1px 2px rgba(20, 30, 55, 0.04), 0 6px 20px rgba(20, 30, 55, 0.06) !important;
 }
 :root[data-theme="light"] .header-logo {
@@ -592,30 +584,11 @@
   .card-hover:hover { border-color: var(--border-strong) !important; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 10px 28px -14px rgba(0, 0, 0, 0.5); transform: translateY(-1px); }
 }
 .card-hover:active { border-color: var(--border-accent) !important; transform: translateY(0) scale(0.995); }
-.glow-border { animation: glowPulse 6s ease-in-out infinite; }
 .section-divider { height: 1px; background: linear-gradient(90deg, transparent, var(--accent-bitcoin-faint), var(--border-subtle), var(--accent-bitcoin-faint), transparent); margin: 0; }
-.section-divider-analytical { height: 1px; background: linear-gradient(90deg, transparent, var(--accent-analytical-faint), var(--border-subtle), var(--accent-analytical-faint), transparent); margin: 8px 0; }
 
 /* ─── Card tier system ─── */
 /* Tier 1 — Hero: dominant focal element. Used for price, market pulse, DCA simulator, lede headline. */
-.tier1-card {
-  background: var(--elev-raised-bg);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-xl);
-  padding: 28px 24px;
-  position: relative;
-  overflow: hidden;
-  box-shadow: var(--elev-raised-edge), var(--elev-raised-shadow);
-}
 /* Tier 2 — Standard: supporting cards. Flatter than the original gradient. */
-.tier2-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  padding: 18px 16px;
-  position: relative;
-  overflow: hidden;
-}
 /* Tier 3 — Stat strip: borderless, just a top hairline rule. Quiet, scannable. */
 .tier3-strip {
   /* hairline that dissolves toward the right edge instead of a hard rule */
@@ -689,15 +662,6 @@
 }
 
 /* Editorial body — long-form prose register (Thesis essay, etc.) */
-.editorial-body {
-  font-family: var(--font-sans);
-  font-weight: 300;
-  font-size: 17px;
-  line-height: 1.65;
-  letter-spacing: 0.01em;
-  color: var(--text-secondary);
-  max-width: 62ch;
-}
 
 /* Segmented pill — chart range toggle, etc. */
 .segmented-pill {
@@ -877,9 +841,6 @@
   font-variant-numeric: tabular-nums;
   text-align: right;
 }
-.adoption-value.is-live {
-  color: var(--accent-bitcoin);
-}
 .adoption-meta {
   font-family: var(--font-mono);
   font-size: var(--fs-2xs);
@@ -906,10 +867,6 @@ a:focus-visible { outline: 2px solid var(--accent-bitcoin); outline-offset: 2px;
 [role="tab"]:focus-visible,
 [role="radio"]:focus-visible { outline: 2px solid var(--accent-bitcoin); outline-offset: 2px; }
 button, a, [role="button"], [role="tab"], [role="radio"] { -webkit-tap-highlight-color: transparent; }
-.holdings-card { transition: border-color var(--dur-base) ease; -webkit-tap-highlight-color: transparent; }
-@media (hover: hover) {
-  .holdings-card:hover { border-color: #f7931a33 !important; }
-}
 .app-shell { min-height: 100vh; min-height: 100dvh; }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 ::-webkit-scrollbar { width: 6px; }
@@ -1036,23 +993,13 @@ button, a, [role="button"], [role="tab"], [role="radio"] { -webkit-tap-highlight
   min-width: 0;
 }
 .thesis-scene { scroll-snap-align: start; min-width: 0; }
-.thesis-traits-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
-}
 .thesis-lenses-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
 }
-.thesis-basics-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
-}
 @media (hover: hover) {
-  .thesis-trait-card.card-hover:hover, .thesis-lens-card.card-hover:hover, .thesis-metric-card.card-hover:hover, .thesis-basic-card.card-hover:hover {
+  .thesis-lens-card.card-hover:hover, .thesis-metric-card.card-hover:hover {
     border-color: #f7931a44 !important;
   }
 }
@@ -3115,9 +3062,7 @@ button, a, [role="button"], [role="tab"], [role="radio"] { -webkit-tap-highlight
     z-index: 0;
     pointer-events: none;
   }
-  .thesis-traits-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .thesis-lenses-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .thesis-basics-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .thesis-problem-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .thesis-matrix-row { grid-template-columns: minmax(170px, 1fr) repeat(3, minmax(120px, 1fr)); }
   .thesis-hardness-row { grid-template-columns: 200px minmax(0, 1fr); }
@@ -3129,9 +3074,7 @@ button, a, [role="button"], [role="tab"], [role="radio"] { -webkit-tap-highlight
 /* Mobile: ≤760px */
 @media (max-width: 760px) {
   .thesis-hero-grid { --thesis-hero-columns: minmax(0, 1fr); }
-  .thesis-explorer-grid { --thesis-explorer-columns: minmax(0, 1fr); }
   .thesis-active-grid { --thesis-active-columns: minmax(0, 1fr); }
-  .thesis-bottom-grid { --thesis-bottom-columns: minmax(0, 1fr); }
   .thesis-scrolly { grid-template-columns: minmax(0, 1fr); gap: 12px; }
   .thesis-rail { display: none; }
   .thesis-mobile-chip {
@@ -3183,9 +3126,7 @@ button, a, [role="button"], [role="tab"], [role="radio"] { -webkit-tap-highlight
     transition: background 0.3s ease, transform 0.3s ease;
   }
   .thesis-chip-dot.active { background: #f7931a; transform: scale(1.25); }
-  .thesis-traits-grid { grid-template-columns: minmax(0, 1fr); }
   .thesis-lenses-grid { grid-template-columns: minmax(0, 1fr); }
-  .thesis-basics-grid { grid-template-columns: minmax(0, 1fr); }
   .thesis-scene { padding: 20px !important; }
   .thesis-problem-grid { grid-template-columns: minmax(0, 1fr); }
   .thesis-tp-grid { grid-template-columns: minmax(0, 1fr); }
@@ -3506,10 +3447,6 @@ button, a, [role="button"], [role="tab"], [role="radio"] { -webkit-tap-highlight
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     gap: 10px !important;
   }
-  .stat-grid.analysis-card-grid {
-    grid-template-columns: minmax(0, 1fr) !important;
-    gap: 12px !important;
-  }
 }
 @media (max-width: 380px) {
   .stat-grid {
@@ -3559,7 +3496,6 @@ button, a, [role="button"], [role="tab"], [role="radio"] { -webkit-tap-highlight
   .tab-scroll-container [role="tab"] { scroll-snap-align: center; }
 }
 @media (max-width: 480px) {
-  .tier2-card { padding: 16px 14px !important; border-radius: 14px; }
   .tab-fade-right { width: 40px !important; }
   .tab-fade-left { width: 12px !important; }
 }
@@ -3592,7 +3528,6 @@ button, a, [role="button"], [role="tab"], [role="radio"] { -webkit-tap-highlight
   .group-title { font-size: 11px !important; letter-spacing: 0.10em; }
 
   .tier3-strip .tier3-value { font-size: 18px !important; line-height: 1.15; }
-  .editorial-body { font-size: 16px !important; line-height: 1.7; max-width: none; }
 }
 
 /* ─── Adoption: view button bar ─── */
@@ -3648,13 +3583,6 @@ button, a, [role="button"], [role="tab"], [role="radio"] { -webkit-tap-highlight
     font-size: 11px !important;
     padding: 10px 12px !important;
     line-height: 1.55;
-  }
-  .holdings-card {
-    padding: 14px 14px !important;
-    border-radius: 12px !important;
-  }
-  .holdings-card-head > div:last-child {
-    text-align: left !important;
   }
 }
 
@@ -3762,19 +3690,6 @@ button, a, [role="button"], [role="tab"], [role="radio"] { -webkit-tap-highlight
 @keyframes tabFadeIn { from { opacity: 0; } to { opacity: 1; } }
 
 /* ─── Analysis confidence badge ─── */
-.confidence-panel {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 20px;
-  align-items: center;
-  background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  padding: 18px 20px;
-}
-@media (max-width: 540px) {
-  .confidence-panel { grid-template-columns: 1fr; gap: 14px; }
-}
 .confidence-grade-badge {
   width: 64px; height: 64px;
   border-radius: var(--radius-lg);
@@ -3782,40 +3697,6 @@ button, a, [role="button"], [role="tab"], [role="radio"] { -webkit-tap-highlight
   font-size: 22px; font-weight: 900; font-family: var(--font-mono);
   border: 2px solid currentColor;
   flex-shrink: 0;
-}
-.confidence-meta { display: flex; flex-direction: column; gap: 8px; }
-.confidence-label-row {
-  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
-}
-.confidence-label {
-  font-size: var(--fs-2xs); font-family: var(--font-mono); font-weight: 700;
-  letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted);
-}
-.confidence-tooltip-trigger {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 16px; height: 16px; border-radius: 50%;
-  border: 1px solid var(--border-strong); color: var(--text-dim);
-  font-size: var(--fs-2xs); font-family: var(--font-mono); font-weight: 700;
-  cursor: help; flex-shrink: 0;
-}
-.confidence-summary {
-  font-size: 12px; color: var(--text-secondary); font-family: var(--font-sans);
-  line-height: 1.55;
-}
-.confidence-prob-row { display: flex; align-items: center; gap: 10px; }
-.confidence-prob-pill {
-  display: inline-flex; align-items: center; gap: 4px;
-  padding: 4px 10px; border-radius: 999px;
-  font-family: var(--font-mono); font-size: 11px; font-weight: 800;
-  border: 1px solid currentColor; white-space: nowrap;
-}
-.confidence-prob-bar-wrap {
-  flex: 1; height: 4px; background: var(--border-subtle);
-  border-radius: 2px; overflow: hidden; min-width: 60px;
-}
-.confidence-prob-bar {
-  height: 100%; border-radius: 2px;
-  transition: width 0.8s var(--ease-out);
 }
 
 /* ─── Holdings sortable table ─── */
@@ -3866,7 +3747,6 @@ button, a, [role="button"], [role="tab"], [role="radio"] { -webkit-tap-highlight
    transparent; a top-lit gradient painted to border-box shows through it,
    with a 1px glint across the top edge — light as structure, not hue. ─── */
 .elev-raised,
-.tier1-card,
 .lede-card,
 .strategy-investable-callout,
 .strategy-epigraph-card {
@@ -3895,14 +3775,6 @@ button, a, [role="button"], [role="tab"], [role="radio"] { -webkit-tap-highlight
   }
 }
 /* film grain on tier-1 heroes, matching the epigraph's material */
-.tier1-card::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.04;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
-}
 
 
 /* ─── Light theme: text colours set by class ───

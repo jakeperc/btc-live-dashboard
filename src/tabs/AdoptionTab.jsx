@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import { radioGroupKeyDown } from "../components/shared.jsx";
 import { FALLBACK_PRICE } from "../data/fallbacks.js";
 import { ADOPTION_DATA, ADOPTION_INDEX_TOP20, COUNTRY_HOLDINGS, COMPANY_HOLDINGS } from "../data/adoption.js";
 import { fmt } from "../lib/format.js";
@@ -17,24 +18,32 @@ export const AdoptionTab = ({ price }) => {
       </div>
       <div className="page-subtitle" style={{ fontSize: 13, color: "var(--text-dim)", fontFamily: "'JetBrains Mono', monospace", marginBottom: 16 }}>Corporate treasuries, government reserves, ownership rates, and Chainalysis index</div>
 
-      <div className="adoption-view-bar segmented-pill segmented-pill-analytical" role="radiogroup" aria-label="Adoption view" style={{ marginBottom: 20 }}>
+      <div className="adoption-view-bar segmented-pill segmented-pill-analytical" role="radiogroup" aria-label="Adoption view" onKeyDown={radioGroupKeyDown} style={{ marginBottom: 20 }}>
         <button
+          type="button"
           aria-checked={view === "companies"}
+          tabIndex={view === "companies" ? 0 : -1}
           role="radio"
           onClick={() => setView("companies")}
         >Companies</button>
         <button
+          type="button"
           aria-checked={view === "holdings"}
+          tabIndex={view === "holdings" ? 0 : -1}
           role="radio"
           onClick={() => setView("holdings")}
         >Governments</button>
         <button
+          type="button"
           aria-checked={view === "ownership"}
+          tabIndex={view === "ownership" ? 0 : -1}
           role="radio"
           onClick={() => setView("ownership")}
         >Ownership %</button>
         <button
+          type="button"
           aria-checked={view === "index"}
+          tabIndex={view === "index" ? 0 : -1}
           role="radio"
           onClick={() => setView("index")}
         >Adoption Index</button>

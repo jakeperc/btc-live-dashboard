@@ -4,7 +4,7 @@ import { WORKED_EXAMPLE, RETAIL_REALITY, STRATEGY_RULES, CUSTODY_LADDER, ALLOCAT
 import { fmt } from "../lib/format.js";
 import { computeDcaOutcome, computeMaxDrawdown } from "../lib/market-math.js";
 import { useIsMobile, shouldAnimate, Reveal, useCountUp } from "../hooks/ui.jsx";
-import { Skeleton, Term } from "../components/shared.jsx";
+import { Skeleton, Term, radioGroupKeyDown } from "../components/shared.jsx";
 
 // ─── STRATEGY TAB ───────────────────────────────────────────────
 export const StrategyHeader = () => (
@@ -198,13 +198,14 @@ export const StrategyDcaBlock = ({ longTermChart, currentPrice }) => {
       </Reveal>
 
       <Reveal delay={0.05}>
-        <div className="strategy-dca-toggles" role="radiogroup" aria-label="Weekly DCA amount">
+        <div className="strategy-dca-toggles" role="radiogroup" aria-label="Weekly DCA amount" onKeyDown={radioGroupKeyDown}>
           {DCA_WEEKLY_OPTIONS.map((opt) => (
             <button
               key={opt}
               type="button"
               role="radio"
               aria-checked={weekly === opt}
+              tabIndex={weekly === opt ? 0 : -1}
               className={`strategy-dca-toggle${weekly === opt ? " active" : ""}`}
               onClick={() => setWeekly(opt)}
             >
@@ -510,13 +511,14 @@ export const StrategyCheckCadence = ({ longTermChart }) => {
         </div>
       </Reveal>
       <Reveal delay={0.05}>
-        <div className="strategy-dca-toggles" role="radiogroup" aria-label="Checking cadence">
+        <div className="strategy-dca-toggles" role="radiogroup" aria-label="Checking cadence" onKeyDown={radioGroupKeyDown}>
           {CHECK_CADENCE_OPTIONS.map((o) => (
             <button
               key={o.key}
               type="button"
               role="radio"
               aria-checked={cadence === o.key}
+              tabIndex={cadence === o.key ? 0 : -1}
               className={`strategy-dca-toggle${cadence === o.key ? " active" : ""}`}
               onClick={() => setCadence(o.key)}
             >
