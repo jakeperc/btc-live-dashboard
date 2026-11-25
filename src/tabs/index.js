@@ -5,40 +5,38 @@
 // Dashboard is a React.lazy() chunk fetched on first visit. The Dashboard
 // stays a plain static import because it is the first paint.
 //
-// Single-file build (`node scripts/build.mjs --single`, VITE_SINGLE_FILE="1"):
-// vite.config.js inlines every dynamic import into the one bundle, so the
-// import() calls below settle from memory in a microtask. In that mode we
-// start them at module load — before React's first render — so no tab ever
-// suspends and no Suspense fallback ever shows, which is exactly how the old
-// fully-eager shell behaved. SINGLE is a build-time literal (see `define` in
-// vite.config.js), so the arm that is not in use is dropped by tree-shaking.
-import { lazy, createElement } from "react";
-import { DashboardTab } from "./DashboardTab.jsx";
+// Single-file build (`node scripts/build.mjs --single`): every tab is resolved
+// at module load so nothing suspends — see src/lib/lazy-named.js.
+//
+// Each tab is wrapped in memo(): the shell re-renders on things no tab cares
+// about (the scrolled-header flag, the pull-to-refresh distance on every
+// touchmove, the back-to-top button), and without the memo every mounted tab
+// re-rendered with it.
+import { memo } from "react";
+import { DashboardTab as DashboardTabImpl } from "./DashboardTab.jsx";
+import { lazyNamed, once } from "../lib/lazy-named.js";
 
-const SINGLE = import.meta.env.VITE_SINGLE_FILE === "1";
+const loaders = [
+  null, // Dashboard: static import, always there
+  once(() => import("./ThesisTab.jsx")),
+  once(() => import("./StrategyTab.jsx")),
+  once(() => import("./HeadlinesTab.jsx")),
+  once(() => import("./AdoptionTab.jsx")),
+  once(() => import("./AnalysisTab.jsx")),
+];
 
-const tab = (load, name) => {
-  if (SINGLE) {
-    let Comp = null;
-    let error = null;
-    const ready = load().then(
-      (m) => { Comp = m[name]; },
-      (e) => { error = e; }
-    );
-    const Eager = (props) => {
-      if (error) throw error;      // surfaces in the tab's ErrorBoundary
-      if (!Comp) throw ready;      // only reachable if render beats the microtask
-      return createElement(Comp, props);
-    };
-    Eager.displayName = name;
-    return Eager;
-  }
-  return lazy(() => load().then((m) => ({ default: m[name] })));
+// Start downloading a tab's chunk before it is opened (the shell calls this on
+// hover / focus / touchstart of a tab link), so the click that follows usually
+// finds it in memory. Safe to call any number of times; a failure is swallowed
+// here and retried on the real navigation.
+export const prefetchTab = (tabIndex) => {
+  const load = loaders[tabIndex];
+  if (load) load().catch(() => {});
 };
 
-export { DashboardTab };
-export const BitcoinThesisTab = tab(() => import("./ThesisTab.jsx"), "BitcoinThesisTab");
-export const StrategyTab = tab(() => import("./StrategyTab.jsx"), "StrategyTab");
-export const HeadlinesTab = tab(() => import("./HeadlinesTab.jsx"), "HeadlinesTab");
-export const AdoptionTab = tab(() => import("./AdoptionTab.jsx"), "AdoptionTab");
-export const DeepAnalysisTab = tab(() => import("./AnalysisTab.jsx"), "DeepAnalysisTab");
+export const DashboardTab = memo(DashboardTabImpl);
+export const BitcoinThesisTab = memo(lazyNamed(loaders[1], "BitcoinThesisTab"));
+export const StrategyTab = memo(lazyNamed(loaders[2], "StrategyTab"));
+export const HeadlinesTab = memo(lazyNamed(loaders[3], "HeadlinesTab"));
+export const AdoptionTab = memo(lazyNamed(loaders[4], "AdoptionTab"));
+export const DeepAnalysisTab = memo(lazyNamed(loaders[5], "DeepAnalysisTab"));

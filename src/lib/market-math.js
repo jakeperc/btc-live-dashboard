@@ -1,6 +1,6 @@
 // Simulate periodic DCA over the existing 5-year price history.
-// The chart is downsampled to ~60 monthly points; we treat each point as one
-// buy interval. To preserve the "weekly" framing in the UI, we convert the
+// The history has one close every four days (~455 points in five years); we
+// treat each point as one buy interval. To preserve the "weekly" framing in the UI, we convert the
 // chosen weekly amount into the equivalent dollars per interval.
 // Returns { totalInvested, btcAccumulated, currentValue, roi, series }.
 export const computeDcaOutcome = (longTermChart, weeklyAmount, currentPrice) => {
@@ -32,14 +32,11 @@ export const computeDcaOutcome = (longTermChart, weeklyAmount, currentPrice) => 
       value: Math.round(cumulativeBtc * point.price),
     });
   }
-  // Final point uses current spot price to reflect today's value.
+  // The series is historical closes only. It used to end on the live spot
+  // price, which meant either rebuilding (and re-animating) the chart on every
+  // price tick or letting its last point drift away from the "Value today"
+  // figure; the live price now belongs to that figure alone.
   const currentValue = cumulativeBtc * currentPrice;
-  if (series.length > 0) {
-    series[series.length - 1] = {
-      ...series[series.length - 1],
-      value: Math.round(currentValue),
-    };
-  }
   const roi = cumulativeInvested > 0 ? (currentValue - cumulativeInvested) / cumulativeInvested : 0;
   return {
     totalInvested: cumulativeInvested,
@@ -74,4 +71,28 @@ export const computeMaxDrawdown = (longTermChart) => {
     }
   }
   return { drawdownPct: worst.drawdownPct * 100, peakDate: worst.peakDate, troughDate: worst.troughDate };
+};
+
+// Consecutive up (+n) or down (−n) DAYS, from the 7-day hourly series. The
+// series is hourly, so it is first reduced to one close per 24 h, counted back
+// from the latest point — comparing neighbouring points directly counted
+// hours and labelled them days.
+const POINTS_PER_DAY = 24;
+export const dailyStreak = (hourly) => {
+  if (!Array.isArray(hourly) || hourly.length < POINTS_PER_DAY + 1) return null;
+  const closes = [];
+  for (let i = hourly.length - 1; i >= 0; i -= POINTS_PER_DAY) {
+    const price = hourly[i]?.price;
+    if (typeof price !== "number" || !Number.isFinite(price)) break;
+    closes.push(price); // newest first
+  }
+  let dir = null, count = 0;
+  for (let i = 0; i < closes.length - 1; i++) {
+    const delta = closes[i] - closes[i + 1];
+    const d = delta > 0 ? 1 : delta < 0 ? -1 : 0;
+    if (d === 0) break;
+    if (dir == null) { dir = d; count = 1; continue; }
+    if (d === dir) count++; else break;
+  }
+  return dir != null ? dir * count : null;
 };

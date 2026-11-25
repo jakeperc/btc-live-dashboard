@@ -15,7 +15,9 @@
 //   3. Vite's build() API bundles the app.
 //        split:  the shell + Dashboard are the entry chunk; Thesis, Strategy,
 //                Headlines, Adoption and Analysis are React.lazy chunks
-//                (src/tabs/index.js); react/react-dom/scheduler go to
+//                (src/tabs/index.js), and the Dashboard charts are one more
+//                (src/components/DashboardCharts.jsx, preloaded at low
+//                priority by make-single-file.mjs); react/react-dom/scheduler go to
 //                vendor-react and recharts + its d3/lodash deps to
 //                vendor-charts (vite.config.js manualChunks). Every asset is
 //                content-hashed, so deploy/.htaccess can cache them for a year
@@ -60,7 +62,14 @@ const plainCheck = join(repoRoot, "scripts", "check-plain.mjs");
 if (existsSync(plainCheck)) {
   console.log("build: running scripts/check-plain.mjs");
   const result = spawnSync(process.execPath, [plainCheck], { cwd: repoRoot, stdio: "inherit" });
-  const code = result.status ?? 1;
+  // No exit status means the checker was killed or could not start: that is
+  // a gate that did not run, so it blocks — with its own message, so nobody
+  // goes hunting for a prose problem that does not exist.
+  if (result.status == null) {
+    console.error(`build: check-plain did not run (${result.error?.message ?? result.signal ?? "no exit status"}); aborting before Vite. This is the checker failing to start, not a prose finding.`);
+    process.exit(3);
+  }
+  const code = result.status;
   if (code === 3) {
     console.error("build: check-plain reported a STRUCTURAL finding (exit 3); aborting before Vite. Fix it, or restore the pre-edit snapshot, then rebuild.");
     process.exit(3);

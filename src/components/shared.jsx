@@ -2,7 +2,7 @@ import { Component, useState, useEffect, useLayoutEffect, useRef, useMemo, useId
 import { createPortal } from "react-dom";
 import { DIP_EXPLAINER } from "../data/explainer.js";
 import { GLOSSARY } from "../data/glossary.js";
-import { fmt, fmtUSD } from "../lib/format.js";
+import { fmt, fmtUSD, formatAge } from "../lib/format.js";
 import { ANCHORS, tabHref } from "../lib/routes.js";
 import { Pulse, prefersReducedMotion, useIsMobile, Reveal } from "../hooks/ui.jsx";
 
@@ -12,6 +12,23 @@ import { Pulse, prefersReducedMotion, useIsMobile, Reveal } from "../hooks/ui.js
 // the hash is already the target.
 export const isPlainClick = (e) =>
   e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey;
+
+// Keyboard behaviour for a role="radiogroup" of role="radio" buttons: the
+// arrow keys (and Home/End) move to the neighbouring option and select it,
+// which is what the radio role promises a keyboard or screen-reader user.
+// Put it on the group's onKeyDown and give each option
+// tabIndex={checked ? 0 : -1} so Tab enters the group once, on the chosen one.
+export const radioGroupKeyDown = (e) => {
+  const step = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
+  if (step == null && e.key !== "Home" && e.key !== "End") return;
+  const radios = Array.from(e.currentTarget.querySelectorAll('[role="radio"]'));
+  const at = radios.indexOf(document.activeElement);
+  if (at === -1 || radios.length === 0) return;
+  e.preventDefault();
+  const to = e.key === "Home" ? 0 : e.key === "End" ? radios.length - 1 : (at + step + radios.length) % radios.length;
+  radios[to].focus();
+  radios[to].click();
+};
 
 // Renders null while a briefing is fresh. Past `thresholdDays` it shows one
 // quiet recessed line so a reader knows the weekly refresh is late without
@@ -39,6 +56,11 @@ export const StaleNotice = ({ asOf, refreshedAt, label = "briefing", thresholdDa
 // Catches a render or lazy-chunk failure inside one tab panel so the rest of
 // the page stays up. A failed lazy import is cached by React.lazy, so the only
 // real recovery is a reload — offered as a button, never a blank screen.
+const CHUNK_RELOAD_KEY = "btc-dashboard.chunkReloadAt";
+// Chrome/Edge, Firefox and Safari each word a failed import() differently.
+const isChunkLoadError = (error) =>
+  /dynamically imported module|importing a module script failed|module script failed/i.test(String(error && error.message));
+
 export class ErrorBoundary extends Component {
   constructor(props) {
     super(props);
@@ -48,6 +70,26 @@ export class ErrorBoundary extends Component {
     return { error };
   }
   componentDidCatch(error, info) {
+    // A tab left open across a deploy still runs the old entry script, whose
+    // lazy chunks (hashed file names) no longer exist on the server — opening
+    // a not-yet-visited tab then fails with a chunk-load error. One automatic
+    // reload picks up the new build and lands on the same #/route. Guarded so
+    // it can never loop (at most once per ten minutes) and never reloads into
+    // a browser error page: the page itself must answer first. If it does not
+    // (offline, server down) the Reload button below stays the honest answer.
+    if (isChunkLoadError(error) && typeof window !== "undefined" && typeof fetch === "function") {
+      try {
+        const last = Number(sessionStorage.getItem(CHUNK_RELOAD_KEY)) || 0;
+        if (Date.now() - last > 10 * 60 * 1000) {
+          const page = window.location.href.split("#")[0];
+          fetch(page, { cache: "no-store" }).then((res) => {
+            if (!res.ok) return;
+            sessionStorage.setItem(CHUNK_RELOAD_KEY, String(Date.now()));
+            window.location.reload();
+          }).catch(() => {});
+        }
+      } catch (e) { /* storage blocked: the manual button remains */ }
+    }
     if (typeof console !== "undefined" && console.error) {
       console.error("Section failed to render:", error, info && info.componentStack);
     }
@@ -378,7 +420,14 @@ export const SectionGroup = ({ title, children, collapsible = false, defaultExpa
           maxHeight: expanded ? 600 : 0,
           overflow: "hidden",
           opacity: expanded ? 1 : 0,
-          transition: "max-height 0.3s ease, opacity 0.2s ease",
+          // Collapsed content was only squashed to zero height, so screen
+          // readers and the Tab key still reached it while the header said
+          // "collapsed". visibility:hidden takes it out of both; the delay
+          // lets the closing animation finish first.
+          visibility: expanded ? "visible" : "hidden",
+          transition: expanded
+            ? "max-height 0.3s ease, opacity 0.2s ease, visibility 0s"
+            : "max-height 0.3s ease, opacity 0.2s ease, visibility 0s linear 0.3s",
         } : {}),
       }}>{children}</div>
     </div>
@@ -460,7 +509,7 @@ export const SupplyMeter = ({ mined, total, history }) => {
       {/* HERO — how little is LEFT to mine */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", gap: 12, flexWrap: "wrap", marginBottom: 18 }}>
         <span style={{ display: "inline-flex", alignItems: "center", fontSize: "var(--fs-xs)", color: "var(--text-muted)", letterSpacing: 1.2, textTransform: "uppercase", fontWeight: 600, fontFamily: "var(--font-mono)" }}>
-          <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--status-up)", marginRight: 8, animation: reduced ? "none" : "glowPulse 2.4s ease-in-out infinite" }} />
+          <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--status-up)", marginRight: 8, animation: reduced ? "none" : "dotPulse 2.4s ease-in-out infinite" }} />
           Supply Left to Mine
         </span>
         <span aria-label={`${pctLeft.toFixed(2)} percent of the 21 million bitcoin cap is still left to mine`} style={{ display: "inline-flex", alignItems: "baseline", fontFamily: "var(--font-mono)", fontVariantNumeric: "tabular-nums", fontWeight: 800, fontSize: "clamp(38px, 6vw, 58px)", lineHeight: 1, color: "var(--accent-bitcoin)" }}>
@@ -731,7 +780,11 @@ export const PriceDisplay = ({ price, change24h, lastUpdate, loading, fearGreedV
         )}
         {lastUpdate && (
           <span style={{ fontSize: "var(--fs-xs)", color: "var(--text-dim)", fontFamily: "var(--font-mono)" }}>
-            Updated {lastUpdate.toLocaleTimeString()}
+            {/* A cached price can be from yesterday: a bare clock time would
+                read as today's, so anything older than 12 hours carries its date. */}
+            Updated {Date.now() - lastUpdate.getTime() > 12 * 3600 * 1000
+              ? lastUpdate.toLocaleString([], { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })
+              : lastUpdate.toLocaleTimeString()}
           </span>
         )}
       </div>
@@ -741,7 +794,7 @@ export const PriceDisplay = ({ price, change24h, lastUpdate, loading, fearGreedV
 
 export const ErrorBanner = ({ message, lastUpdate }) => {
   if (!message) return null;
-  const ageMin = lastUpdate ? Math.floor((Date.now() - lastUpdate.getTime()) / 60000) : null;
+  const age = lastUpdate ? formatAge(Date.now() - lastUpdate.getTime()) : null;
   return (
     <div role="status" aria-live="polite" style={{
       background: "var(--status-down-soft)",
@@ -753,7 +806,7 @@ export const ErrorBanner = ({ message, lastUpdate }) => {
     }}>
       <span aria-hidden="true">⚠</span>
       <span>
-        Live data fetch failed{lastUpdate ? ` — showing cached values from ${ageMin}m ago` : ""}. Will retry shortly.
+        Live data fetch failed{age ? ` — showing cached values from ${age} ago` : ""}. Will retry shortly.
       </span>
     </div>
   );
@@ -835,7 +888,10 @@ export const MarketPulseCard = ({ pulse, streakDays, setActiveTab }) => {
                 fontSize: "var(--fs-xs)", fontFamily: "var(--font-mono)", fontWeight: 700,
                 color: toneColor, background: toneSoft,
                 padding: "4px 10px", borderRadius: "var(--radius-sm)",
-                textTransform: "uppercase", letterSpacing: 1.1, whiteSpace: "nowrap",
+                textTransform: "uppercase", letterSpacing: 1.1,
+                // Wraps inside the card when the status line is longer than a
+                // phone is wide; "nowrap" pushed it past the card's right edge.
+                maxWidth: "100%", lineHeight: 1.5,
                 boxShadow: "inset 0 1px 0 rgba(255,255,255,0.07), inset 0 0 0 1px rgba(255,255,255,0.04)",
               }}>
                 {theme.status}

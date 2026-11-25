@@ -20,9 +20,11 @@ src/
   main.jsx                 mount
   BitcoinDashboard.jsx     the shell: header, tab bar, hash router, shared state
   tabs/                    one component per tab: Dashboard, Thesis, Strategy, Headlines, Adoption, Analysis
-  components/shared.jsx    cards, Term (glossary popover), StaleNotice, …
+  components/              shared.jsx (cards, Term glossary popover, StaleNotice, …) and
+                           DashboardCharts.jsx (the two Dashboard charts, their own lazy chunk)
   hooks/                   useBitcoinData (prices, mempool), useBitcoinNews (RSS via rss2json), ui
-  lib/                     constants (API URLs, TABS), routes (hash scheme), format, market-math, glossary-match
+  lib/                     constants (API URLs, TABS), routes (hash scheme), format, market-math,
+                           glossary-match, lazy-named (code-splitting helper)
   data/                    the content — the only directory the refresh automations edit
   styles.css               tokens (--elev-*, --fs-*) and the elevation material system
 scripts/                   build and check scripts (Node ESM, no dependencies)
@@ -101,7 +103,7 @@ npm run build:single   # one self-contained dist/index.html (CSS, JS and SEO con
 npm run check:schema   # shape gate for every src/data module — exit 1 on any violation
 npm run check:plain    # plain-language checker — 0 clean · 1 style · 2 Editor must fix · 3 structural, do not build
 npm run check:llms     # dist/llms.txt is present, valid, linked from the page and current — exit 1 on any problem; skipped without a build
-npm test               # check:schema, the glossary-matcher regression tests, then check:llms
+npm test               # check:schema, the glossary-matcher and market-math regression tests, then check:llms
 ```
 
 `scripts/render-seo.mjs` regenerates a text rendition of the curated content on every build, so crawlers that never run JavaScript still read this week's analysis. After any `src/data/*.js` edit, rebuild.

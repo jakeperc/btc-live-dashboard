@@ -4,7 +4,7 @@ import { WORKED_EXAMPLE, RETAIL_REALITY, STRATEGY_RULES, CUSTODY_LADDER, ALLOCAT
 import { fmt } from "../lib/format.js";
 import { computeDcaOutcome, computeMaxDrawdown } from "../lib/market-math.js";
 import { useIsMobile, shouldAnimate, Reveal, useCountUp } from "../hooks/ui.jsx";
-import { Skeleton, Term } from "../components/shared.jsx";
+import { Skeleton, Term, radioGroupKeyDown } from "../components/shared.jsx";
 
 // ─── STRATEGY TAB ───────────────────────────────────────────────
 export const StrategyHeader = () => (
@@ -133,6 +133,11 @@ export const StrategyRules = () => (
   </section>
 );
 
+const DCA_AXIS_FMT = new Intl.DateTimeFormat("en-US", { month: "short", year: "numeric" });
+const DCA_TOOLTIP_FMT = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric" });
+const dcaAxisLabel = (t) => (Number.isFinite(t) ? DCA_AXIS_FMT.format(t) : "");
+const dcaTooltipLabel = (t) => (Number.isFinite(t) ? DCA_TOOLTIP_FMT.format(t) : "");
+
 export const StrategyDcaBlock = ({ longTermChart, currentPrice }) => {
   const [weekly, setWeekly] = useState(50);
   const sectionRef = useRef(null);
@@ -149,12 +154,23 @@ export const StrategyDcaBlock = ({ longTermChart, currentPrice }) => {
     return () => obs.disconnect();
   }, []);
 
-  // Full-history walk; memoized so the useCountUp animation frames below
-  // (~60 fps for ~1.5 s) don't redo the whole DCA simulation every frame.
-  const outcome = useMemo(
-    () => computeDcaOutcome(longTermChart, weekly, currentPrice),
-    [longTermChart, weekly, currentPrice],
+  // The simulation (and the chart series it produces) depends on the price
+  // history and the chosen amount only, so it is NOT keyed on the live price:
+  // keyed on it, every 30 s tick rebuilt the series and replayed the chart's
+  // draw-in animation. The two figures that do follow the live price are
+  // derived below from the coins accumulated.
+  const priceRef = useRef(currentPrice);
+  priceRef.current = currentPrice;
+  const hasPrice = !!currentPrice;
+  const sim = useMemo(
+    () => computeDcaOutcome(longTermChart, weekly, priceRef.current),
+    [longTermChart, weekly, hasPrice],
   );
+  const outcome = useMemo(() => {
+    if (!currentPrice || sim.totalInvested <= 0) return sim;
+    const currentValue = sim.btcAccumulated * currentPrice;
+    return { ...sim, currentValue, roi: (currentValue - sim.totalInvested) / sim.totalInvested };
+  }, [sim, currentPrice]);
   const animatedSats     = useCountUp(Math.round(outcome.btcAccumulated * 1e8), { trigger: inView, duration: 1500 });
   const animatedInvested = useCountUp(outcome.totalInvested, { trigger: inView, duration: 1400 });
   const animatedValue    = useCountUp(outcome.currentValue,  { trigger: inView, duration: 1700 });
@@ -165,7 +181,7 @@ export const StrategyDcaBlock = ({ longTermChart, currentPrice }) => {
   const crashEnd = Date.parse("2022-11-01");
   const crashStartPoint = hasData ? outcome.series.find((p) => p.t >= crashStart) : null;
   const crashEndPoint = hasData ? [...outcome.series].reverse().find((p) => p.t <= crashEnd) : null;
-  const showCrashShading = !!(crashStartPoint && crashEndPoint && crashStartPoint.date !== crashEndPoint.date);
+  const showCrashShading = !!(crashStartPoint && crashEndPoint && crashEndPoint.t > crashStartPoint.t);
 
   return (
     <section ref={sectionRef} className="strategy-section">
@@ -182,13 +198,14 @@ export const StrategyDcaBlock = ({ longTermChart, currentPrice }) => {
       </Reveal>
 
       <Reveal delay={0.05}>
-        <div className="strategy-dca-toggles" role="radiogroup" aria-label="Weekly DCA amount">
+        <div className="strategy-dca-toggles" role="radiogroup" aria-label="Weekly DCA amount" onKeyDown={radioGroupKeyDown}>
           {DCA_WEEKLY_OPTIONS.map((opt) => (
             <button
               key={opt}
               type="button"
               role="radio"
               aria-checked={weekly === opt}
+              tabIndex={weekly === opt ? 0 : -1}
               className={`strategy-dca-toggle${weekly === opt ? " active" : ""}`}
               onClick={() => setWeekly(opt)}
             >
@@ -262,12 +279,19 @@ export const StrategyDcaBlock = ({ longTermChart, currentPrice }) => {
                     <stop offset="100%" stopColor="var(--text-dim)" stopOpacity={0.02} />
                   </linearGradient>
                 </defs>
+                {/* A real time axis, keyed on the timestamp. The points are a few
+                    days apart, so many share one "Mon YYYY" label; on a label
+                    axis recharts could not place the crash band (it silently
+                    dropped it) and the tooltip could only say the month. */}
                 <XAxis
-                  dataKey="date"
+                  dataKey="t"
+                  type="number"
+                  scale="time"
+                  domain={["dataMin", "dataMax"]}
                   tick={{ fill: "var(--text-dim)", fontSize: 11, fontFamily: "'JetBrains Mono', monospace" }}
                   axisLine={false}
                   tickLine={false}
-                  interval="preserveStartEnd"
+                  tickFormatter={dcaAxisLabel}
                   minTickGap={isMobile ? 36 : 42}
                 />
                 <YAxis
@@ -281,11 +305,12 @@ export const StrategyDcaBlock = ({ longTermChart, currentPrice }) => {
                   contentStyle={{ background: "#11142a", border: "1px solid #f7931a44", borderRadius: 8, fontFamily: "'JetBrains Mono', monospace", fontSize: 13, padding: "8px 12px", maxWidth: "calc(100vw - 32px)" }}
                   labelStyle={{ color: "#ffffff", fontWeight: 700, marginBottom: 4 }}
                   formatter={(value, name) => ["$" + Number(value).toLocaleString(), name]}
+                  labelFormatter={dcaTooltipLabel}
                 />
                 {showCrashShading && (
                   <ReferenceArea
-                    x1={crashStartPoint.date}
-                    x2={crashEndPoint.date}
+                    x1={crashStartPoint.t}
+                    x2={crashEndPoint.t}
                     fill="#ef4444"
                     fillOpacity={0.07}
                     stroke="#ef444433"
@@ -339,8 +364,14 @@ export const StrategyVolatility = ({ longTermChart }) => {
     return () => obs.disconnect();
   }, []);
 
-  // Full-history scan; memoized for the same reason as the DCA block above.
-  const live = useMemo(() => computeMaxDrawdown(longTermChart), [longTermChart]);
+  // The row is labelled "5y window", so scan the last five years only. The
+  // series reaches back to 2010; scanned whole, the "live" row reported the
+  // 2011 crash (about −93%) under a five-year label.
+  const live = useMemo(() => {
+    const cutoff = Date.now() - 5 * 365.25 * 24 * 60 * 60 * 1000;
+    const recent = Array.isArray(longTermChart) ? longTermChart.filter((p) => p && p.t >= cutoff && p.price > 0) : [];
+    return computeMaxDrawdown(recent);
+  }, [longTermChart]);
   const liveDdPct = Math.round(live.drawdownPct);
   const fourYearCount = useCountUp(0, { trigger: inView, duration: 1400 });
   const animatedLive = useCountUp(liveDdPct, { trigger: inView, duration: 1500 });
@@ -480,13 +511,14 @@ export const StrategyCheckCadence = ({ longTermChart }) => {
         </div>
       </Reveal>
       <Reveal delay={0.05}>
-        <div className="strategy-dca-toggles" role="radiogroup" aria-label="Checking cadence">
+        <div className="strategy-dca-toggles" role="radiogroup" aria-label="Checking cadence" onKeyDown={radioGroupKeyDown}>
           {CHECK_CADENCE_OPTIONS.map((o) => (
             <button
               key={o.key}
               type="button"
               role="radio"
               aria-checked={cadence === o.key}
+              tabIndex={cadence === o.key ? 0 : -1}
               className={`strategy-dca-toggle${cadence === o.key ? " active" : ""}`}
               onClick={() => setCadence(o.key)}
             >

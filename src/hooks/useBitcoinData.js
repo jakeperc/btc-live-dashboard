@@ -1,15 +1,104 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { COINBASE_TICKER_URL, COINGECKO_MARKET_URL, MEMPOOL_BLOCK_URL, MEMPOOL_HASHRATE_URL, MEMPOOL_FEES_URL, MEMPOOL_MEMPOOL_URL, MEMPOOL_BLOCKS_URL, MEMPOOL_DIFFICULTY_URL, MEMPOOL_LIGHTNING_URL, COINGECKO_GLOBAL_URL, LONG_TERM_CHART_URL, MEDIUM_TERM_CHART_URL, FEAR_GREED_URL, LIVE_PRICE_POLL_MS, MARKET_DATA_POLL_MS, SLOW_DATA_POLL_MS, LAST_BLOCK_POLL_MS, LONG_TERM_POLL_MS, MEDIUM_TERM_POLL_MS, LIVE_PRICE_BACKOFF_CAP_MS, POLL_BACKOFF_CAP_MS } from "../lib/constants.js";
 import { toFiniteNumber, BTC_CACHE_KEY, readPriceCache } from "../lib/format.js";
 import { createPoller } from "./ui.jsx";
+
+// One formatter per label shape, built once. Formatting a date with an options
+// bag otherwise builds a fresh Intl.DateTimeFormat on every call; the long-term
+// series labels ~1,600 points and the 90-day series ~2,200, on every refresh,
+// so sharing the formatter takes that pass from tens of milliseconds of main
+// thread down to a couple. Output is identical.
+const DAY_LABEL = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric" });
+const MONTH_LABEL = new Intl.DateTimeFormat("en-US", { month: "short", year: "numeric" });
+
+// ─── CHART HISTORY CACHE ────────────────────────────────────────
+// The two history series (all-time closes, 90 days hourly) are large, change
+// slowly, and feed three charts on the first screen. A copy is kept in
+// localStorage so a returning visitor's charts draw immediately instead of
+// after two more API round trips, and a reload inside the freshness window
+// does not spend the requests at all (CoinGecko's free tier rate-limits by IP).
+//   · younger than its poll interval → used as-is, the first fetch is skipped
+//   · older, up to CHART_CACHE_MAX_AGE_MS (a day) → shown at once, refreshed behind it
+//   · older still, unreadable, or storage unavailable → ignored
+// Stored compactly as [[t, price], …]; labels are rebuilt on read.
+const CHART_CACHE_LONG = "btc-dashboard.chart.long.v1";
+const CHART_CACHE_MEDIUM = "btc-dashboard.chart.medium.v1";
+const CHART_CACHE_MAX_AGE_MS = 24 * 60 * 60 * 1000;
+
+const readChartCache = (key, labelFmt) => {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return null;
+    const c = JSON.parse(raw);
+    const age = Date.now() - c.ts;
+    if (!Number.isFinite(age) || age < -60000 || age > CHART_CACHE_MAX_AGE_MS || !Array.isArray(c.p)) return null;
+    const points = [];
+    for (const row of c.p) {
+      if (!Array.isArray(row)) continue;
+      const [t, price] = row;
+      if (!Number.isFinite(t) || !Number.isFinite(price)) continue;
+      points.push({ t, date: labelFmt.format(t), price });
+    }
+    return points.length ? { ts: c.ts, points } : null;
+  } catch { return null; }
+};
+
+const writeChartCache = (key, points) => {
+  try {
+    localStorage.setItem(key, JSON.stringify({
+      ts: Date.now(),
+      // Exact values: the earliest closes are a few cents, and rounding them
+      // would nudge the power-law fit between a cached and a fresh load.
+      p: points.map((d) => [d.t, d.price]),
+    }));
+  } catch { /* quota or private mode: the cache is only an optimisation */ }
+};
+
+// fetch() with a deadline. A request that connects and then never answers
+// would otherwise keep its batch pending forever — and because each fetcher
+// refuses to start while its previous run is "in flight", that one stalled
+// request silently stopped every later refresh of the same data. On timeout
+// it rejects with a plain Error (not an AbortError), so callers treat it as an
+// ordinary failure and the poller backs off; a real unmount abort still
+// surfaces as AbortError.
+const REQUEST_TIMEOUT_MS = 15000;
+const fetchWithDeadline = (url, { signal, ...init } = {}) => {
+  const ctl = new AbortController();
+  let timedOut = false;
+  const onParentAbort = () => ctl.abort();
+  if (signal) {
+    if (signal.aborted) ctl.abort();
+    else signal.addEventListener("abort", onParentAbort, { once: true });
+  }
+  const timer = setTimeout(() => { timedOut = true; ctl.abort(); }, REQUEST_TIMEOUT_MS);
+  return fetch(url, { ...init, signal: ctl.signal })
+    .catch((e) => { throw timedOut ? new Error(`Timed out after ${REQUEST_TIMEOUT_MS / 1000}s`) : e; })
+    .finally(() => {
+      clearTimeout(timer);
+      if (signal) signal.removeEventListener("abort", onParentAbort);
+    });
+};
 
 // Every fetcher below resolves to true (success), false (failure) or
 // undefined (did nothing: already in flight, or aborted on unmount). The
 // pollers use that to pause while the tab is hidden and to back off after
 // failures — see createPoller in ./ui.jsx. State shapes are unchanged.
 export const useBitcoinData = () => {
-  const cached = readPriceCache();
-  const [data, setData] = useState({
+  // Read once, on mount (see CHART HISTORY CACHE above).
+  const chartCacheRef = useRef(undefined);
+  if (chartCacheRef.current === undefined) {
+    chartCacheRef.current = {
+      long: readChartCache(CHART_CACHE_LONG, MONTH_LABEL),
+      medium: readChartCache(CHART_CACHE_MEDIUM, DAY_LABEL),
+    };
+  }
+
+  // Lazy initializer: the cached price is read from localStorage once, on
+  // mount, not on every render of the shell.
+  const [data, setData] = useState(() => {
+    const cached = readPriceCache();
+    const charts = chartCacheRef.current;
+    return {
     price: cached?.price ?? null,
     change24h: cached?.change24h ?? null,
     marketCap: null,
@@ -20,8 +109,8 @@ export const useBitcoinData = () => {
     ath: null,
     athDate: null,
     chartData: [],
-    longTermChart: [],
-    mediumTermChart: [],
+    longTermChart: charts.long?.points ?? [],
+    mediumTermChart: charts.medium?.points ?? [],
     blockHeight: null,
     hashrate: null,
     difficulty: null,
@@ -36,9 +125,18 @@ export const useBitcoinData = () => {
     difficultyAdjust: null,
     lastBlock: null,
     lightning: null,
+    // True once the first attempt at each of these has finished, whether or
+    // not it succeeded. Their tiles have no other "loading" signal, so without
+    // it a source that is down left them shimmering forever instead of "—".
+    slowSettled: false,
+    lastBlockSettled: false,
+    // True once the first market-data attempt has finished either way; the
+    // 7-day chart only falls back to the 90-day series after that.
+    marketSettled: false,
     lastUpdate: cached ? new Date(cached.ts) : null,
     loading: !cached,
     error: null,
+    };
   });
   const fetchersRef = useRef(null);
 
@@ -51,6 +149,11 @@ export const useBitcoinData = () => {
     let lastBlockInFlight = false;
     let longTermInFlight = false;
     let mediumTermInFlight = false;
+    // A cached series still inside its poll interval stands in for the first
+    // fetch. Cleared after one use so every later tick really fetches.
+    const cachedCharts = chartCacheRef.current || {};
+    let longFreshUntil = cachedCharts.long ? cachedCharts.long.ts + LONG_TERM_POLL_MS : 0;
+    let mediumFreshUntil = cachedCharts.medium ? cachedCharts.medium.ts + MEDIUM_TERM_POLL_MS : 0;
 
     const downsampleSparkline = (prices, currentPrice) => {
       if (!prices || prices.length === 0) return [];
@@ -64,13 +167,13 @@ export const useBitcoinData = () => {
         const t = startMs + i * msPerPoint;
         out.push({
           t,
-          date: new Date(t).toLocaleDateString("en-US", { month: "short", day: "numeric" }),
+          date: DAY_LABEL.format(t),
           price: prices[i],
         });
       }
       out.push({
         t: now,
-        date: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric" }),
+        date: DAY_LABEL.format(Date.now()),
         price: currentPrice ?? prices[prices.length - 1],
       });
       return out;
@@ -87,7 +190,7 @@ export const useBitcoinData = () => {
           t: entry.x * 1000,
           // Default label kept "Mon YYYY" for back-compat with DCA / drawdown displays.
           // PriceChart overrides this with day-level labels for short ranges.
-          date: new Date(entry.x * 1000).toLocaleDateString("en-US", { month: "short", year: "numeric" }),
+          date: MONTH_LABEL.format(entry.x * 1000),
           price: entry.y,
         });
       }
@@ -98,11 +201,15 @@ export const useBitcoinData = () => {
     // Covers the last 90 days at hourly granularity (~2160 pts) on the free tier.
     const downsampleMediumTerm = (prices) => {
       if (!Array.isArray(prices) || prices.length === 0) return [];
-      return prices.map(([t, price]) => ({
-        t,
-        date: new Date(t).toLocaleDateString("en-US", { month: "short", day: "numeric" }),
-        price,
-      }));
+      const out = [];
+      for (const row of prices) {
+        if (!Array.isArray(row)) continue;
+        const [t, price] = row;
+        // A malformed row is skipped, not allowed to blank the whole series.
+        if (!Number.isFinite(t) || !Number.isFinite(price)) continue;
+        out.push({ t, date: DAY_LABEL.format(t), price });
+      }
+      return out;
     };
 
     const refreshChartPrice = (chartData, price) => {
@@ -113,7 +220,7 @@ export const useBitcoinData = () => {
       const next = [...chartData];
       next[next.length - 1] = {
         ...next[next.length - 1],
-        date: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric" }),
+        date: DAY_LABEL.format(Date.now()),
         price,
       };
       return next;
@@ -124,7 +231,7 @@ export const useBitcoinData = () => {
       liveInFlight = true;
 
       try {
-        const res = await fetch(COINBASE_TICKER_URL, { signal: ac.signal, cache: "no-store" });
+        const res = await fetchWithDeadline(COINBASE_TICKER_URL, { signal: ac.signal, cache: "no-store" });
         if (!res.ok) throw new Error(`Coinbase HTTP ${res.status}`);
 
         const ticker = await res.json();
@@ -165,21 +272,31 @@ export const useBitcoinData = () => {
 
       try {
         const [cgRes, blockRes, hashRes, feesRes, mempoolRes, globalRes] = await Promise.all([
-          fetch(COINGECKO_MARKET_URL, { signal: ac.signal, cache: "no-store" }),
-          fetch(MEMPOOL_BLOCK_URL, { signal: ac.signal }).catch(() => null),
-          fetch(MEMPOOL_HASHRATE_URL, { signal: ac.signal }).catch(() => null),
-          fetch(MEMPOOL_FEES_URL, { signal: ac.signal }).catch(() => null),
-          fetch(MEMPOOL_MEMPOOL_URL, { signal: ac.signal }).catch(() => null),
-          fetch(COINGECKO_GLOBAL_URL, { signal: ac.signal, cache: "no-store" }).catch(() => null),
+          // Caught like its neighbours: a CoinGecko failure (its free tier
+          // rate-limits by IP, and a 429 arrives without CORS headers, i.e. as
+          // a rejected fetch) used to reject the whole batch and throw away
+          // the mempool.space answers that had nothing to do with it.
+          fetchWithDeadline(COINGECKO_MARKET_URL, { signal: ac.signal, cache: "no-store" }).catch((e) => { if (e?.name === "AbortError") throw e; return null; }),
+          fetchWithDeadline(MEMPOOL_BLOCK_URL, { signal: ac.signal }).catch(() => null),
+          fetchWithDeadline(MEMPOOL_HASHRATE_URL, { signal: ac.signal }).catch(() => null),
+          fetchWithDeadline(MEMPOOL_FEES_URL, { signal: ac.signal }).catch(() => null),
+          fetchWithDeadline(MEMPOOL_MEMPOOL_URL, { signal: ac.signal }).catch(() => null),
+          fetchWithDeadline(COINGECKO_GLOBAL_URL, { signal: ac.signal, cache: "no-store" }).catch(() => null),
         ]);
 
-        if (!cgRes.ok) throw new Error(`CoinGecko HTTP ${cgRes.status}`);
-        const cg = await cgRes.json();
-        const md = cg.market_data;
+        let md = null;
+        let cgError = null;
+        if (!cgRes) cgError = "CoinGecko unreachable";
+        else if (!cgRes.ok) cgError = `CoinGecko HTTP ${cgRes.status}`;
+        else {
+          const cg = await cgRes.json().catch(() => null);
+          md = cg?.market_data ?? null;
+          if (!md) cgError = "CoinGecko returned no market data";
+        }
 
         let blockHeight = null;
         if (blockRes && blockRes.ok) {
-          const txt = await blockRes.text();
+          const txt = await blockRes.text().catch(() => ""); // like its neighbours: one bad body must not sink the batch
           const n = parseInt(txt, 10);
           if (Number.isFinite(n)) blockHeight = n;
         }
@@ -219,6 +336,26 @@ export const useBitcoinData = () => {
 
         if (cancelled) return;
 
+        // CoinGecko failed: keep whatever market figures are on screen, but
+        // still apply the network figures that did arrive, then report the
+        // failure so the poller backs off as before.
+        if (!md) {
+          setData((prev) => ({
+            ...prev,
+            blockHeight: blockHeight ?? prev.blockHeight,
+            hashrate: hashrate ?? prev.hashrate,
+            difficulty: difficulty ?? prev.difficulty,
+            fastFee: fastFee ?? prev.fastFee,
+            hourFee: hourFee ?? prev.hourFee,
+            mempoolCount: mempoolCount ?? prev.mempoolCount,
+            dominance: dominance ?? prev.dominance,
+            marketSettled: true,
+            loading: false,
+            error: prev.price == null ? cgError : prev.error,
+          }));
+          return false;
+        }
+
         const price = md.current_price?.usd ?? null;
         const sparkline = md.sparkline_7d?.price ?? [];
 
@@ -248,6 +385,7 @@ export const useBitcoinData = () => {
             mempoolCount: mempoolCount ?? prev.mempoolCount,
             dominance: dominance ?? prev.dominance,
             lastUpdate: prev.lastUpdate ?? new Date(),
+            marketSettled: true,
             loading: false,
             error: prev.error?.startsWith("Coinbase") ? prev.error : null,
           };
@@ -257,6 +395,7 @@ export const useBitcoinData = () => {
         if (e.name === "AbortError" || cancelled) return;
         setData((prev) => ({
           ...prev,
+          marketSettled: true,
           loading: false,
           error: prev.price == null ? e.message || "Network error" : prev.error,
         }));
@@ -274,9 +413,9 @@ export const useBitcoinData = () => {
 
       try {
         const [fgRes, diffRes, lnRes] = await Promise.all([
-          fetch(FEAR_GREED_URL, { signal: ac.signal }).catch(() => null),
-          fetch(MEMPOOL_DIFFICULTY_URL, { signal: ac.signal }).catch(() => null),
-          fetch(MEMPOOL_LIGHTNING_URL, { signal: ac.signal }).catch(() => null),
+          fetchWithDeadline(FEAR_GREED_URL, { signal: ac.signal }).catch(() => null),
+          fetchWithDeadline(MEMPOOL_DIFFICULTY_URL, { signal: ac.signal }).catch(() => null),
+          fetchWithDeadline(MEMPOOL_LIGHTNING_URL, { signal: ac.signal }).catch(() => null),
         ]);
 
         let fearGreed = null;
@@ -340,6 +479,7 @@ export const useBitcoinData = () => {
         return false;
       } finally {
         slowInFlight = false;
+        if (!cancelled) setData((prev) => (prev.slowSettled ? prev : { ...prev, slowSettled: true }));
       }
     };
 
@@ -350,7 +490,7 @@ export const useBitcoinData = () => {
       lastBlockInFlight = true;
 
       try {
-        const res = await fetch(MEMPOOL_BLOCKS_URL, { signal: ac.signal });
+        const res = await fetchWithDeadline(MEMPOOL_BLOCKS_URL, { signal: ac.signal });
         if (!res.ok) return false;
         const blocks = await res.json().catch(() => null);
         const b = Array.isArray(blocks) && blocks.length > 0 ? blocks[0] : null;
@@ -372,20 +512,26 @@ export const useBitcoinData = () => {
         return false;
       } finally {
         lastBlockInFlight = false;
+        if (!cancelled) setData((prev) => (prev.lastBlockSettled ? prev : { ...prev, lastBlockSettled: true }));
       }
     };
 
     const fetchLongTermChart = async () => {
       if (longTermInFlight) return;
+      // undefined = "did nothing": the poller's clock is left alone and the
+      // one-off timer below fetches the moment the cached copy expires.
+      if (Date.now() < longFreshUntil) return;
+      longFreshUntil = 0;
       longTermInFlight = true;
       try {
-        const res = await fetch(LONG_TERM_CHART_URL, { signal: ac.signal, cache: "no-store" });
+        const res = await fetchWithDeadline(LONG_TERM_CHART_URL, { signal: ac.signal, cache: "no-store" });
         if (!res.ok) throw new Error(`blockchain.info market-price HTTP ${res.status}`);
         const json = await res.json();
         const downsampled = downsampleLongTerm(json?.values);
         if (cancelled) return;
         if (downsampled.length === 0) return false;
         setData((prev) => ({ ...prev, longTermChart: downsampled }));
+        writeChartCache(CHART_CACHE_LONG, downsampled);
         return true;
       } catch (e) {
         if (e.name === "AbortError" || cancelled) return;
@@ -398,15 +544,18 @@ export const useBitcoinData = () => {
 
     const fetchMediumTermChart = async () => {
       if (mediumTermInFlight) return;
+      if (Date.now() < mediumFreshUntil) return;
+      mediumFreshUntil = 0;
       mediumTermInFlight = true;
       try {
-        const res = await fetch(MEDIUM_TERM_CHART_URL, { signal: ac.signal, cache: "no-store" });
+        const res = await fetchWithDeadline(MEDIUM_TERM_CHART_URL, { signal: ac.signal, cache: "no-store" });
         if (!res.ok) throw new Error(`CoinGecko market_chart HTTP ${res.status}`);
         const json = await res.json();
         const processed = downsampleMediumTerm(json?.prices);
         if (cancelled) return;
         if (processed.length === 0) return false;
         setData((prev) => ({ ...prev, mediumTermChart: processed }));
+        writeChartCache(CHART_CACHE_MEDIUM, processed);
         return true;
       } catch (e) {
         if (e.name === "AbortError" || cancelled) return;
@@ -427,12 +576,21 @@ export const useBitcoinData = () => {
       mediumTerm: createPoller({ run: fetchMediumTermChart, intervalMs: MEDIUM_TERM_POLL_MS, backoffCapMs: POLL_BACKOFF_CAP_MS }),
     };
     fetchersRef.current = pollers;
+    // A cached series stood in for the first fetch: refresh it when it expires
+    // instead of a whole poll interval later. (Skipped while the tab is
+    // hidden — the poller fetches at once when it becomes visible again.)
+    const expiryTimers = [
+      [longFreshUntil, pollers.longTerm],
+      [mediumFreshUntil, pollers.mediumTerm],
+    ].filter(([until]) => until > Date.now()).map(([until, poller]) =>
+      setTimeout(() => { if (typeof document === "undefined" || !document.hidden) poller.now(); }, until - Date.now() + 50));
     Object.values(pollers).forEach((p) => p.start());
 
     return () => {
       cancelled = true;
       ac.abort();
       Object.values(pollers).forEach((p) => p.stop());
+      expiryTimers.forEach(clearTimeout);
     };
   }, []);
 
@@ -446,5 +604,7 @@ export const useBitcoinData = () => {
     p.lastBlock.now();
   }, []);
 
-  return { ...data, refresh };
+  // Same object until the data actually changes, so memo()'d tabs skip the
+  // shell's unrelated re-renders (scroll flags, pull-to-refresh distance).
+  return useMemo(() => ({ ...data, refresh }), [data, refresh]);
 };

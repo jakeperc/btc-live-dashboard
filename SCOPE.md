@@ -48,7 +48,7 @@ Each refresh skill owns its own per-domain file under `src/data/`. Skills should
 - **All app code under `src/` outside `src/data/`** — the shell (`src/BitcoinDashboard.jsx`), `src/main.jsx`, `src/styles.css`, and everything under `src/tabs/`, `src/components/`, `src/hooks/`, and `src/lib/`. Refresh skills must never Read or Edit these files; their owned data lives in `src/data/`.
 - **Live-API code** — anything inside `useEffect`, `fetch(...)`, or `setInterval` (in `src/hooks/`).
 - **URL constants** in `src/lib/constants.js` (live endpoints — these auto-refresh themselves).
-- `PRICE_CHART_RANGES` (`src/tabs/DashboardTab.jsx`), `TABS` (`src/lib/constants.js`) and `TAB_SLUGS` / `ANCHORS` (`src/lib/routes.js`, the `#/tab/anchor` URL scheme) — config, not data.
+- `PRICE_CHART_RANGES` (`src/components/DashboardCharts.jsx`), `TABS` (`src/lib/constants.js`) and `TAB_SLUGS` / `ANCHORS` (`src/lib/routes.js`, the `#/tab/anchor` URL scheme) — config, not data.
 - **Thesis short path** (`THESIS_QUICK` in `src/data/thesis.js`) — user-authored like the rest of the Thesis tab. `npm run check:plain` measures it; no automation edits it.
 - **`automations/refresh-plain-language/reader-feedback.md`** and **`house-dialect.txt`** — **user-owned**. Every writer and the Editor reads them; no automation may edit them. (`drafter-notes.md` in the same directory is the Editor's to replace each run.)
 - **`automations/refresh-deep-analysis/memory/`** — owned exclusively by `/refresh-deep-analysis`. No other automation reads or writes here. The file `editorial-lessons.md` inside that directory is **user-owned** and must never be auto-mutated by any automation (including `/refresh-deep-analysis`).

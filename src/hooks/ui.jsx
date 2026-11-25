@@ -221,15 +221,29 @@ export const useOnlineStatus = () => {
   return online;
 };
 
+// Pull-to-refresh on touch devices. The gesture state lives in refs and the
+// document listeners are attached once per `enabled` change — the previous
+// version listed pullDistance in the effect's dependencies, so every touchmove
+// tore down and re-attached all three listeners.
 export const usePullToRefresh = (onRefresh, enabled = true) => {
   const startY = useRef(null);
   const pulling = useRef(false);
+  const distanceRef = useRef(0);
+  const refreshingRef = useRef(false);
+  const onRefreshRef = useRef(onRefresh);
+  onRefreshRef.current = onRefresh;
   const [pullDistance, setPullDistance] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     if (!enabled) return;
     const threshold = 80;
+    let doneTimer = 0;
+    const setDistance = (d) => {
+      if (distanceRef.current === d) return;
+      distanceRef.current = d;
+      setPullDistance(d);
+    };
 
     const onTouchStart = (e) => {
       if (window.scrollY > 5) return;
@@ -239,31 +253,36 @@ export const usePullToRefresh = (onRefresh, enabled = true) => {
     const onTouchMove = (e) => {
       if (!pulling.current || startY.current == null) return;
       const dy = e.touches[0].clientY - startY.current;
-      if (dy < 0) { pulling.current = false; setPullDistance(0); return; }
-      const deltaX = Math.abs(e.touches[0].clientX - (e.touches[0].clientX));
-      if (window.scrollY > 5) { pulling.current = false; setPullDistance(0); return; }
-      setPullDistance(Math.min(dy * 0.5, 120));
+      if (dy < 0 || window.scrollY > 5) { pulling.current = false; setDistance(0); return; }
+      setDistance(Math.min(dy * 0.5, 120));
     };
     const onTouchEnd = () => {
-      if (pulling.current && pullDistance >= threshold && !refreshing) {
+      if (pulling.current && distanceRef.current >= threshold && !refreshingRef.current) {
+        refreshingRef.current = true;
         setRefreshing(true);
-        onRefresh();
-        setTimeout(() => setRefreshing(false), 1200);
+        if (onRefreshRef.current) onRefreshRef.current();
+        doneTimer = window.setTimeout(() => { refreshingRef.current = false; setRefreshing(false); }, 1200);
       }
       pulling.current = false;
       startY.current = null;
-      setPullDistance(0);
+      setDistance(0);
     };
 
     document.addEventListener("touchstart", onTouchStart, { passive: true });
     document.addEventListener("touchmove", onTouchMove, { passive: true });
     document.addEventListener("touchend", onTouchEnd, { passive: true });
+    document.addEventListener("touchcancel", onTouchEnd, { passive: true });
     return () => {
       document.removeEventListener("touchstart", onTouchStart);
       document.removeEventListener("touchmove", onTouchMove);
       document.removeEventListener("touchend", onTouchEnd);
+      document.removeEventListener("touchcancel", onTouchEnd);
+      if (doneTimer) window.clearTimeout(doneTimer);
+      refreshingRef.current = false;
+      setRefreshing(false);
+      setDistance(0);
     };
-  }, [enabled, onRefresh, pullDistance, refreshing]);
+  }, [enabled]);
 
   return { pullDistance, refreshing };
 };
@@ -283,8 +302,14 @@ export const useSwipeNavigation = (activeTab, setActiveTab, tabCount, enabled = 
       return false;
     };
 
+    // A horizontal drag that starts on a chart is the reader scrubbing along
+    // it to read values, and one on a form control is adjusting that control —
+    // neither is "next tab". Any element can opt out with data-no-swipe.
+    const ownsHorizontalDrag = (el) =>
+      !!(el && el.closest && el.closest('.recharts-wrapper, input, select, textarea, [role="slider"], [data-no-swipe]'));
+
     const onStart = (e) => {
-      if (isScrollable(e.target)) { startRef.current = null; return; }
+      if (ownsHorizontalDrag(e.target) || isScrollable(e.target)) { startRef.current = null; return; }
       startRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
     };
     const onEnd = (e) => {
@@ -570,17 +595,27 @@ export const PageScrollProgressBar = () => {
   return <span ref={ref} className="thesis-progress-fill" aria-hidden="true" />;
 };
 
+// Counts up to `target`. The first run starts at `from`; when the target
+// later changes (a live price tick, a different DCA amount) it glides from the
+// number already on screen. It used to restart at `from` every time, so any
+// figure fed by the live price dropped to zero and re-counted every 30 seconds.
 export const useCountUp = (target, { trigger = true, duration = 1400, from = 0 } = {}) => {
   const [value, setValue] = useState(prefersReducedMotion() ? target : from);
+  const valueRef = useRef(value);
+  const startedRef = useRef(false);
   useEffect(() => {
     if (!trigger) return;
-    if (prefersReducedMotion()) { setValue(target); return; }
+    const settle = (v) => { valueRef.current = v; setValue(v); };
+    if (prefersReducedMotion()) { startedRef.current = true; settle(target); return; }
+    const origin = startedRef.current ? valueRef.current : from;
+    startedRef.current = true;
+    if (origin === target) { settle(target); return; }
     let rafId = 0;
     const start = performance.now();
     const tick = (now) => {
       const t = Math.min(1, (now - start) / duration);
       const eased = 1 - Math.pow(1 - t, 3);
-      setValue(from + (target - from) * eased);
+      settle(t < 1 ? origin + (target - origin) * eased : target);
       if (t < 1) rafId = window.requestAnimationFrame(tick);
     };
     rafId = window.requestAnimationFrame(tick);

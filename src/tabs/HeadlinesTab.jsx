@@ -86,7 +86,7 @@ export const SectionHeading = ({ title, subtitle }) => (
 );
 
 export const HeadlinesTab = ({ news }) => {
-  const [filter, setFilter] = useState("ALL");
+  const [selectedFilter, setFilter] = useState("ALL");
   const hasLive = news.items.length > 0;
 
   // Time bucketing:
@@ -134,6 +134,11 @@ export const HeadlinesTab = ({ news }) => {
 
   const allItems = [...latest, ...importantHistorical, ...sixMonth];
   const tags = ["ALL", ...Array.from(new Set(allItems.map(n => n.tag)))];
+  // The tag list is rebuilt from whatever is on the page, and the live feed
+  // refreshes every ten minutes. If the chosen tag's last story drops out,
+  // fall back to ALL instead of stranding the reader on three empty sections
+  // with no pill highlighted.
+  const filter = tags.includes(selectedFilter) ? selectedFilter : "ALL";
 
   const latestFiltered = filter === "ALL" ? latest : latest.filter(n => n.tag === filter);
   const historicalFiltered = filter === "ALL" ? importantHistorical : importantHistorical.filter(n => n.tag === filter);
@@ -178,19 +183,19 @@ export const HeadlinesTab = ({ news }) => {
             }} />
             <div className="headlines-filter-row" style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
               {tags.map(t => (
-                <button key={t} onClick={() => setFilter(t)} style={{
+                <button key={t} type="button" aria-pressed={filter === t} onClick={() => setFilter(t)} style={{
                   padding: "5px 12px", borderRadius: 20, border: "none", cursor: "pointer",
                   fontSize: 11, fontWeight: 600, fontFamily: "'JetBrains Mono', monospace",
                   background: filter === t ? "#f7931a" : "var(--bg-card)",
                   color: filter === t ? "#000" : "var(--text-muted)",
-                  transition: "all 0.2s",
+                  transition: "background-color 0.2s, color 0.2s",
                   flexShrink: 0,
                 }}>{t}</button>
               ))}
             </div>
           </div>
 
-          <SectionHeading title="Most Important Headlines • Past 48 Hours" subtitle={`Top ${latestFiltered.length} stor${latestFiltered.length === 1 ? "y" : "ies"} • ★ marks key stories`} />
+          <SectionHeading title={hasLive ? "Most Important Headlines • Past 48 Hours" : "Most Important Headlines • Latest Curated"} subtitle={`Top ${latestFiltered.length} stor${latestFiltered.length === 1 ? "y" : "ies"} • ★ marks key stories`} />
           {latestFiltered.length === 0 ? (
             <div style={{ fontSize: 12, color: "var(--text-dim)", fontFamily: "'JetBrains Mono', monospace", padding: "12px 4px" }}>No stories match this filter.</div>
           ) : (

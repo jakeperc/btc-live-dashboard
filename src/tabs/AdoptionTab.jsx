@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import { radioGroupKeyDown } from "../components/shared.jsx";
 import { FALLBACK_PRICE } from "../data/fallbacks.js";
 import { ADOPTION_DATA, ADOPTION_INDEX_TOP20, COUNTRY_HOLDINGS, COMPANY_HOLDINGS } from "../data/adoption.js";
 import { fmt } from "../lib/format.js";
@@ -17,24 +18,32 @@ export const AdoptionTab = ({ price }) => {
       </div>
       <div className="page-subtitle" style={{ fontSize: 13, color: "var(--text-dim)", fontFamily: "'JetBrains Mono', monospace", marginBottom: 16 }}>Corporate treasuries, government reserves, ownership rates, and Chainalysis index</div>
 
-      <div className="adoption-view-bar segmented-pill segmented-pill-analytical" role="tablist" style={{ marginBottom: 20 }}>
+      <div className="adoption-view-bar segmented-pill segmented-pill-analytical" role="radiogroup" aria-label="Adoption view" onKeyDown={radioGroupKeyDown} style={{ marginBottom: 20 }}>
         <button
+          type="button"
           aria-checked={view === "companies"}
+          tabIndex={view === "companies" ? 0 : -1}
           role="radio"
           onClick={() => setView("companies")}
         >Companies</button>
         <button
+          type="button"
           aria-checked={view === "holdings"}
+          tabIndex={view === "holdings" ? 0 : -1}
           role="radio"
           onClick={() => setView("holdings")}
         >Governments</button>
         <button
+          type="button"
           aria-checked={view === "ownership"}
+          tabIndex={view === "ownership" ? 0 : -1}
           role="radio"
           onClick={() => setView("ownership")}
         >Ownership %</button>
         <button
+          type="button"
           aria-checked={view === "index"}
+          tabIndex={view === "index" ? 0 : -1}
           role="radio"
           onClick={() => setView("index")}
         >Adoption Index</button>
@@ -160,6 +169,9 @@ export const SortTh = ({ children, colKey, activeSortKey, activeSortDir, onSort,
   <th
     className={`${className || ""}${activeSortKey === colKey ? " sort-active" : ""}`}
     onClick={() => onSort(colKey)}
+    // Sorting was mouse-only: a header cell is not focusable by default.
+    tabIndex={0}
+    onKeyDown={(e) => { if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") { e.preventDefault(); onSort(colKey); } }}
     aria-sort={activeSortKey === colKey ? (activeSortDir === "desc" ? "descending" : "ascending") : "none"}
   >
     {children}
@@ -180,7 +192,10 @@ export const CompaniesTab = ({ price }) => {
     setSortKey(key);
   };
   const sorted = [...COMPANY_HOLDINGS].sort((a, b) => sortDir === "desc" ? b[sortKey] - a[sortKey] : a[sortKey] - b[sortKey]);
-  const top8 = sorted.slice(0, 8);
+  // The chart always shows the eight largest holders. It used to take the
+  // first eight rows of the table, so sorting the table ascending (or by another
+  // column) quietly turned it into a chart of the eight smallest.
+  const top8 = [...COMPANY_HOLDINGS].sort((a, b) => b.btc - a.btc).slice(0, 8);
   // Visually cap any outlier so other companies remain comparable.
   // Cap = ~1.5× the 2nd-largest holder; outliers get a broken-axis treatment.
   const secondBtc = top8[1]?.btc ?? 0;
@@ -197,7 +212,7 @@ export const CompaniesTab = ({ price }) => {
         Public Company Bitcoin Holdings
       </div>
       <div className="page-subtitle" style={{ fontSize: 13, color: "var(--text-dim)", fontFamily: "'JetBrains Mono', monospace", marginBottom: 4 }}>
-        Top publicly traded companies by BTC on balance sheet — July 2026
+        Top publicly traded companies by BTC on balance sheet
       </div>
       <div className="holdings-summary" style={{ fontSize: 12, color: "var(--text-muted)", fontFamily: "'JetBrains Mono', monospace", marginBottom: 20, padding: "10px 14px", background: "var(--bg-card)", borderRadius: 10, border: "1px solid var(--border-subtle)" }}>
         Tracked corporate BTC: <span style={{ color: "#f7931a", fontWeight: 700 }}>{fmt(totalBtc)} BTC</span> across <span style={{ color: "#f7931a", fontWeight: 700 }}>{COMPANY_HOLDINGS.length} companies</span> — worth ~<span style={{ color: "#22c55e", fontWeight: 700 }}>${(totalBtc * safePrice / 1e9).toFixed(1)}B</span>
@@ -207,7 +222,7 @@ export const CompaniesTab = ({ price }) => {
         <ResponsiveContainer width="100%" height={isMobile ? 360 : 300}>
           <BarChart data={top8Display} margin={{ left: 0, right: isMobile ? 12 : 20, top: 4, bottom: 4 }} layout="vertical">
             <XAxis type="number" tick={{ fill: "var(--text-dim)", fontSize: 11, fontFamily: "'JetBrains Mono', monospace" }} axisLine={false} tickLine={false} tickFormatter={v => v >= 1000 ? (v/1000).toFixed(0) + "K" : v} tickCount={isMobile ? 4 : 6} />
-            <YAxis type="category" dataKey="company" tick={{ fill: "var(--text-secondary)", fontSize: isMobile ? 11 : 12, fontFamily: "'Outfit', sans-serif" }} axisLine={false} tickLine={false} width={isMobile ? 108 : 100} interval={0} tickFormatter={n => isMobile && n.length > 14 ? n.slice(0, 13) + "…" : n} />
+            <YAxis type="category" dataKey="company" tick={{ fill: "var(--text-secondary)", fontSize: isMobile ? 11 : 12, fontFamily: "'Outfit', sans-serif" }} axisLine={false} tickLine={false} width={isMobile ? 108 : 132} interval={0} tickFormatter={n => isMobile && n.length > 14 ? n.slice(0, 13) + "…" : n} />
             <Tooltip
               contentStyle={{ background: "var(--bg-card-elevated)", border: "1px solid #f7931a66", borderRadius: 8, fontFamily: "'JetBrains Mono', monospace", fontSize: 13, padding: "10px 14px", maxWidth: "calc(100vw - 32px)", color: "var(--text-primary)", boxShadow: "0 8px 24px rgba(0,0,0,0.4)" }}
               labelStyle={{ color: "#f7931a", fontWeight: 800, marginBottom: 4 }}
@@ -286,7 +301,7 @@ export const HoldingsTab = ({ price }) => {
         Government Bitcoin Holdings
       </div>
       <div className="page-subtitle" style={{ fontSize: 13, color: "var(--text-dim)", fontFamily: "'JetBrains Mono', monospace", marginBottom: 4 }}>
-        Nation-state BTC reserves as of July 2026
+        Nation-state BTC reserves
       </div>
       <div className="holdings-summary" style={{ fontSize: 12, color: "var(--text-muted)", fontFamily: "'JetBrains Mono', monospace", marginBottom: 20, padding: "10px 14px", background: "var(--bg-card)", borderRadius: 10, border: "1px solid var(--border-subtle)" }}>
         Total government-held BTC: <span style={{ color: "#f7931a", fontWeight: 700 }}>{fmt(totalGovBtc)} BTC</span> across <span style={{ color: "#f7931a", fontWeight: 700 }}>{govEntities} entities</span> — worth ~<span style={{ color: "#22c55e", fontWeight: 700 }}>${(totalGovBtc * safePrice / 1e9).toFixed(1)}B</span>

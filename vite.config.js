@@ -5,7 +5,9 @@ import react from "@vitejs/plugin-react";
 //
 //   split (default)  index.html + assets/ with hashed, long-cacheable chunks:
 //                    vendor-react, vendor-charts, the eager shell + Dashboard,
-//                    and one lazy chunk per remaining tab (src/tabs/index.js).
+//                    one lazy chunk per remaining tab (src/tabs/index.js) and
+//                    one for the Dashboard charts (DashboardCharts), which
+//                    keeps vendor-charts off the first-paint path.
 //   single           one JS chunk with every dynamic import inlined, which
 //                    scripts/make-single-file.mjs then folds into index.html
 //                    for hosts that can only take a single file.

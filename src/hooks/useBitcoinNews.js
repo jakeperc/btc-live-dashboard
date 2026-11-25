@@ -6,7 +6,28 @@ import { createPoller } from "./ui.jsx";
 
 // Live Bitcoin news — multiple RSS feeds via rss2json proxy. Refreshed every
 // 10 minutes while the tab is visible; backs off after failures (createPoller).
-export const useBitcoinNews = () => {
+//
+// `enabled` gates the whole thing: only the Headlines tab renders this data,
+// so the shell turns it on when that tab is opened (or about to be — hover,
+// focus, touch on its link). A reader who never opens Headlines never spends
+// the feed requests, and the first paint does not compete with them.
+// rss2json sometimes accepts a request and never answers. Without a deadline
+// one stalled feed kept Promise.all pending: the tab stayed on its loading
+// skeleton and, because the fetch counted as "in flight", no later poll ran.
+const FEED_TIMEOUT_MS = 12000;
+const fetchWithTimeout = (url, parentSignal) => {
+  const ctl = new AbortController();
+  const abort = () => ctl.abort();
+  const timer = setTimeout(abort, FEED_TIMEOUT_MS);
+  if (parentSignal.aborted) abort();
+  else parentSignal.addEventListener("abort", abort, { once: true });
+  return fetch(url, { signal: ctl.signal }).finally(() => {
+    clearTimeout(timer);
+    parentSignal.removeEventListener("abort", abort);
+  });
+};
+
+export const useBitcoinNews = (enabled = true) => {
   const [state, setState] = useState({
     items: [],
     loading: true,
@@ -14,6 +35,7 @@ export const useBitcoinNews = () => {
   });
 
   useEffect(() => {
+    if (!enabled) return;
     const ac = new AbortController();
     let cancelled = false;
     let inFlight = false;
@@ -24,7 +46,7 @@ export const useBitcoinNews = () => {
       try {
         const results = await Promise.all(
           NEWS_FEEDS.map((feed) =>
-            fetch(RSS2JSON_URL + encodeURIComponent(feed.url), { signal: ac.signal })
+            fetchWithTimeout(RSS2JSON_URL + encodeURIComponent(feed.url), ac.signal)
               .then((r) => (r.ok ? r.json() : null))
               .then((j) => {
                 if (!j || j.status !== "ok") return [];
@@ -78,7 +100,7 @@ export const useBitcoinNews = () => {
       ac.abort();
       poller.stop();
     };
-  }, []);
+  }, [enabled]);
 
   return state;
 };

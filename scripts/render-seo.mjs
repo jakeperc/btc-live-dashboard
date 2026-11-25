@@ -44,7 +44,9 @@ const esc = (value) =>
   String(value)
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
+    .replace(/>/g, "&gt;")
+    // Also used inside href="…": a quote in a source URL must not end the attribute.
+    .replace(/"/g, "&quot;");
 
 const pct = (p) => `${Math.round(p * 100)}%`;
 const num = (n) => Number(n).toLocaleString("en-US");
@@ -57,7 +59,16 @@ function sourcesList(sources) {
   return `    <h4>Sources</h4>\n    <ul>\n${items}\n    </ul>`;
 }
 
+// "NOV 23, 2026" -> "2026-11-23", read straight from the text. Going through
+// Date.parse() gives local midnight, which toISOString() then shifts to UTC —
+// a build machine east of UTC stamped the article a day early.
+const SEO_MONTHS = { JAN: 1, FEB: 2, MAR: 3, APR: 4, MAY: 5, JUN: 6, JUL: 7, AUG: 8, SEP: 9, OCT: 10, NOV: 11, DEC: 12 };
 function asOfToISO(asOf) {
+  const m = /^([A-Za-z]{3})[a-z]*\.? (\d{1,2}), (\d{4})$/.exec(String(asOf ?? "").trim());
+  const mo = m && SEO_MONTHS[m[1].toUpperCase()];
+  const d = m && Number(m[2]);
+  if (mo && d >= 1 && d <= 31) return `${m[3]}-${String(mo).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+  // Any other shape: the old path, which is right wherever the build runs in UTC.
   const t = Date.parse(asOf);
   return Number.isNaN(t) ? undefined : new Date(t).toISOString().slice(0, 10);
 }
