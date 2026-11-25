@@ -14,7 +14,7 @@ import "./styles.css";
 import { DashboardTab, BitcoinThesisTab, StrategyTab, HeadlinesTab, AdoptionTab, DeepAnalysisTab, prefetchTab } from "./tabs/index.js";
 import { Skeleton, DataStatus, ThemeToggle, ErrorBoundary, isPlainClick } from "./components/shared.jsx";
 import { TABS } from "./lib/constants.js";
-import { tabHref, parseHash } from "./lib/routes.js";
+import { tabHref, parseHash, TAB_SLUGS } from "./lib/routes.js";
 import { fmtUSD, formatAge } from "./lib/format.js";
 import { useBitcoinData } from "./hooks/useBitcoinData.js";
 import { useBitcoinNews } from "./hooks/useBitcoinNews.js";
@@ -88,8 +88,14 @@ const TabSkeleton = () => (
 // reader on the Thesis tab was still paying for the Dashboard, Strategy and
 // Adoption tabs to re-render on every price poll.
 const TabPanel = memo(
-  ({ active, children }) => (
-    <div style={{ display: active ? "block" : "none" }} className={active ? "tab-panel-enter" : ""}>
+  ({ active, slug, children }) => (
+    <div
+      role="tabpanel"
+      id={`panel-${slug}`}
+      aria-labelledby={`tab-${slug}`}
+      style={{ display: active ? "block" : "none" }}
+      className={active ? "tab-panel-enter" : ""}
+    >
       {/* ErrorBoundary outside Suspense: a chunk that fails to download
           rejects inside lazy(), which Suspense re-throws as an error. */}
       <ErrorBoundary>
@@ -227,7 +233,7 @@ export default function BitcoinDashboard() {
                   WebkitOverflowScrolling: "touch",
                 }}
               >
-                <div role="tablist" style={{
+                <div role="tablist" aria-label="Sections" style={{
                   display: "flex",
                   gap: 0,
                   margin: "0 auto",
@@ -241,8 +247,10 @@ export default function BitcoinDashboard() {
                     <a
                       key={tab}
                       role="tab"
+                      id={`tab-${TAB_SLUGS[i]}`}
                       href={tabHref(i)}
                       aria-selected={activeTab === i}
+                      aria-controls={`panel-${TAB_SLUGS[i]}`}
                       onClick={(e) => {
                         if (!isPlainClick(e)) return;
                         if (navigator.vibrate) navigator.vibrate(10);
@@ -250,7 +258,15 @@ export default function BitcoinDashboard() {
                         window.scrollTo({ top: 0, behavior: "auto" });
                       }}
                       onKeyDown={(e) => {
-                        if (e.key === " " || e.key === "Spacebar") { e.preventDefault(); setActiveTab(i); }
+                        if (e.key === " " || e.key === "Spacebar") { e.preventDefault(); setActiveTab(i); return; }
+                        // Arrow keys, Home and End move between tabs, as the tab
+                        // role promises; Enter or Space then opens the focused one.
+                        const move = { ArrowRight: 1, ArrowLeft: -1 }[e.key];
+                        if (move == null && e.key !== "Home" && e.key !== "End") return;
+                        const tabs = Array.from(e.currentTarget.parentElement.querySelectorAll('[role="tab"]'));
+                        const to = e.key === "Home" ? 0 : e.key === "End" ? tabs.length - 1 : (i + move + tabs.length) % tabs.length;
+                        e.preventDefault();
+                        if (tabs[to]) tabs[to].focus();
                       }}
                       style={{
                         display: "inline-flex", alignItems: "center", textDecoration: "none", lineHeight: "normal",
@@ -314,7 +330,7 @@ export default function BitcoinDashboard() {
       <div className={`page-content${isMobileNav ? " page-content-with-bottom-nav" : ""}`} style={{ padding: "20px 24px 40px", maxWidth: 1180, margin: "0 auto" }}>
         <OfflineBanner online={online} lastUpdate={btc.lastUpdate} />
         {panels.map((panel, i) => (i === 0 || i === activeTab || visitedTabs.has(i)) && (
-          <TabPanel key={TABS[i]} active={activeTab === i}>{panel}</TabPanel>
+          <TabPanel key={TABS[i]} active={activeTab === i} slug={TAB_SLUGS[i]}>{panel}</TabPanel>
         ))}
       </div>
 
