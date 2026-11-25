@@ -10,7 +10,7 @@
 //   single (--single) inline the one JS chunk at the end of <body> and delete
 //                     dist/assets/, leaving a single self-contained file.
 
-import { readFile, writeFile, rm, readdir } from "node:fs/promises";
+import { readFile, writeFile, rm, readdir, unlink } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { renderSeoHtml, renderJsonLd } from "./render-seo.mjs";
@@ -78,6 +78,11 @@ export const finalizeDist = async ({ single = false } = {}) => {
   const safeCss = css.replace(/<\/style/gi, "<\\/style");
   base = base.replace(cssMatch[0], "");
   base = base.replace(/<\/head>/i, () => `    <style>\n${safeCss}\n    </style>\n  </head>`);
+  // The stylesheet now lives in the page; nothing references the file any more
+  // (lazy chunks carry their own CSS files), so do not ship a ~90 kB orphan.
+  const cssFile = cssMatch.groups.href.replace(/^\.\//, "");
+  const stillReferenced = base.includes(cssFile);
+  if (!single && !stillReferenced) await unlink(join(distDir, cssFile)).catch(() => {});
 
   // 1c) Split mode: preload the Dashboard's chart chunks. They are a dynamic
   //     import (src/tabs/DashboardTab.jsx), so Vite does not list them among
@@ -124,6 +129,21 @@ export const finalizeDist = async ({ single = false } = {}) => {
     if (inlineScript) variant = variant.replace(/<\/body>/i, () => `    ${inlineScript}\n  </body>`);
     await writeFile(join(distDir, out), variant, "utf8");
     console.log(`Wrote dist/${out} — canonical ${origin} (build: ${buildStamp}, ${single ? "single-file" : "split"})`);
+  }
+
+  // 4b) sitemap.xml: stamp <lastmod> with the build date (UTC). The file in
+  //     public/ is static, and <lastmod> is the one field crawlers act on.
+  //     Never a reason to fail the build.
+  try {
+    const sitemapPath = join(distDir, "sitemap.xml");
+    const sitemap = await readFile(sitemapPath, "utf8");
+    const day = buildStamp.slice(0, 10);
+    const stamped = /<lastmod>[^<]*<\/lastmod>/.test(sitemap)
+      ? sitemap.replace(/<lastmod>[^<]*<\/lastmod>/g, `<lastmod>${day}</lastmod>`)
+      : sitemap.replace(/(<loc>[^<]*<\/loc>)/g, `$1\n    <lastmod>${day}</lastmod>`);
+    if (stamped !== sitemap) await writeFile(sitemapPath, stamped, "utf8");
+  } catch (e) {
+    console.warn(`sitemap: lastmod not stamped - ${e.message}`);
   }
 
   // 5) llms.txt: a plain-text guide to the page for AI readers, written beside

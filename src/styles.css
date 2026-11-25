@@ -538,6 +538,12 @@
   from { opacity: 0; transform: scale(0.92); }
   to { opacity: 1; transform: scale(1); }
 }
+/* Opacity-only pulse for small status dots: runs on the compositor, where
+   glowPulse (box-shadow) repaints on the main thread for as long as it runs. */
+@keyframes dotPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
 @keyframes glowPulse {
   0%, 100% { box-shadow: 0 0 14px rgba(247, 147, 26, 0.08), 0 0 32px rgba(247, 147, 26, 0.04); }
   50% { box-shadow: 0 0 18px rgba(247, 147, 26, 0.14), 0 0 44px rgba(247, 147, 26, 0.08); }
@@ -2370,7 +2376,7 @@ button, a, [role="button"], [role="tab"], [role="radio"] { -webkit-tap-highlight
   padding: 8px 16px;
   border-radius: 999px;
   cursor: pointer;
-  transition: all 180ms ease;
+  transition: color 180ms ease, background-color 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
 }
 @media (hover: hover) {
   .strategy-dca-toggle:hover {
@@ -3375,8 +3381,10 @@ button, a, [role="button"], [role="tab"], [role="radio"] { -webkit-tap-highlight
     background:
       linear-gradient(90deg, transparent 0%, var(--border-subtle) 15%, var(--border-subtle) 85%, transparent 100%) bottom / 100% 1px no-repeat,
       var(--bg-base);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    /* The background above is opaque, so a blur here would show nothing and
+       still cost a backdrop pass on every scroll frame. */
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
     mask-image: none;
     -webkit-mask-image: none;
     border-bottom: 0;
@@ -3823,11 +3831,8 @@ button, a, [role="button"], [role="tab"], [role="radio"] { -webkit-tap-highlight
   font-size: 12px;
 }
 .holdings-table th {
-  position: sticky; top: 0;
   padding: 10px 14px;
   background: var(--bg-card-elevated);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
   border-bottom: 1px solid var(--border-strong);
   font-size: var(--fs-2xs); font-weight: 700; letter-spacing: 0.1em;
   text-transform: uppercase; color: var(--text-muted);
@@ -3836,6 +3841,7 @@ button, a, [role="button"], [role="tab"], [role="radio"] { -webkit-tap-highlight
   transition: color 0.15s ease;
 }
 .holdings-table th:hover { color: var(--text-secondary); }
+.holdings-table th:focus-visible { outline: 2px solid var(--accent-bitcoin); outline-offset: -2px; color: var(--text-secondary); }
 .holdings-table th.num { text-align: right; }
 .holdings-table th .sort-icon { display: inline-block; margin-left: 4px; opacity: 0.35; }
 .holdings-table th.sort-active { color: var(--text-secondary); }
@@ -3898,3 +3904,24 @@ button, a, [role="button"], [role="tab"], [role="radio"] { -webkit-tap-highlight
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
+
+/* ─── Light theme: text colours set by class ───
+   The light theme forces these cards to a white surface, and the catch-all
+   that flips white text to dark only matches inline styles. These classes set
+   near-white text in the stylesheet, so they stayed white on white. */
+:root[data-theme="light"] :is(.thesis-history-name, .thesis-money-panel-question, .thesis-intl-stat, .thesis-digital-step-title, .thesis-myth-claim, .thesis-mobile-chip-label, .thesis-pinned-fallback-title, .thesis-pinned-fallback-chapter-headline) { color: var(--text-primary); }
+:root[data-theme="light"] :is(.thesis-tp-closing-text, .thesis-birthyear-label, .thesis-intl-bridge, .thesis-myth-refutation) { color: var(--text-secondary); }
+:root[data-theme="light"] .strategy-principle-item em { color: #9a4b00; }
+:root[data-theme="light"] .thesis-birthyear-select { background: var(--bg-card); color: var(--text-primary); }
+
+/* ─── Reduced motion: looping and entrance animations ───
+   The blocks above cover reveals and press states. The pulsing dots, the
+   loading shimmer and the scroll-hint arrow are set inline or by class and
+   kept running; this ends every CSS animation at once, at its resting state. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0s !important;
+    animation-iteration-count: 1 !important;
+  }
+}

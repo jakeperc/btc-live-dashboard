@@ -17,7 +17,7 @@ export const AdoptionTab = ({ price }) => {
       </div>
       <div className="page-subtitle" style={{ fontSize: 13, color: "var(--text-dim)", fontFamily: "'JetBrains Mono', monospace", marginBottom: 16 }}>Corporate treasuries, government reserves, ownership rates, and Chainalysis index</div>
 
-      <div className="adoption-view-bar segmented-pill segmented-pill-analytical" role="tablist" style={{ marginBottom: 20 }}>
+      <div className="adoption-view-bar segmented-pill segmented-pill-analytical" role="radiogroup" aria-label="Adoption view" style={{ marginBottom: 20 }}>
         <button
           aria-checked={view === "companies"}
           role="radio"
@@ -160,6 +160,9 @@ export const SortTh = ({ children, colKey, activeSortKey, activeSortDir, onSort,
   <th
     className={`${className || ""}${activeSortKey === colKey ? " sort-active" : ""}`}
     onClick={() => onSort(colKey)}
+    // Sorting was mouse-only: a header cell is not focusable by default.
+    tabIndex={0}
+    onKeyDown={(e) => { if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") { e.preventDefault(); onSort(colKey); } }}
     aria-sort={activeSortKey === colKey ? (activeSortDir === "desc" ? "descending" : "ascending") : "none"}
   >
     {children}

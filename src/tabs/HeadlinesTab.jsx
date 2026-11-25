@@ -183,12 +183,12 @@ export const HeadlinesTab = ({ news }) => {
             }} />
             <div className="headlines-filter-row" style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
               {tags.map(t => (
-                <button key={t} onClick={() => setFilter(t)} style={{
+                <button key={t} type="button" aria-pressed={filter === t} onClick={() => setFilter(t)} style={{
                   padding: "5px 12px", borderRadius: 20, border: "none", cursor: "pointer",
                   fontSize: 11, fontWeight: 600, fontFamily: "'JetBrains Mono', monospace",
                   background: filter === t ? "#f7931a" : "var(--bg-card)",
                   color: filter === t ? "#000" : "var(--text-muted)",
-                  transition: "all 0.2s",
+                  transition: "background-color 0.2s, color 0.2s",
                   flexShrink: 0,
                 }}>{t}</button>
               ))}

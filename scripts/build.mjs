@@ -15,7 +15,9 @@
 //   3. Vite's build() API bundles the app.
 //        split:  the shell + Dashboard are the entry chunk; Thesis, Strategy,
 //                Headlines, Adoption and Analysis are React.lazy chunks
-//                (src/tabs/index.js); react/react-dom/scheduler go to
+//                (src/tabs/index.js), and the Dashboard charts are one more
+//                (src/components/DashboardCharts.jsx, preloaded at low
+//                priority by make-single-file.mjs); react/react-dom/scheduler go to
 //                vendor-react and recharts + its d3/lodash deps to
 //                vendor-charts (vite.config.js manualChunks). Every asset is
 //                content-hashed, so deploy/.htaccess can cache them for a year

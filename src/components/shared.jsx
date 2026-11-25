@@ -485,7 +485,7 @@ export const SupplyMeter = ({ mined, total, history }) => {
       {/* HERO — how little is LEFT to mine */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", gap: 12, flexWrap: "wrap", marginBottom: 18 }}>
         <span style={{ display: "inline-flex", alignItems: "center", fontSize: "var(--fs-xs)", color: "var(--text-muted)", letterSpacing: 1.2, textTransform: "uppercase", fontWeight: 600, fontFamily: "var(--font-mono)" }}>
-          <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--status-up)", marginRight: 8, animation: reduced ? "none" : "glowPulse 2.4s ease-in-out infinite" }} />
+          <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--status-up)", marginRight: 8, animation: reduced ? "none" : "dotPulse 2.4s ease-in-out infinite" }} />
           Supply Left to Mine
         </span>
         <span aria-label={`${pctLeft.toFixed(2)} percent of the 21 million bitcoin cap is still left to mine`} style={{ display: "inline-flex", alignItems: "baseline", fontFamily: "var(--font-mono)", fontVariantNumeric: "tabular-nums", fontWeight: 800, fontSize: "clamp(38px, 6vw, 58px)", lineHeight: 1, color: "var(--accent-bitcoin)" }}>
