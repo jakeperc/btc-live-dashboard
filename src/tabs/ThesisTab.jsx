@@ -93,33 +93,45 @@ export const SilentTaxPlayheadDriver = ({ wrapRef, counterRef, yearRef, chartRef
   return null;
 };
 
+const SILENT_TAX_HINT_KEY = "btc-dashboard.silent-tax.hint";
+
 export const SilentTaxScrollHint = ({ wrapRef }) => {
   const [visible, setVisible] = useState(false);
-  const shownRef = useRef(false);
+  const [armed, setArmed] = useState(false);
   const progress = useScrollProgress(wrapRef, { pinned: true, pinTop: SILENT_TAX_PIN_TOP });
+
+  // Arm once, the first time the reader is just inside the pinned section.
   useEffect(() => {
-    if (shownRef.current) return;
-    if (typeof window === "undefined") return;
-    try {
-      if (sessionStorage.getItem("btc-dashboard.silent-tax.hint") === "dismissed") {
-        shownRef.current = true;
-        return;
-      }
-    } catch (e) {}
-    if (progress > 0.02 && progress < 0.12) {
-      shownRef.current = true;
-      const showTid = setTimeout(() => setVisible(true), 700);
-      const dismiss = () => {
-        setVisible(false);
-        try { sessionStorage.setItem("btc-dashboard.silent-tax.hint", "dismissed"); } catch (e) {}
-      };
-      window.addEventListener("wheel",     dismiss, { once: true, passive: true });
-      window.addEventListener("touchmove", dismiss, { once: true, passive: true });
-      window.addEventListener("keydown",   dismiss, { once: true });
-      const autoDismiss = setTimeout(dismiss, 5000);
-      return () => { clearTimeout(showTid); clearTimeout(autoDismiss); };
-    }
-  }, [progress]);
+    if (armed || typeof window === "undefined") return;
+    if (!(progress > 0.02 && progress < 0.12)) return;
+    try { if (sessionStorage.getItem(SILENT_TAX_HINT_KEY) === "dismissed") return; } catch (e) {}
+    setArmed(true);
+  }, [progress, armed]);
+
+  // The timers live in their own effect, keyed on `armed` alone. They used to
+  // sit in the effect above, whose cleanup ran on the very next scroll frame
+  // and cancelled the "show" timer — so the hint never actually appeared, and
+  // the dismiss listeners it left behind then marked it dismissed for the session.
+  useEffect(() => {
+    if (!armed) return;
+    const events = ["wheel", "touchmove", "keydown"];
+    const dismiss = () => {
+      setVisible(false);
+      try { sessionStorage.setItem(SILENT_TAX_HINT_KEY, "dismissed"); } catch (e) {}
+    };
+    const showTid = setTimeout(() => setVisible(true), 700);
+    // Listen for the next scroll only once the hint has had a moment on screen;
+    // the scroll that armed it is still in flight.
+    const listenTid = setTimeout(() => {
+      events.forEach((ev) => window.addEventListener(ev, dismiss, { once: true, passive: true }));
+    }, 1600);
+    const autoDismiss = setTimeout(dismiss, 6000);
+    return () => {
+      clearTimeout(showTid); clearTimeout(listenTid); clearTimeout(autoDismiss);
+      events.forEach((ev) => window.removeEventListener(ev, dismiss));
+    };
+  }, [armed]);
+
   if (!visible) return null;
   return (
     <div className="thesis-pinned-hint" aria-hidden="true">

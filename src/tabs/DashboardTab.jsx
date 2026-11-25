@@ -1,14 +1,14 @@
-import { useState, useEffect, useMemo, memo } from "react";
-import { XAxis, YAxis, Tooltip, ResponsiveContainer, AreaChart, Area, ComposedChart, Line, ReferenceLine } from "recharts";
+import { Suspense, useState, useEffect, useMemo } from "react";
 import { FALLBACK_MINED, FALLBACK_BLOCK, FALLBACK_ATH, FALLBACK_ATH_DATE, ETF_COMPLEX_FALLBACK, GLOBAL_CRYPTO_HOLDERS_FALLBACK } from "../data/fallbacks.js";
 import { MARKET_THEME, CURATED_MARKET_UPDATES } from "../data/market-news.js";
 import { COUNTRY_HOLDINGS, COMPANY_HOLDINGS } from "../data/adoption.js";
 import { SUPPLY_HISTORY } from "../data/supply-history.js";
 import { TOTAL_SUPPLY, HALVING_BLOCK } from "../lib/constants.js";
 import { ANCHORS, parseHash } from "../lib/routes.js";
-import { fmt, fmtUSD, formatRemainingTime, formatElapsed, marketCapComparison, isImportantHeadline } from "../lib/format.js";
-import { useElapsed, Pulse, useIsMobile, Reveal, usePersistedState } from "../hooks/ui.jsx";
-import { SourceLink, Term, Prose, StatCard, StatStrip, SectionGroup, SupplyMeter, DipExplainerCard, PriceDisplay, ErrorBanner, buildMarketPulse, MarketPulseCard, StaleNotice } from "../components/shared.jsx";
+import { fmt, fmtUSD, formatRemainingTime, formatElapsed, marketCapComparison } from "../lib/format.js";
+import { useElapsed, useIsMobile, Reveal } from "../hooks/ui.jsx";
+import { SourceLink, Term, Prose, StatCard, StatStrip, SectionGroup, SupplyMeter, DipExplainerCard, PriceDisplay, ErrorBanner, ErrorBoundary, buildMarketPulse, MarketPulseCard, StaleNotice } from "../components/shared.jsx";
+import { lazyNamed, once } from "../lib/lazy-named.js";
 // Note: nothing from ./AnalysisTab.jsx is imported here on purpose — the
 // Analysis tab is a lazy chunk (src/tabs/index.js) and a static import from
 // the eager Dashboard would pull it into the first-paint bundle.
@@ -16,471 +16,96 @@ import { GLOSSARY } from "../data/glossary.js";
 import { buildMatcher, linkCard } from "../lib/glossary-match.js";
 
 // Glossary segmentation happens ONCE, here, not during render: CURATED_MARKET_UPDATES
-// and GLOSSARY are build-time constants, and this component re-renders every second
-// via useElapsed on the block timer — a render-time first-occurrence Set would drop
-// every link one tick after mount.
+// and GLOSSARY are build-time constants, and this component re-renders on every
+// price poll — a render-time first-occurrence Set would drop every link on the
+// first re-render after mount.
 const GLOSSARY_MATCHER = buildMatcher(GLOSSARY);
 const CURATED_SEGMENTS = CURATED_MARKET_UPDATES.map(
   (u) => linkCard([u.detail ?? ""], GLOSSARY_MATCHER, 5).segments[0]
 );
 
-// ─── PRICE CHART (unified, time-range selector) ─────────────────
-// target = number of visual data points to render for each range (uniform density)
-export const PRICE_CHART_RANGES = [
-  { id: "7D",  label: "7D",  days: 7,        source: "seven",  target: 168 },  // all ~168 hourly pts from sparkline
-  { id: "1M",  label: "1M",  days: 30,       source: "medium", target: 180 },  // ~720 hourly pts → 180 visual
-  { id: "3M",  label: "3M",  days: 90,       source: "medium", target: 180 },  // ~2160 hourly pts → 180 visual
-  { id: "1Y",  label: "1Y",  days: 365,      source: "long",   target: 250 },  // ~365 daily pts → 250 (all daily)
-  { id: "5Y",  label: "5Y",  days: 1825,     source: "long",   target: 200 },  // ~1825 daily pts → 200 visual
-  { id: "ALL", label: "ALL", days: Infinity,  source: "long",   target: 300 },  // all-time → 300 visual
-];
+// ─── CHARTS (their own chunk) ───────────────────────────────────
+// The two recharts charts live in src/components/DashboardCharts.jsx so the
+// chart engine is not on the first-paint path. The download starts right here,
+// while this module is still being evaluated, so it runs in parallel with
+// React's first render instead of waiting for it.
+const loadCharts = once(() => import("../components/DashboardCharts.jsx"));
+loadCharts().catch(() => {}); // warm-up only; a failure is retried on render
+const PriceChart = lazyNamed(loadCharts, "PriceChart");
+const PowerLawChart = lazyNamed(loadCharts, "PowerLawChart");
 
-export const ChartTooltipBody = ({ active, payload, prevPrice }) => {
-  if (!active || !payload || !payload.length) return null;
-  const p = payload[0].payload;
-  const delta = prevPrice != null && p.price != null ? p.price - prevPrice : null;
-  const deltaPct = delta != null && prevPrice ? (delta / prevPrice) * 100 : null;
-  const up = delta != null && delta >= 0;
-  return (
-    <div style={{
-      background: "var(--bg-card-elevated)", border: "1px solid var(--border-strong)",
-      borderRadius: "var(--radius-md)", padding: "12px 14px",
-      fontFamily: "var(--font-mono)", fontSize: 13,
-      boxShadow: "0 12px 32px rgba(0,0,0,0.32)",
-      minWidth: 132,
-      maxWidth: "calc(100vw - 32px)",
-    }}>
-      <div style={{
-        color: "var(--text-muted)", marginBottom: 6,
-        letterSpacing: "var(--tracking-caps)", textTransform: "uppercase",
-        fontSize: 11, fontWeight: 500,
-      }}>{p.date}</div>
-      <div style={{
-        color: "var(--text-primary)", fontWeight: 800, fontSize: 15,
-        letterSpacing: "var(--tracking-tight)",
-      }}>{fmtUSD(p.price)}</div>
-      {deltaPct != null && (
-        <div style={{
-          color: up ? "var(--status-up)" : "var(--status-down)",
-          marginTop: 4, fontWeight: 600,
-          letterSpacing: "0.04em",
-        }}>
-          {up ? "▲" : "▼"} {Math.abs(deltaPct).toFixed(2)}%
-        </div>
-      )}
-    </div>
-  );
-};
-
-export const PriceChart = memo(({ sevenDay, mediumTerm, longTerm }) => {
-  const [range, setRange] = usePersistedState("btc-dashboard.chartRange", "7D");
-  const cfg = PRICE_CHART_RANGES.find((r) => r.id === range) || PRICE_CHART_RANGES[0];
+// Same outer box as the real cards (padding, title line, chart height), so the
+// page does not jump when the chunk lands.
+const ChartPlaceholder = ({ title, mobileHeight, desktopHeight }) => {
   const isMobile = useIsMobile();
-
-  // Source selection: seven=7D sparkline, medium=CoinGecko 90d hourly, long=blockchain.info all-time daily.
-  const sourceData = cfg.source === "seven" ? sevenDay : cfg.source === "medium" ? mediumTerm : longTerm;
-  // The window/downsample/min-max pass walks the full history (~5,800 daily
-  // points on ALL), so it only re-runs when the source array or range changes —
-  // not on the 30 s price polls that re-render the Dashboard around this chart.
-  const { data, min, max, pct, first } = useMemo(() => {
-    const data = (() => {
-      if (!Array.isArray(sourceData) || sourceData.length === 0) return [];
-      if (cfg.source === "seven") return sourceData;
-
-      // Long-term data is daily. Filter to the requested window by timestamp (not
-      // by point count), then downsample uniformly to cfg.target points.
-      const sliced = cfg.days === Infinity
-        ? sourceData
-        : (() => {
-            const cutoffMs = Date.now() - cfg.days * 24 * 3600 * 1000;
-            return sourceData.filter(p => p.t >= cutoffMs);
-          })();
-      let visual = sliced;
-      if (sliced.length > cfg.target) {
-        const step = Math.round(sliced.length / cfg.target);
-        visual = [];
-        for (let i = 0; i < sliced.length; i += step) visual.push(sliced[i]);
-        const last = sliced[sliced.length - 1];
-        if (visual[visual.length - 1] !== last) visual.push(last);
-      }
-
-      // Day-level labels for ≤ 1Y; month+year for 5Y and ALL.
-      const useDayLevel = cfg.days <= 365;
-      return visual.map((p) => ({
-        ...p,
-        date: p.t
-          ? new Date(p.t).toLocaleDateString("en-US",
-              useDayLevel ? { month: "short", day: "numeric" } : { month: "short", year: "numeric" })
-          : p.date,
-      }));
-    })();
-
-    const prices = data.map((d) => d.price).filter((p) => typeof p === "number");
-    const min = prices.length ? Math.min(...prices) : null;
-    const max = prices.length ? Math.max(...prices) : null;
-    const first = data[0]?.price;
-    const last = data[data.length - 1]?.price;
-    const pct = first && last ? ((last - first) / first) * 100 : null;
-    return { data, min, max, pct, first };
-  }, [sourceData, cfg]);
-  const up = pct != null && pct >= 0;
-
-  const fmtRangeDate = (t) => t != null
-    ? new Date(t).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
-    : null;
-  const rangeStart = fmtRangeDate(data[0]?.t);
-  const rangeEnd   = fmtRangeDate(data[data.length - 1]?.t);
-  const rangeLabel = cfg.days === Infinity
-    ? "All time"
-    : rangeStart && rangeEnd
-      ? `${rangeStart} – ${rangeEnd}`
-      : cfg.label;
-
   return (
-    <div className="chart-card" style={{
-      background: "var(--bg-card)",
-      border: "1px solid var(--border-subtle)",
-      borderRadius: "var(--radius-lg)",
-      padding: "18px 16px 14px",
-    }}>
-      <div style={{
-        display: "flex",
-        flexDirection: isMobile ? "column" : "row",
-        justifyContent: isMobile ? "center" : "space-between",
-        alignItems: "center",
-        gap: isMobile ? 8 : 12,
-        marginBottom: 12,
-      }}>
-        <div style={{ textAlign: isMobile ? "center" : "left" }}>
-          <div style={{
-            fontSize: "var(--fs-xs)", color: "var(--text-muted)",
-            letterSpacing: 1.2, textTransform: "uppercase", fontWeight: 700,
-            fontFamily: "var(--font-mono)", marginBottom: 4,
-          }}>Price History</div>
-          {data.length > 0 && (
-            <div style={{ display: "flex", alignItems: "baseline", gap: 8, justifyContent: isMobile ? "center" : "flex-start" }}>
-              {pct != null && (
-                <span style={{
-                  fontSize: "var(--fs-md)", color: up ? "var(--status-up)" : "var(--status-down)",
-                  fontWeight: 800, fontFamily: "var(--font-mono)",
-                }}>
-                  {up ? "+" : ""}{pct.toFixed(2)}%
-                </span>
-              )}
-              <span style={{ fontSize: "var(--fs-xs)", color: "var(--text-dim)", fontFamily: "var(--font-mono)" }}>
-                {rangeLabel}
-              </span>
-            </div>
-          )}
-        </div>
-        <div role="radiogroup" aria-label="Chart time range" className="segmented-pill">
-          {PRICE_CHART_RANGES.map((r) => {
-            const active = range === r.id;
-            return (
-              <button
-                key={r.id}
-                role="radio"
-                aria-checked={active}
-                onClick={() => setRange(r.id)}
-              >{r.label}</button>
-            );
-          })}
-        </div>
-      </div>
-
-      {data.length === 0 ? (
-        <div style={{ height: isMobile ? 180 : 360, display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-dim)", fontFamily: "var(--font-mono)", fontSize: "var(--fs-sm)" }}>Loading chart…</div>
-      ) : (
-        <ResponsiveContainer width="100%" height={isMobile ? 180 : 380}>
-          <AreaChart data={data} margin={{ top: 12, right: isMobile ? 4 : 8, left: isMobile ? 2 : 0, bottom: 0 }}>
-            <defs>
-              <linearGradient id="priceGradUnified" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#f7931a" stopOpacity={0.28} />
-                <stop offset="60%" stopColor="#f7931a" stopOpacity={0.08} />
-                <stop offset="100%" stopColor="#f7931a" stopOpacity={0} />
-              </linearGradient>
-            </defs>
-            <XAxis
-              dataKey="date"
-              tick={{ fill: "var(--text-dim)", fontSize: 11, fontFamily: "var(--font-mono)", letterSpacing: 0.5 }}
-              axisLine={false}
-              tickLine={false}
-              interval={data.length > 12 ? Math.max(0, Math.floor(data.length / 6)) : "preserveStartEnd"}
-              minTickGap={20}
-              tickFormatter={(v) => String(v ?? "").toUpperCase()}
-            />
-            <YAxis
-              domain={["auto", "auto"]}
-              tick={{ fill: "var(--text-dim)", fontSize: 11, fontFamily: "var(--font-mono)", letterSpacing: 0.5 }}
-              axisLine={false}
-              tickLine={false}
-              tickFormatter={(v) => `$${(v / 1000).toFixed(v >= 100000 ? 0 : 1)}K`}
-              width={isMobile ? 52 : 50}
-            />
-            <Tooltip
-              cursor={{ stroke: "var(--border-strong)", strokeDasharray: "2 4", strokeWidth: 1 }}
-              content={<ChartTooltipBody prevPrice={first} />}
-              position={isMobile ? { y: 0 } : undefined}
-              allowEscapeViewBox={isMobile ? { x: false, y: true } : undefined}
-            />
-            {min != null && (
-              <ReferenceLine y={min} stroke="var(--status-down)" strokeDasharray="2 4" strokeOpacity={0.32} />
-            )}
-            {max != null && (
-              <ReferenceLine y={max} stroke="var(--status-up)" strokeDasharray="2 4" strokeOpacity={0.32} />
-            )}
-            <Area
-              type="monotone"
-              dataKey="price"
-              stroke="#f7931a"
-              fill="url(#priceGradUnified)"
-              strokeWidth={2.5}
-              dot={false}
-              activeDot={{ r: isMobile ? 6 : 4, fill: "#f7931a", stroke: "var(--bg-card-elevated)", strokeWidth: 2 }}
-            />
-          </AreaChart>
-        </ResponsiveContainer>
-      )}
-
-      {min != null && max != null && (
-        <div style={{
-          display: "flex", justifyContent: "space-between", gap: 12,
-          marginTop: 10, paddingTop: 10, borderTop: "1px solid var(--border-subtle)",
-          fontSize: "var(--fs-xs)", fontFamily: "var(--font-mono)", color: "var(--text-dim)",
-        }}>
-          <span>Low <span style={{ color: "var(--status-down)", fontWeight: 700 }}>{fmtUSD(min)}</span></span>
-          <span>High <span style={{ color: "var(--status-up)", fontWeight: 700 }}>{fmtUSD(max)}</span></span>
-        </div>
-      )}
-    </div>
-  );
-});
-
-// ─── POWER-LAW (LOG-SCALE) CHART ────────────────────────────────
-// A log-scale price chart with halving epochs marked, plus an optional power-law
-// regression band. The "rainbow chart," done honestly: bands are residual quantiles
-// of a disclosed log-log regression, NOT eyeballed colour zones, and the fit is FROZEN
-// at FIT_FREEZE_MS so everything after it is genuine out-of-sample — no look-ahead.
-// Model: ln(price) = a + b·ln(days since genesis). Reports a, b, R², residual σ,
-// current σ-deviation, and out-of-sample calibration. No buy/sell labels by design.
-export const BTC_GENESIS_MS = Date.UTC(2009, 0, 3);   // genesis block, 2009-01-03
-export const FIT_FREEZE_MS = Date.UTC(2021, 0, 1);    // fit uses data through 2020-12-31; later = out-of-sample
-export const FIT_FREEZE_LABEL = "Jan 2021";
-export const HALVINGS = [
-  { label: "1st", t: Date.UTC(2012, 10, 28) },  // 2012-11-28
-  { label: "2nd", t: Date.UTC(2016, 6, 9) },    // 2016-07-09
-  { label: "3rd", t: Date.UTC(2020, 4, 11) },   // 2020-05-11
-  { label: "4th", t: Date.UTC(2024, 3, 20) },   // 2024-04-20 (block 840,000)
-];
-
-// Ordinary least-squares fit of ln(price) on ln(days since genesis).
-export const fitPowerLaw = (points) => {
-  const xs = [], ys = [];
-  for (const p of points) {
-    if (!p || typeof p.price !== "number" || p.price <= 0 || p.t == null) continue;
-    const days = (p.t - BTC_GENESIS_MS) / 86400000;
-    if (days <= 0) continue;
-    xs.push(Math.log(days));
-    ys.push(Math.log(p.price));
-  }
-  const n = xs.length;
-  if (n < 2) return null;
-  const mx = xs.reduce((s, v) => s + v, 0) / n;
-  const my = ys.reduce((s, v) => s + v, 0) / n;
-  let sxx = 0, sxy = 0;
-  for (let i = 0; i < n; i++) { const dx = xs[i] - mx; sxx += dx * dx; sxy += dx * (ys[i] - my); }
-  if (sxx === 0) return null;
-  const b = sxy / sxx;
-  const a = my - b * mx;
-  let ssRes = 0, ssTot = 0;
-  for (let i = 0; i < n; i++) { const yh = a + b * xs[i]; ssRes += (ys[i] - yh) ** 2; ssTot += (ys[i] - my) ** 2; }
-  return { a, b, sigma: Math.sqrt(ssRes / n), r2: ssTot > 0 ? 1 - ssRes / ssTot : null, n };
-};
-
-export const trendAt = (model, t) => {
-  const days = (t - BTC_GENESIS_MS) / 86400000;
-  return days > 0 ? Math.exp(model.a + model.b * Math.log(days)) : null;
-};
-
-export const PowerLawTooltip = ({ active, payload, model }) => {
-  if (!active || !payload || !payload.length) return null;
-  const d = payload[0].payload;
-  if (d == null || d.price == null) return null;
-  const dev = d.trend ? Math.log(d.price / d.trend) / model.sigma : null;
-  const dateStr = d.t ? new Date(d.t).toLocaleDateString("en-US", { month: "short", year: "numeric" }) : "";
-  return (
-    <div style={{
-      background: "var(--bg-card-elevated)", border: "1px solid var(--border-strong)",
-      borderRadius: "var(--radius-md)", padding: "12px 14px",
-      fontFamily: "var(--font-mono)", fontSize: 13,
-      boxShadow: "0 12px 32px rgba(0,0,0,0.32)", minWidth: 150,
-    }}>
-      <div style={{ color: "var(--text-muted)", marginBottom: 6, letterSpacing: "var(--tracking-caps)", textTransform: "uppercase", fontSize: 11, fontWeight: 500 }}>{dateStr}</div>
-      <div style={{ color: "var(--text-primary)", fontWeight: 800, fontSize: 15 }}>{fmtUSD(d.price)}</div>
-      {d.trend != null && (
-        <div style={{ color: "var(--text-dim)", marginTop: 4, fontSize: 11 }}>Trend {fmtUSD(d.trend)}</div>
-      )}
-      {dev != null && (
-        <div style={{ color: dev >= 0 ? "var(--status-up)" : "var(--status-down)", marginTop: 2, fontWeight: 600 }}>
-          {dev >= 0 ? "+" : ""}{dev.toFixed(2)}σ vs trend
-        </div>
-      )}
-    </div>
-  );
-};
-
-export const PowerLawChart = ({ longTerm }) => {
-  const [showBand, setShowBand] = usePersistedState("btc-dashboard.powerLawBand", true);
-  const isMobile = useIsMobile();
-
-  const calc = useMemo(() => {
-    if (!Array.isArray(longTerm) || longTerm.length < 2) return null;
-    const fitPts = longTerm.filter((p) => p.t != null && p.t < FIT_FREEZE_MS && p.price > 0);
-    // Need a meaningful frozen window; fall back to the full series only if pre-2021 data is missing.
-    const model = fitPowerLaw(fitPts.length >= 100 ? fitPts : longTerm);
-    if (!model) return null;
-    const { a, b, sigma } = model;
-
-    const series = longTerm
-      .filter((p) => p.t != null && p.price > 0)
-      .map((p) => {
-        const trend = trendAt(model, p.t);
-        return trend == null ? null : {
-          t: p.t,
-          price: p.price,
-          trend,
-          band1: [trend * Math.exp(-sigma), trend * Math.exp(sigma)],
-          band2: [trend * Math.exp(-2 * sigma), trend * Math.exp(2 * sigma)],
-        };
-      })
-      .filter(Boolean);
-    if (series.length === 0) return null;
-
-    // Out-of-sample calibration: of points AFTER the frozen fit, what share land within ±1σ / ±2σ.
-    let oos = 0, w1 = 0, w2 = 0;
-    for (const p of longTerm) {
-      if (p.t == null || p.t < FIT_FREEZE_MS || !(p.price > 0)) continue;
-      const days = (p.t - BTC_GENESIS_MS) / 86400000;
-      if (days <= 0) continue;
-      const resid = Math.abs(Math.log(p.price) - (a + b * Math.log(days)));
-      oos++;
-      if (resid <= sigma) w1++;
-      if (resid <= 2 * sigma) w2++;
-    }
-
-    const lastPt = series[series.length - 1];
-    const z = Math.log(lastPt.price / lastPt.trend) / sigma;
-
-    // Log-scale Y domain snapped to whole decades spanning the bands + price.
-    let lo = Infinity, hi = -Infinity;
-    for (const d of series) {
-      lo = Math.min(lo, d.band2[0], d.price);
-      hi = Math.max(hi, d.band2[1], d.price);
-    }
-    lo = Math.max(0.1, lo);
-    const loDec = Math.pow(10, Math.floor(Math.log10(lo)));
-    const hiDec = Math.pow(10, Math.ceil(Math.log10(hi)));
-    const decades = [];
-    for (let e = Math.round(Math.log10(loDec)); e <= Math.round(Math.log10(hiDec)); e++) decades.push(Math.pow(10, e));
-
-    const tMin = series[0].t, tMax = lastPt.t;
-    const halvings = HALVINGS.filter((h) => h.t >= tMin && h.t <= tMax);
-
-    return { model, series, oos, cal1: oos ? (w1 / oos) * 100 : null, cal2: oos ? (w2 / oos) * 100 : null, z, domain: [loDec, hiDec], decades, halvings, currentPrice: lastPt.price, currentTrend: lastPt.trend };
-  }, [longTerm]);
-
-  const fmtDecade = (v) => (v >= 1e6 ? `$${v / 1e6}M` : v >= 1000 ? `$${v / 1000}K` : `$${v}`);
-  const yearFmt = (t) => new Date(t).getFullYear();
-
-  return (
-    <div className="chart-card" style={{
+    <div className="chart-card" aria-busy="true" style={{
       background: "var(--bg-card)", border: "1px solid var(--border-subtle)",
       borderRadius: "var(--radius-lg)", padding: "18px 16px 14px",
     }}>
-      <div style={{ display: "flex", flexDirection: isMobile ? "column" : "row", justifyContent: "space-between", alignItems: isMobile ? "center" : "flex-start", gap: isMobile ? 8 : 12, marginBottom: 12 }}>
-        <div style={{ textAlign: isMobile ? "center" : "left" }}>
-          <div style={{ fontSize: "var(--fs-xs)", color: "var(--text-muted)", letterSpacing: 1.2, textTransform: "uppercase", fontWeight: 700, fontFamily: "var(--font-mono)", marginBottom: 4 }}>Power-Law Trend · Log Scale</div>
-          <div style={{ fontSize: "var(--fs-xs)", color: "var(--text-dim)", fontFamily: "var(--font-mono)" }}>
-            {calc ? <>Halvings marked · fit frozen at {FIT_FREEZE_LABEL}</> : "All-time daily closes"}
-          </div>
-        </div>
-        <button
-          onClick={() => setShowBand((v) => !v)}
-          aria-pressed={showBand}
-          style={{
-            fontFamily: "var(--font-mono)", fontSize: "var(--fs-xs)", fontWeight: 700,
-            letterSpacing: 0.5, textTransform: "uppercase", cursor: "pointer",
-            padding: "6px 12px", borderRadius: "var(--radius-md)",
-            border: "1px solid var(--border-subtle)",
-            background: showBand ? "var(--accent-bitcoin)" : "transparent",
-            color: showBand ? "#0b0b0d" : "var(--text-dim)",
-          }}
-        >{showBand ? "Band ON" : "Band OFF"}</button>
-      </div>
-
-      {!calc ? (
-        <div style={{ height: isMobile ? 200 : 380, display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-dim)", fontFamily: "var(--font-mono)", fontSize: "var(--fs-sm)" }}>Loading chart…</div>
-      ) : (
-        <ResponsiveContainer width="100%" height={isMobile ? 220 : 400}>
-          <ComposedChart data={calc.series} margin={{ top: 12, right: isMobile ? 6 : 10, left: isMobile ? 2 : 0, bottom: 0 }}>
-            <defs>
-              <linearGradient id="plBand2" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#3b82f6" stopOpacity={0.16} />
-                <stop offset="100%" stopColor="#3b82f6" stopOpacity={0.04} />
-              </linearGradient>
-              <linearGradient id="plBand1" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#8b5cf6" stopOpacity={0.22} />
-                <stop offset="100%" stopColor="#8b5cf6" stopOpacity={0.08} />
-              </linearGradient>
-            </defs>
-            <XAxis
-              dataKey="t" type="number" scale="time" domain={["dataMin", "dataMax"]}
-              tick={{ fill: "var(--text-dim)", fontSize: 11, fontFamily: "var(--font-mono)", letterSpacing: 0.5 }}
-              axisLine={false} tickLine={false} tickFormatter={yearFmt} minTickGap={40}
-            />
-            <YAxis
-              scale="log" domain={calc.domain} ticks={calc.decades} allowDataOverflow
-              tick={{ fill: "var(--text-dim)", fontSize: 11, fontFamily: "var(--font-mono)", letterSpacing: 0.5 }}
-              axisLine={false} tickLine={false} tickFormatter={fmtDecade} width={isMobile ? 48 : 46}
-            />
-            <Tooltip content={<PowerLawTooltip model={calc.model} />} cursor={{ stroke: "var(--border-strong)", strokeDasharray: "2 4", strokeWidth: 1 }} />
-            {calc.halvings.map((h) => (
-              <ReferenceLine key={h.t} x={h.t} stroke="var(--text-muted)" strokeDasharray="3 4" strokeOpacity={0.5}
-                label={{ value: `⌛${h.label}`, position: "insideTopLeft", fill: "var(--text-dim)", fontSize: 11, fontFamily: "var(--font-mono)" }} />
-            ))}
-            {showBand && <Area type="monotone" dataKey="band2" stroke="none" fill="url(#plBand2)" isAnimationActive={false} dot={false} activeDot={false} />}
-            {showBand && <Area type="monotone" dataKey="band1" stroke="none" fill="url(#plBand1)" isAnimationActive={false} dot={false} activeDot={false} />}
-            {showBand && <Line type="monotone" dataKey="trend" stroke="var(--text-muted)" strokeWidth={1.5} strokeDasharray="5 4" dot={false} isAnimationActive={false} />}
-            <Line type="monotone" dataKey="price" stroke="#f7931a" strokeWidth={2.25} dot={false} isAnimationActive={false} activeDot={{ r: 4, fill: "#f7931a", stroke: "var(--bg-card-elevated)", strokeWidth: 2 }} />
-          </ComposedChart>
-        </ResponsiveContainer>
-      )}
-
-      {calc && (
-        <>
-          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(4, 1fr)", gap: 10, marginTop: 12, paddingTop: 12, borderTop: "1px solid var(--border-subtle)" }}>
-            <PowerLawStat label="Exponent (b)" value={calc.model.b.toFixed(2)} />
-            <PowerLawStat label="Fit R²" value={calc.model.r2 != null ? calc.model.r2.toFixed(3) : "—"} />
-            <PowerLawStat label="Now vs trend" value={`${calc.z >= 0 ? "+" : ""}${calc.z.toFixed(2)}σ`} accent={calc.z >= 0 ? "var(--status-up)" : "var(--status-down)"} />
-            <PowerLawStat label="Residual σ" value={`±${(calc.model.sigma * 100).toFixed(0)}% log`} />
-          </div>
-          <div style={{ marginTop: 10, fontSize: "var(--fs-xs)", lineHeight: 1.5, color: "var(--text-dim)", fontFamily: "var(--font-mono)" }}>
-            Model: <span style={{ color: "var(--text-muted)" }}>ln(price) = {calc.model.a.toFixed(2)} + {calc.model.b.toFixed(2)}·ln(days since genesis)</span>, fit on {fmt(calc.model.n)} daily closes through {FIT_FREEZE_LABEL}.
-            {calc.cal1 != null && <> Out-of-sample, price closed within ±1σ on <span style={{ color: "var(--text-muted)" }}>{calc.cal1.toFixed(0)}%</span> and ±2σ on <span style={{ color: "var(--text-muted)" }}>{calc.cal2.toFixed(0)}%</span> of {fmt(calc.oos)} days.</>}
-            {" "}A power law assumes a non-stationary process keeps behaving — it can break. Descriptive, not a forecast or buy/sell signal. <SourceLink href="https://www.blockchain.com/explorer/charts/market-price" label="blockchain.com" />
-          </div>
-        </>
-      )}
+      <div style={{
+        fontSize: "var(--fs-xs)", color: "var(--text-muted)", letterSpacing: 1.2,
+        textTransform: "uppercase", fontWeight: 700, fontFamily: "var(--font-mono)",
+        marginBottom: 16, textAlign: isMobile ? "center" : "left",
+      }}>{title}</div>
+      <div style={{
+        height: isMobile ? mobileHeight : desktopHeight,
+        display: "flex", alignItems: "center", justifyContent: "center",
+        color: "var(--text-dim)", fontFamily: "var(--font-mono)", fontSize: "var(--fs-sm)",
+      }}>Loading chart…</div>
     </div>
   );
 };
 
-export const PowerLawStat = ({ label, value, accent }) => (
-  <div style={{ textAlign: "center" }}>
-    <div style={{ fontSize: 11, color: "var(--text-muted)", letterSpacing: "var(--tracking-caps)", textTransform: "uppercase", fontWeight: 600, fontFamily: "var(--font-mono)", marginBottom: 3 }}>{label}</div>
-    <div style={{ fontSize: "var(--fs-md)", fontWeight: 800, fontFamily: "var(--font-mono)", color: accent || "var(--text-primary)" }}>{value}</div>
-  </div>
+// A chart that cannot load (offline, blocked chunk) must not take the price,
+// the briefing and the stat tiles down with it, so each chart gets its own
+// boundary instead of bubbling to the tab-level one.
+const ChartSlot = ({ title, mobileHeight, desktopHeight, children }) => (
+  <ErrorBoundary>
+    <Suspense fallback={<ChartPlaceholder title={title} mobileHeight={mobileHeight} desktopHeight={desktopHeight} />}>
+      {children}
+    </Suspense>
+  </ErrorBoundary>
 );
+
+// "Last Block" ticks once a second. It owns that timer so the tick re-renders
+// this one strip, not the whole Dashboard (two charts and ~30 tiles).
+const LastBlockStrip = ({ lastBlock, settled }) => {
+  const elapsed = useElapsed(lastBlock?.timestamp);
+  return (
+    <StatStrip
+      label="Last Block"
+      value={elapsed != null ? formatElapsed(elapsed) : "—"}
+      sub={lastBlock ? (lastBlock.poolName ? `Mined by ${lastBlock.poolName}` : `Block ${fmt(lastBlock.height)}`) : "Network heartbeat"}
+      valueColor="var(--accent-bitcoin)"
+      loading={lastBlock == null && !settled}
+    />
+  );
+};
+
+// Consecutive up (+n) or down (−n) DAYS, from the 7-day hourly series. The
+// series is hourly, so it is first reduced to one close per 24 h, counted back
+// from the latest point — comparing neighbouring points directly counted
+// hours and labelled them days.
+const POINTS_PER_DAY = 24;
+export const dailyStreak = (hourly) => {
+  if (!Array.isArray(hourly) || hourly.length < POINTS_PER_DAY + 1) return null;
+  const closes = [];
+  for (let i = hourly.length - 1; i >= 0; i -= POINTS_PER_DAY) {
+    const price = hourly[i]?.price;
+    if (typeof price !== "number" || !Number.isFinite(price)) break;
+    closes.push(price); // newest first
+  }
+  let dir = null, count = 0;
+  for (let i = 0; i < closes.length - 1; i++) {
+    const delta = closes[i] - closes[i + 1];
+    const d = delta > 0 ? 1 : delta < 0 ? -1 : 0;
+    if (d === 0) break;
+    if (dir == null) { dir = d; count = 1; continue; }
+    if (d === dir) count++; else break;
+  }
+  return dir != null ? dir * count : null;
+};
 
 // ─── DASHBOARD TAB ──────────────────────────────────────────────
 // Probability badge — green (≥0.65), amber (0.45–0.65), warn (<0.45). Module-scope so
@@ -524,6 +149,7 @@ export const DashboardTab = ({ btc, setActiveTab }) => {
     marketCap, circulatingSupply, ath, athDate,
     chartData, longTermChart, mediumTermChart, blockHeight, hashrate, fastFee, hourFee, mempoolCount,
     dominance, fearGreed, difficultyAdjust, lastBlock, lightning,
+    slowSettled, lastBlockSettled,
     loading, error,
   } = btc;
 
@@ -541,9 +167,6 @@ export const DashboardTab = ({ btc, setActiveTab }) => {
 
   // Halving ETA — Bitcoin avg ~10 min per block.
   const halvingEtaDays = Math.round((blocksToHalving * 10) / 60 / 24);
-
-  // Live ticker for time-since-last-block (re-renders every second).
-  const elapsedSinceBlock = useElapsed(lastBlock?.timestamp);
 
   // Fee → typical-tx USD estimate. A typical send is ~140 vBytes.
   const typicalTxBtc = fastFee != null ? (fastFee * 140) / 1e8 : null;
@@ -567,19 +190,8 @@ export const DashboardTab = ({ btc, setActiveTab }) => {
     change24h, fearGreed, theme: MARKET_THEME,
   });
 
-  // Compute a green/red day streak from the 7-day series.
-  const streakDays = (() => {
-    if (!Array.isArray(chartData) || chartData.length < 3) return null;
-    let dir = null, count = 0;
-    for (let i = chartData.length - 1; i > 0; i--) {
-      const delta = chartData[i].price - chartData[i - 1].price;
-      const d = delta > 0 ? 1 : delta < 0 ? -1 : 0;
-      if (d === 0) break;
-      if (dir == null) { dir = d; count = 1; continue; }
-      if (d === dir) count++; else break;
-    }
-    return dir != null ? dir * count : null;
-  })();
+  // Green/red day streak from the 7-day series (recomputed only when it changes).
+  const streakDays = useMemo(() => dailyStreak(chartData), [chartData]);
 
   // Adoption rollups — derived once from the curated tables in this file so the
   // dashboard always reflects the same canonical holdings as the Adoption tab.
@@ -630,8 +242,12 @@ export const DashboardTab = ({ btc, setActiveTab }) => {
             <span className="group-title">Market</span>
             <span className="group-title-rule" aria-hidden="true" />
           </div>
-          <PriceChart sevenDay={chartData} mediumTerm={mediumTermChart} longTerm={longTermChart} />
-          <PowerLawChart longTerm={longTermChart} />
+          <ChartSlot title="Price History" mobileHeight={236} desktopHeight={438}>
+            <PriceChart sevenDay={chartData} mediumTerm={mediumTermChart} longTerm={longTermChart} />
+          </ChartSlot>
+          <ChartSlot title="Power-Law Trend · Log Scale" mobileHeight={236} desktopHeight={416}>
+            <PowerLawChart longTerm={longTermChart} />
+          </ChartSlot>
           <div className="stat-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 12 }}>
             <div className="card-hover"><StatCard
               label="Market Cap"
@@ -659,7 +275,7 @@ export const DashboardTab = ({ btc, setActiveTab }) => {
               value={fgValue != null ? `${fgValue}` : "—"}
               sub={fearGreed ? <>{fearGreed.classification}{fgDelta != null ? ` · ${fgDelta >= 0 ? "▲" : "▼"} ${Math.abs(fgDelta)} vs yesterday` : ""} · <SourceLink href="https://alternative.me/crypto/fear-and-greed-index/" label="alternative.me" /></> : "Market sentiment gauge"}
               accent={fgValue != null && fgValue < 50 ? "#ef4444" : "#22c55e"}
-              loading={fgValue == null}
+              loading={fgValue == null && !slowSettled}
             /></div>
           </div>
         </div>
@@ -795,13 +411,7 @@ export const DashboardTab = ({ btc, setActiveTab }) => {
       {/* NETWORK — Tier 3 stat strip row */}
       <Reveal delay={0.06}>
         <SectionGroup title="Network" collapsible defaultExpanded={true}>
-          <StatStrip
-            label="Last Block"
-            value={elapsedSinceBlock != null ? formatElapsed(elapsedSinceBlock) : "—"}
-            sub={lastBlock ? (lastBlock.poolName ? `Mined by ${lastBlock.poolName}` : `Block ${fmt(lastBlock.height)}`) : "Network heartbeat"}
-            valueColor="var(--accent-bitcoin)"
-            loading={lastBlock == null}
-          />
+          <LastBlockStrip lastBlock={lastBlock} settled={lastBlockSettled} />
           <StatStrip
             label={<>Network <Term k="hashrate">Hashrate</Term></>}
             value={hashrateEH != null ? `${hashrateEH.toFixed(0)} EH/s` : "—"}
@@ -812,8 +422,8 @@ export const DashboardTab = ({ btc, setActiveTab }) => {
             label={<><Term k="difficulty">Difficulty</Term> Adjustment</>}
             value={diffPct != null ? `${diffPct >= 0 ? "+" : ""}${diffPct.toFixed(2)}%` : "—"}
             sub={difficultyAdjust ? `${diffHarder ? "Harder" : "Easier"} in ${formatRemainingTime(difficultyAdjust.remainingTimeMs)}` : "Self-regulating target"}
-            valueColor={diffHarder ? "var(--status-up)" : "var(--status-warn)"}
-            loading={diffPct == null}
+            valueColor={diffPct == null ? undefined : diffHarder ? "var(--status-up)" : "var(--status-warn)"}
+            loading={diffPct == null && !slowSettled}
           />
           <StatStrip
             label="Pending Transactions"
@@ -843,7 +453,7 @@ export const DashboardTab = ({ btc, setActiveTab }) => {
             label={<><Term k="lightning">Lightning</Term> Capacity</>}
             value={lightningBtc != null ? `${fmt(Math.round(lightningBtc))} BTC` : "—"}
             sub={lightning ? `${fmt(lightning.channelCount)} channels` : "Instant-payment layer"}
-            loading={lightning == null}
+            loading={lightning == null && !slowSettled}
           />
           <StatStrip
             label="7-Day Change"

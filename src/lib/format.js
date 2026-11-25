@@ -77,6 +77,10 @@ export const TAG_COLORS = {
   TECHNOLOGY:  { bg: "rgba(34,197,94,0.15)",    text: "#4ade80" },
   BUSINESS:    { bg: "rgba(99,102,241,0.15)",   text: "#a5b4fc" },
   MARKET:      { bg: "rgba(239,68,68,0.15)",    text: "#f87171" },
+  // The curated archives tag stories MARKETS (the most common tag there) and
+  // PROTOCOL; without entries both fell through to the grey fallback pill.
+  MARKETS:     { bg: "rgba(239,68,68,0.15)",    text: "#f87171" },
+  PROTOCOL:    { bg: "rgba(6,182,212,0.15)",    text: "#22d3ee" },
   NEWS:        { bg: "rgba(107,114,128,0.15)",  text: "#9ca3af" },
 };
 

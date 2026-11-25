@@ -86,7 +86,7 @@ export const SectionHeading = ({ title, subtitle }) => (
 );
 
 export const HeadlinesTab = ({ news }) => {
-  const [filter, setFilter] = useState("ALL");
+  const [selectedFilter, setFilter] = useState("ALL");
   const hasLive = news.items.length > 0;
 
   // Time bucketing:
@@ -134,6 +134,11 @@ export const HeadlinesTab = ({ news }) => {
 
   const allItems = [...latest, ...importantHistorical, ...sixMonth];
   const tags = ["ALL", ...Array.from(new Set(allItems.map(n => n.tag)))];
+  // The tag list is rebuilt from whatever is on the page, and the live feed
+  // refreshes every ten minutes. If the chosen tag's last story drops out,
+  // fall back to ALL instead of stranding the reader on three empty sections
+  // with no pill highlighted.
+  const filter = tags.includes(selectedFilter) ? selectedFilter : "ALL";
 
   const latestFiltered = filter === "ALL" ? latest : latest.filter(n => n.tag === filter);
   const historicalFiltered = filter === "ALL" ? importantHistorical : importantHistorical.filter(n => n.tag === filter);

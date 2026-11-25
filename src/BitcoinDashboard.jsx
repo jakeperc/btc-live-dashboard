@@ -9,9 +9,9 @@
 // hands back a setActiveTab that writes the hash — so the back button, a
 // shared "#/analysis/track-record" link, and every existing setActiveTab(n)
 // call all go through the same door.
-import { Suspense, useState, useEffect } from "react";
+import { Suspense, memo, useState, useEffect, useCallback } from "react";
 import "./styles.css";
-import { DashboardTab, BitcoinThesisTab, StrategyTab, HeadlinesTab, AdoptionTab, DeepAnalysisTab } from "./tabs/index.js";
+import { DashboardTab, BitcoinThesisTab, StrategyTab, HeadlinesTab, AdoptionTab, DeepAnalysisTab, prefetchTab } from "./tabs/index.js";
 import { Skeleton, DataStatus, ThemeToggle, ErrorBoundary, isPlainClick } from "./components/shared.jsx";
 import { TABS } from "./lib/constants.js";
 import { tabHref, parseHash } from "./lib/routes.js";
@@ -31,7 +31,7 @@ const TAB_ICONS = [
 
 // Mobile tab bar. Each item is a real link to the tab's route; the click
 // handler only adds haptics and the scroll-to-top, then lets the hash change.
-const BottomNav = ({ activeTab }) => (
+const BottomNav = ({ activeTab, onIntent }) => (
   <nav className="bottom-nav" aria-label="Tab navigation">
     {TABS.map((tab, i) => (
       <a
@@ -41,6 +41,8 @@ const BottomNav = ({ activeTab }) => (
         aria-label={tab}
         aria-current={activeTab === i ? "page" : undefined}
         style={{ textDecoration: "none" }}
+        onTouchStart={() => onIntent(i)}
+        onFocus={() => onIntent(i)}
         onClick={() => {
           if (navigator.vibrate) navigator.vibrate(10);
           window.scrollTo({ top: 0, behavior: "auto" });
@@ -82,10 +84,29 @@ const TabSkeleton = () => (
   </div>
 );
 
+// A tab panel that is not on screen (display:none) does not need to follow the
+// live data: while it stays inactive its subtree is skipped entirely, and the
+// render that makes it active again carries the latest props. Without this a
+// reader on the Thesis tab was still paying for the Dashboard, Strategy and
+// Adoption tabs to re-render on every price poll.
+const TabPanel = memo(
+  ({ active, children }) => (
+    <div style={{ display: active ? "block" : "none" }} className={active ? "tab-panel-enter" : ""}>
+      {/* ErrorBoundary outside Suspense: a chunk that fails to download
+          rejects inside lazy(), which Suspense re-throws as an error. */}
+      <ErrorBoundary>
+        <Suspense fallback={<TabSkeleton />}>{children}</Suspense>
+      </ErrorBoundary>
+    </div>
+  ),
+  (prev, next) => !prev.active && !next.active
+);
+
+const HEADLINES_TAB = TABS.indexOf("Headlines");
+
 export default function BitcoinDashboard() {
   const [activeTab, setActiveTab] = useHashRoute();
   const btc = useBitcoinData();
-  const news = useBitcoinNews();
   const scrolled = useScrolled(24);
   const showBackToTop = useScrolled(400);
   const isMobileNav = useIsMobile(760);
@@ -97,6 +118,18 @@ export default function BitcoinDashboard() {
   useEffect(() => {
     setVisitedTabs(prev => { if (prev.has(activeTab)) return prev; const next = new Set(prev); next.add(activeTab); return next; });
   }, [activeTab]);
+
+  // "About to open a tab": hover, keyboard focus or touch on its link. Starts
+  // the tab's chunk downloading so the click usually finds it ready, and for
+  // Headlines also starts the feeds. Honors the browser's data-saver setting.
+  const [newsIntent, setNewsIntent] = useState(false);
+  const onTabIntent = useCallback((i) => {
+    if (typeof navigator !== "undefined" && navigator.connection && navigator.connection.saveData) return;
+    prefetchTab(i);
+    if (i === HEADLINES_TAB) setNewsIntent(true);
+  }, []);
+  // Headlines are fetched only once that tab is wanted (see useBitcoinNews).
+  const news = useBitcoinNews(newsIntent || activeTab === HEADLINES_TAB || visitedTabs.has(HEADLINES_TAB));
 
   const [theme, setTheme] = useState("dark");
 
@@ -189,6 +222,8 @@ export default function BitcoinDashboard() {
                       role="tab"
                       href={tabHref(i)}
                       aria-selected={activeTab === i}
+                      onPointerEnter={() => onTabIntent(i)}
+                      onFocus={() => onTabIntent(i)}
                       onClick={(e) => {
                         if (!isPlainClick(e)) return;
                         if (navigator.vibrate) navigator.vibrate(10);
@@ -259,14 +294,8 @@ export default function BitcoinDashboard() {
 
       <div className={`page-content${isMobileNav ? " page-content-with-bottom-nav" : ""}`} style={{ padding: "20px 24px 40px", maxWidth: 1180, margin: "0 auto" }}>
         <OfflineBanner online={online} lastUpdate={btc.lastUpdate} />
-        {panels.map((panel, i) => (i === 0 || visitedTabs.has(i)) && (
-          <div key={TABS[i]} style={{ display: activeTab === i ? "block" : "none" }} className={activeTab === i ? "tab-panel-enter" : ""}>
-            {/* ErrorBoundary outside Suspense: a chunk that fails to download
-                rejects inside lazy(), which Suspense re-throws as an error. */}
-            <ErrorBoundary>
-              <Suspense fallback={<TabSkeleton />}>{panel}</Suspense>
-            </ErrorBoundary>
-          </div>
+        {panels.map((panel, i) => (i === 0 || i === activeTab || visitedTabs.has(i)) && (
+          <TabPanel key={TABS[i]} active={activeTab === i}>{panel}</TabPanel>
         ))}
       </div>
 
@@ -293,7 +322,7 @@ export default function BitcoinDashboard() {
         >↑</button>
       )}
 
-      {isMobileNav && <BottomNav activeTab={activeTab} />}
+      {isMobileNav && <BottomNav activeTab={activeTab} onIntent={onTabIntent} />}
     </div>
   );
 }

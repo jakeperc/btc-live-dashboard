@@ -180,7 +180,10 @@ export const CompaniesTab = ({ price }) => {
     setSortKey(key);
   };
   const sorted = [...COMPANY_HOLDINGS].sort((a, b) => sortDir === "desc" ? b[sortKey] - a[sortKey] : a[sortKey] - b[sortKey]);
-  const top8 = sorted.slice(0, 8);
+  // The chart always shows the eight largest holders. It used to take the
+  // first eight rows of the table, so sorting the table ascending (or by another
+  // column) quietly turned it into a chart of the eight smallest.
+  const top8 = [...COMPANY_HOLDINGS].sort((a, b) => b.btc - a.btc).slice(0, 8);
   // Visually cap any outlier so other companies remain comparable.
   // Cap = ~1.5× the 2nd-largest holder; outliers get a broken-axis treatment.
   const secondBtc = top8[1]?.btc ?? 0;

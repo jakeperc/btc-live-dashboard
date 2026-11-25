@@ -1,6 +1,6 @@
 // Simulate periodic DCA over the existing 5-year price history.
-// The chart is downsampled to ~60 monthly points; we treat each point as one
-// buy interval. To preserve the "weekly" framing in the UI, we convert the
+// The history has one close every four days (~455 points in five years); we
+// treat each point as one buy interval. To preserve the "weekly" framing in the UI, we convert the
 // chosen weekly amount into the equivalent dollars per interval.
 // Returns { totalInvested, btcAccumulated, currentValue, roi, series }.
 export const computeDcaOutcome = (longTermChart, weeklyAmount, currentPrice) => {

@@ -79,6 +79,25 @@ export const finalizeDist = async ({ single = false } = {}) => {
   base = base.replace(cssMatch[0], "");
   base = base.replace(/<\/head>/i, () => `    <style>\n${safeCss}\n    </style>\n  </head>`);
 
+  // 1c) Split mode: preload the Dashboard's chart chunks. They are a dynamic
+  //     import (src/tabs/DashboardTab.jsx), so Vite does not list them among
+  //     the entry's modulepreloads and the browser would only learn about them
+  //     after the entry chunk has downloaded and run. A low-priority
+  //     modulepreload starts them alongside the entry without delaying it —
+  //     the first paint needs neither, but the charts are on the first screen.
+  //     A missing chunk (renamed, merged away) just skips the hint.
+  if (!single) {
+    const chartChunks = (await readdir(assetsDir))
+      .filter((f) => /^(vendor-charts|DashboardCharts)-[\w-]+\.js$/.test(f))
+      .sort()
+      .reverse(); // vendor-charts first: it is the big one
+    const hints = chartChunks
+      .filter((f) => !base.includes(`./assets/${f}`))
+      .map((f) => `    <link rel="modulepreload" crossorigin fetchpriority="low" href="./assets/${f}">`)
+      .join("\n");
+    if (hints) base = base.replace(/<\/head>/i, () => `${hints}\n  </head>`);
+  }
+
   // 2) Inject the crawler-visible static content into #root (replaces the marker).
   const marker = "<!-- SEO_STATIC_CONTENT -->";
   if (!base.includes(marker)) {

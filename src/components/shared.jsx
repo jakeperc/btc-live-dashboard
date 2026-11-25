@@ -39,6 +39,11 @@ export const StaleNotice = ({ asOf, refreshedAt, label = "briefing", thresholdDa
 // Catches a render or lazy-chunk failure inside one tab panel so the rest of
 // the page stays up. A failed lazy import is cached by React.lazy, so the only
 // real recovery is a reload — offered as a button, never a blank screen.
+const CHUNK_RELOAD_KEY = "btc-dashboard.chunkReloadAt";
+// Chrome/Edge, Firefox and Safari each word a failed import() differently.
+const isChunkLoadError = (error) =>
+  /dynamically imported module|importing a module script failed|module script failed/i.test(String(error && error.message));
+
 export class ErrorBoundary extends Component {
   constructor(props) {
     super(props);
@@ -48,6 +53,26 @@ export class ErrorBoundary extends Component {
     return { error };
   }
   componentDidCatch(error, info) {
+    // A tab left open across a deploy still runs the old entry script, whose
+    // lazy chunks (hashed file names) no longer exist on the server — opening
+    // a not-yet-visited tab then fails with a chunk-load error. One automatic
+    // reload picks up the new build and lands on the same #/route. Guarded so
+    // it can never loop (at most once per ten minutes) and never reloads into
+    // a browser error page: the page itself must answer first. If it does not
+    // (offline, server down) the Reload button below stays the honest answer.
+    if (isChunkLoadError(error) && typeof window !== "undefined" && typeof fetch === "function") {
+      try {
+        const last = Number(sessionStorage.getItem(CHUNK_RELOAD_KEY)) || 0;
+        if (Date.now() - last > 10 * 60 * 1000) {
+          const page = window.location.href.split("#")[0];
+          fetch(page, { cache: "no-store" }).then((res) => {
+            if (!res.ok) return;
+            sessionStorage.setItem(CHUNK_RELOAD_KEY, String(Date.now()));
+            window.location.reload();
+          }).catch(() => {});
+        }
+      } catch (e) { /* storage blocked: the manual button remains */ }
+    }
     if (typeof console !== "undefined" && console.error) {
       console.error("Section failed to render:", error, info && info.componentStack);
     }
@@ -835,7 +860,10 @@ export const MarketPulseCard = ({ pulse, streakDays, setActiveTab }) => {
                 fontSize: "var(--fs-xs)", fontFamily: "var(--font-mono)", fontWeight: 700,
                 color: toneColor, background: toneSoft,
                 padding: "4px 10px", borderRadius: "var(--radius-sm)",
-                textTransform: "uppercase", letterSpacing: 1.1, whiteSpace: "nowrap",
+                textTransform: "uppercase", letterSpacing: 1.1,
+                // Wraps inside the card when the status line is longer than a
+                // phone is wide; "nowrap" pushed it past the card's right edge.
+                maxWidth: "100%", lineHeight: 1.5,
                 boxShadow: "inset 0 1px 0 rgba(255,255,255,0.07), inset 0 0 0 1px rgba(255,255,255,0.04)",
               }}>
                 {theme.status}
